@@ -1,0 +1,9 @@
+{
+  "moveAction": {"name": "Move"},
+  "dropAction": {"name": "Drop"},
+  "attackAction": {"name": "Attack"},
+  "waitAction": {"name": "Wait"},
+  "deployAction": {"name": "Deploy"},
+  "passAction": {"name": "Pass"},
+  "resignAction": {"name": "Resign"}
+}

@@ -1,0 +1,7 @@
+{
+  "globalRules": ["Foo", "Bar"],
+  "commanders": ["Alice", "Bob"],
+  "spellTypes": ["Hocus", "Pocus", "Abracadabra", "Alakazam"],
+  "tileTypes": ["Plains", "Road", "Ocean"],
+  "unitTypes": ["RifleSquad", "Vanguard"]
+}

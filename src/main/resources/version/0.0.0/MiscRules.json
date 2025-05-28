@@ -1,0 +1,21 @@
+[
+  {"rule": ".BoardingRule"},
+  {"rule": ".CancelConstructionRule"},
+  {"rule": ".PreActionRule"},
+  {"rule": ".PostActionRule"},
+  {"rule": ".TurnStartRule"},
+  {"rule": ".UnitReadyRule"},
+  {"rule": ".TileIncomeRule"},
+  {"rule": ".VisionRule"},
+  {
+    "rule": ".VisionRuleStage",
+    "subjectFilter": "as(Unit).*",
+    "criterion": "@as(Unit).@range(vision)",
+    "$comment": "Double flip to constrain the subject (our rule framework isn't smart enough to infer the constraint)."
+  },
+  {
+    "rule": ".VisionRuleStage",
+    "subjectFilter": "as(Tile).*",
+    "criterion": "range(0-0)"
+  }
+]
