@@ -1,0 +1,12 @@
+package io.github.naomimyselfandi.xanaduwars.gameplay.runtime.data;
+
+import io.github.naomimyselfandi.xanaduwars.gameplay.common.Version;
+
+/// A factory that creates low-level game data.
+public interface GameDataFactory {
+
+    GameData create(GameData source);
+
+    GameData create(GameMap map, Version Version);
+
+}
