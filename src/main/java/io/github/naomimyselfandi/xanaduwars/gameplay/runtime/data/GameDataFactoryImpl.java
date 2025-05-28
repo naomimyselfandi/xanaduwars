@@ -5,8 +5,6 @@ import io.github.naomimyselfandi.xanaduwars.gameplay.common.Version;
 import org.jetbrains.annotations.Nullable;
 import org.springframework.stereotype.Service;
 
-import java.util.UUID;
-
 @Service
 class GameDataFactoryImpl implements GameDataFactory {
 
@@ -25,11 +23,10 @@ class GameDataFactoryImpl implements GameDataFactory {
     }
 
     private GameData create(Version Version, LowLevelData source) {
-        var id = UUID.randomUUID();
         var result = new GameData();
         for (var field : LowLevelData.Fields.values()) {
             var _ = switch (field) {
-                case id -> result.id(id);
+                case id -> null;
                 case players -> {
                     for (var player : source.players()) {
                         result.players().add(copy(player));

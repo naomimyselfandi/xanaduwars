@@ -31,6 +31,7 @@ public abstract class LowLevelData {
 
     /// Primary key.
     @Id
+    @GeneratedValue
     private @NotNull UUID id;
 
     /// Low-level player data, in turn order.

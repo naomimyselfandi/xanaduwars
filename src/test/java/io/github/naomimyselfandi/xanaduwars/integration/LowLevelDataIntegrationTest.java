@@ -19,7 +19,7 @@ import static org.assertj.core.api.Assertions.*;
 @Rollback(false)
 class LowLevelDataIntegrationTest extends AbstractDatabaseTest {
 
-    private final UUID id = UUID.randomUUID();
+    private UUID id;
 
     @Autowired
     private GameDataFactory gameDataFactory;
@@ -48,7 +48,7 @@ class LowLevelDataIntegrationTest extends AbstractDatabaseTest {
     @RepeatedTest(3)
     void createAndUpdateMap() {
         var map = new GameMap().dimensions(3, 2).playerCount(3);
-        lowLevelDataRepository.save(map.id(id));
+        id = lowLevelDataRepository.save(map).id();
         TestTransaction.end();
         TestTransaction.start();
         assertThat(gameMapRepository.count()).isOne();
@@ -77,7 +77,7 @@ class LowLevelDataIntegrationTest extends AbstractDatabaseTest {
         var map = new GameMap().dimensions(2, 4).playerCount(2);
         map.createUnitData(new TileId(1, 2), new UnitTypeId(3));
         var data = gameDataFactory.create(map, new Version("1.2.3"));
-        lowLevelDataRepository.save(data.id(id));
+        id = lowLevelDataRepository.save(data).id();
         TestTransaction.end();
         TestTransaction.start();
         assertThat(gameDataRepository.findById(id)).contains(data);
@@ -92,7 +92,7 @@ class LowLevelDataIntegrationTest extends AbstractDatabaseTest {
     void updateCollections() {
         var map = new GameMap().dimensions(2, 4).playerCount(2);
         var data = gameDataFactory.create(map, new Version("1.2.3"));
-        lowLevelDataRepository.save(data.id(id));
+        id = lowLevelDataRepository.save(data).id();
         TestTransaction.end();
         TestTransaction.start();
         data = gameDataRepository.findById(id).orElseThrow();
