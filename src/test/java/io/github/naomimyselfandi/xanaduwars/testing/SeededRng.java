@@ -1,7 +1,7 @@
 package io.github.naomimyselfandi.xanaduwars.testing;
 
 import io.github.naomimyselfandi.seededrandom.SeededRandom;
-import io.github.naomimyselfandi.xanaduwars.core.wrapper.*;
+import io.github.naomimyselfandi.xanaduwars.gameplay.common.*;
 
 import java.util.List;
 
@@ -15,12 +15,24 @@ public class SeededRng extends SeededRandom {
         super(initialSeed);
     }
 
+    public int nextIntNotNegative() {
+        return nextInt(-1, Integer.MAX_VALUE) + 1;
+    }
+
+    public Version nextVersion() {
+        var major = nextInt(256);
+        var minor = nextInt(256);
+        var patch = nextInt(256);
+        var suffix = nextBoolean() ? "-" + nextSuffix() : "";
+        return new Version("%d.%d.%d%s".formatted(major, minor, patch, suffix));
+    }
+
     public Name nextName() {
         return nextName(pick(ALPHABET));
     }
 
     public Name nextName(String prefix) {
-        return new Name(prefix + nextInt(Integer.MAX_VALUE));
+        return new Name(prefix + nextSuffix());
     }
 
     public Tag nextTag() {
@@ -28,7 +40,7 @@ public class SeededRng extends SeededRandom {
     }
 
     public Tag nextTag(String prefix) {
-        return new Tag(prefix + nextInt(Integer.MAX_VALUE));
+        return new Tag(prefix + nextSuffix());
     }
 
     public Percent nextPercent() {
@@ -44,6 +56,42 @@ public class SeededRng extends SeededRandom {
         var min = nextInt(Short.MAX_VALUE);
         var max = nextInt(min + 1, Integer.MAX_VALUE);
         return new Range(min, max);
+    }
+
+    public UnitId nextUnitId() {
+        return new UnitId(nextIntNotNegative());
+    }
+
+    public TileId nextTileId() {
+        return new TileId(nextIntNotNegative(), nextIntNotNegative());
+    }
+
+    public NodeId nextNodeId() {
+        return nextBoolean() ? nextUnitId() : nextTileId();
+    }
+
+    public PlayerId nextPlayerId() {
+        return new PlayerId(nextIntNotNegative());
+    }
+
+    public CommanderId nextCommanderId() {
+        return new CommanderId(nextIntNotNegative());
+    }
+
+    public SpellTypeId nextSpellTypeId() {
+        return new SpellTypeId(nextIntNotNegative());
+    }
+
+    public TileTypeId nextTileTypeId() {
+        return new TileTypeId(nextIntNotNegative());
+    }
+
+    public UnitTypeId nextUnitTypeId() {
+        return new UnitTypeId(nextIntNotNegative());
+    }
+
+    private String nextSuffix() {
+        return nextUUID().toString().replaceAll("-", "");
     }
 
 }
