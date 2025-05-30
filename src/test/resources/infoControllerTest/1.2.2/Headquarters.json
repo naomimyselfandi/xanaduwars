@@ -1,0 +1,19 @@
+{
+  "movementTable": {
+    "Air": 1,
+    "Soldier": 1,
+    "Wheeled": 1,
+    "Treaded": 1
+  },
+  "cover": 0.40,
+  "foundation": "Plains",
+  "buildTime": 99999,
+  "costs": {"SUPPLIES": 1000},
+  "$comment": [
+    "A build time is required for structures; since HQs can't be built, the value is arbitrary.",
+    "However, the supply cost isn't arbitrary; it influences Focus gain when an HQ is attacked."
+  ],
+  "subjectRules": [
+    {"rule": ".KeystoneRule"}
+  ]
+}

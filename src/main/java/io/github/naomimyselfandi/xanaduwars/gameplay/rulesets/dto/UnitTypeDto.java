@@ -4,7 +4,9 @@ import io.github.naomimyselfandi.xanaduwars.ext.FieldIteration;
 import io.github.naomimyselfandi.xanaduwars.gameplay.Action;
 import io.github.naomimyselfandi.xanaduwars.gameplay.UnitType;
 import io.github.naomimyselfandi.xanaduwars.gameplay.common.*;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 import lombok.experimental.FieldNameConstants;
 
 import java.util.List;
@@ -12,6 +14,8 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 /// A DTO used to represent a unit type.
+@Getter
+@Setter
 @NoArgsConstructor
 @FieldNameConstants(asEnum = true)
 public class UnitTypeDto extends TypeDto {

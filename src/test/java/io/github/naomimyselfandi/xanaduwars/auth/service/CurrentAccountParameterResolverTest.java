@@ -16,6 +16,7 @@ import org.mockito.junit.jupiter.MockitoSettings;
 import org.mockito.quality.Strictness;
 import org.springframework.core.MethodParameter;
 
+import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.*;
@@ -38,20 +39,30 @@ class CurrentAccountParameterResolverTest {
     @CsvSource(textBlock = """
             true,Account,true
             true,Optional<Account>,true
+            true,Optional<SomethingElse>,false
+            true,List<Account>,false
+            true,List<SomethingElse>,false
             true,HumanAccount,false
             true,BotAccount,false
+            true,T,false
             true,SomethingElse,false
             false,Account,false
             false,Optional<Account>,false
+            false,Optional<SomethingElse>,false
             false,SomethingElse,false
             """)
-    void supportsParameter(boolean annotated, String type, boolean expected) {
+    @SuppressWarnings("DuplicateBranchesInSwitch") // False positive
+    <T> void supportsParameter(boolean annotated, String type, boolean expected) {
         when(methodParameter.hasParameterAnnotation(CurrentAccount.class)).thenReturn(annotated);
         when(methodParameter.getGenericParameterType()).thenReturn(switch (type) {
             case "Account" -> Account.class;
-            case "Optional<Account>" -> new TypeReference<Account>() {}.getType();
+            case "Optional<Account>" -> new TypeReference<Optional<Account>>() {}.getType();
             case "HumanAccount" -> HumanAccount.class;
             case "BotAccount" -> BotAccount.class;
+            case "Optional<SomethingElse>" -> new TypeReference<Optional<Object>>() {}.getType();
+            case "List<Account>" -> new TypeReference<List<Account>>() {}.getType();
+            case "List<SomethingElse>" -> new TypeReference<List<Object>>() {}.getType();
+            case "T" -> new TypeReference<T>() {}.getType();
             default -> Object.class;
         });
         assertThat(fixture.supportsParameter(methodParameter)).isEqualTo(expected);

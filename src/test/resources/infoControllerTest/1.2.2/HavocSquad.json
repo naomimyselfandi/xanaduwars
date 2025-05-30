@@ -1,0 +1,20 @@
+{
+  "tags": ["Soldier", "Land"],
+  "vision": 4,
+  "speed": 5,
+  "costs": {"SUPPLIES": 300},
+  "damageTable": {
+    "RifleSquad": 0.75,
+    "RepeaterSquad": 0.75,
+    "HavocSquad": 0.75,
+    "Engineer": 0.75,
+    "Vanguard": 0.55,
+    "Scorpion": 0.55,
+    "FieldGun": 0.75,
+    "APC": 0.55,
+    "RepairTruck": 0.75,
+    "Ornithopter": 0.55,
+    "Biplane": 0.55,
+    "Airship": 0.75
+  }
+}

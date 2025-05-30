@@ -1,6 +1,7 @@
 package io.github.naomimyselfandi.xanaduwars.ext;
 
 import lombok.experimental.UtilityClass;
+import org.jetbrains.annotations.Nullable;
 
 /// A helper for *field iteration*. Lombok has the ability to generate an enum
 /// with one constant for each of a type's fields, and switch expressions over
@@ -27,7 +28,7 @@ public class FieldIteration {
         /// enforce completeness.
         ///
         /// @return An arbitrary object.
-        Object process(T field);
+        @Nullable Object process(T field);
 
     }
 

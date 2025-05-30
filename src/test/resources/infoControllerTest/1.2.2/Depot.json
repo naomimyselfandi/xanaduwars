@@ -1,0 +1,13 @@
+{
+  "movementTable": {
+    "Air": 1,
+    "Soldier": 1,
+    "Wheeled": 1,
+    "Treaded": 1
+  },
+  "cover": 0.70,
+  "foundation": "Quarry",
+  "buildTime": 2,
+  "costs": {"SUPPLIES": 100},
+  "income": {"SUPPLIES": 100}
+}

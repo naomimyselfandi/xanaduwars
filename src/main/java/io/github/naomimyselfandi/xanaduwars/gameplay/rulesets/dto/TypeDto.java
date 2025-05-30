@@ -21,9 +21,9 @@ public abstract class TypeDto {
 
     TypeDto(Type source) {
         FieldIteration.forEachField(Fields.values(), field -> switch (field) {
-            case id -> source.id();
-            case name -> source.name();
-            case tags -> source.tags();
+            case id -> this.id = source.id();
+            case name -> this.name = source.name();
+            case tags -> this.tags = source.tags();
         });
     }
 

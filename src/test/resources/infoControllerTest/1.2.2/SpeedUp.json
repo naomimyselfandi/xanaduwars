@@ -1,0 +1,11 @@
+{
+  "spellType": ".PassiveSpellType",
+  "focusCost": 1800,
+  "subjectRules": [
+    {
+      "rule": ".UnitStatRule",
+      "stat": "SPEED",
+      "amount": 1
+    }
+  ]
+}

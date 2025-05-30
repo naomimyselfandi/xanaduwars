@@ -1,0 +1,22 @@
+{
+  "tags": ["Wheeled", "Vehicle", "Land"],
+  "vision": 2,
+  "speed": 6,
+  "range": "2-3",
+  "costs": {"SUPPLIES": 600, "AETHER": 100},
+  "damageTable": {
+    "RifleSquad": 0.90,
+    "RepeaterSquad": 0.50,
+    "HavocSquad": 0.90,
+    "Engineer": 0.90,
+    "Vanguard": 0.70,
+    "Scorpion": 0.70,
+    "FieldGun": 0.80,
+    "APC": 0.70,
+    "RepairTruck": 0.80,
+    "Ornithopter": 0.35,
+    "Biplane": 0.35,
+    "Airship": 0.50,
+    "Skiff": 1.00
+  }
+}

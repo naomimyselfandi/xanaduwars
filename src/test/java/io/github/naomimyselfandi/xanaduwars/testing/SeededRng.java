@@ -21,10 +21,22 @@ public class SeededRng extends SeededRandom {
     }
 
     public Version nextVersion() {
+        return nextVersion(nextBoolean());
+    }
+
+    public Version nextPublishedVersion() {
+        return nextVersion(false);
+    }
+
+    public Version nextInternalVersion() {
+        return nextVersion(true);
+    }
+
+    private Version nextVersion(boolean internal) {
         var major = nextInt(256);
         var minor = nextInt(256);
         var patch = nextInt(256);
-        var suffix = nextBoolean() ? "-" + nextString() : "";
+        var suffix = internal ? "-" + nextString() : "";
         return new Version("%d.%d.%d%s".formatted(major, minor, patch, suffix));
     }
 
