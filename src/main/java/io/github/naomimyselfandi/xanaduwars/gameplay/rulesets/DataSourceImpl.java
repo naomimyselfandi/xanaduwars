@@ -40,11 +40,11 @@ class DataSourceImpl implements DataSource {
     }
 
     private RulesetData load0(Version version) throws IOException {
+        var cached = cache.get(version);
+        if (cached != null) return cached;
         if (!blackhole.add(version)) {
             throw new IOException("Cycle detected for ruleset %s.".formatted(version));
         }
-        var cached = cache.get(version);
-        if (cached != null) return cached;
         var loaded = load1(version);
         cache.put(version, loaded);
         blackhole.remove(version);
