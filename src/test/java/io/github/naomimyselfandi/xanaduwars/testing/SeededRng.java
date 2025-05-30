@@ -1,6 +1,7 @@
 package io.github.naomimyselfandi.xanaduwars.testing;
 
 import io.github.naomimyselfandi.seededrandom.SeededRandom;
+import io.github.naomimyselfandi.xanaduwars.account.value.*;
 import io.github.naomimyselfandi.xanaduwars.gameplay.common.*;
 
 import java.util.List;
@@ -23,7 +24,7 @@ public class SeededRng extends SeededRandom {
         var major = nextInt(256);
         var minor = nextInt(256);
         var patch = nextInt(256);
-        var suffix = nextBoolean() ? "-" + nextSuffix() : "";
+        var suffix = nextBoolean() ? "-" + nextString() : "";
         return new Version("%d.%d.%d%s".formatted(major, minor, patch, suffix));
     }
 
@@ -32,7 +33,7 @@ public class SeededRng extends SeededRandom {
     }
 
     public Name nextName(String prefix) {
-        return new Name(prefix + nextSuffix());
+        return new Name(prefix + nextString());
     }
 
     public Tag nextTag() {
@@ -40,7 +41,7 @@ public class SeededRng extends SeededRandom {
     }
 
     public Tag nextTag(String prefix) {
-        return new Tag(prefix + nextSuffix());
+        return new Tag(prefix + nextString());
     }
 
     public Percent nextPercent() {
@@ -90,7 +91,31 @@ public class SeededRng extends SeededRandom {
         return new UnitTypeId(nextIntNotNegative());
     }
 
-    private String nextSuffix() {
+    public Username nextUsername() {
+        return new Username(nextString().toUpperCase());
+    }
+
+    public Password nextPassword() {
+        return new Password(nextString());
+    }
+
+    public PlaintextPassword nextPlaintextPassword() {
+        return new PlaintextPassword(nextString());
+    }
+
+    public APIKey nextAPIKey() {
+        return new APIKey(nextString());
+    }
+
+    public PlaintextAPIKey nextPlaintextAPIKey() {
+        return new PlaintextAPIKey(nextString());
+    }
+
+    public EmailAddress nextEmailAddress() {
+        return new EmailAddress("%s@%s.%s".formatted(nextUUID(), nextUUID(), nextUsername()));
+    }
+
+    private String nextString() {
         return nextUUID().toString().replaceAll("-", "");
     }
 

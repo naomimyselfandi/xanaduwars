@@ -1,8 +1,6 @@
-CREATE TYPE GAME_KIND AS ENUM ('GAME', 'MAP');
-
 CREATE TABLE ll_data (
     id UUID PRIMARY KEY,
-    kind GAME_KIND NOT NULL,
+    kind TEXT NOT NULL,
     width INTEGER NOT NULL CHECK (width > 0),
     next_unit_id INTEGER NOT NULL CHECK (next_unit_id >= 0),
 

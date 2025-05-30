@@ -17,7 +17,7 @@ import java.util.UUID;
 import static org.assertj.core.api.Assertions.*;
 
 @Rollback(false)
-class LowLevelDataIntegrationTest extends AbstractDatabaseTest {
+class LowLevelDataIntegrationTest extends AbstractIntegrationTest {
 
     private UUID id;
 
