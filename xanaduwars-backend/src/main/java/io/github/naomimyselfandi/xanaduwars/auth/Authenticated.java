@@ -8,4 +8,11 @@ import java.lang.annotation.Target;
 /// Satisfy the annotated parameter through the currently authenticated user.
 @Target(ElementType.PARAMETER)
 @Retention(RetentionPolicy.RUNTIME)
-public @interface Authenticated {}
+public @interface Authenticated {
+
+    /// Whether an authenticated user is required. If this is `false` and the
+    /// endpoint is invoked without an authenticated user, the parameter will
+    /// be satisfied with `null` instead.
+    boolean required() default true;
+
+}

@@ -15,6 +15,8 @@ import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.method.support.ModelAndViewContainer;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.util.Objects;
+
 @Component
 @RequiredArgsConstructor
 class AuthenticatedResolver implements HandlerMethodArgumentResolver {
@@ -29,18 +31,22 @@ class AuthenticatedResolver implements HandlerMethodArgumentResolver {
     }
 
     @Override
-    public Object resolveArgument(
+    public @Nullable Object resolveArgument(
             MethodParameter parameter,
             @Nullable ModelAndViewContainer mavContainer,
             NativeWebRequest webRequest,
             @Nullable WebDataBinderFactory binderFactory
     ) {
-        var dto = authService.tryGet().orElseThrow(() -> new ResponseStatusException(HttpStatus.UNAUTHORIZED));
+        var dto = authService.tryGet().orElse(null);
         var type = parameter.getParameterType();
         if (type.isInstance(dto)) {
             return dto;
-        } else {
+        } else if (dto != null) {
             return accountService.find(type.asSubclass(AccountDto.class), dto.getId()).orElseThrow();
+        } else if (Objects.requireNonNull(parameter.getParameterAnnotation(Authenticated.class)).required()) {
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED);
+        } else {
+            return null;
         }
     }
 

@@ -32,6 +32,9 @@ class AuthenticatedResolverTest {
     private interface Helper extends AccountDto {}
 
     @Mock
+    private Authenticated annotation;
+
+    @Mock
     private MethodParameter parameter;
 
     @Mock
@@ -74,7 +77,7 @@ class AuthenticatedResolverTest {
         when(authService.tryGet()).thenReturn(Optional.of(dto));
         doReturn(Helper.class).when(parameter).getParameterType();
         when(accountService.find(Helper.class, dto.getId())).thenReturn(Optional.of(helper));
-        assertThat(fixture.resolveArgument(parameter, mock(), mock(), mock())).isEqualTo(dto);
+        assertThat(fixture.resolveArgument(parameter, mock(), mock(), mock())).isEqualTo(helper);
     }
 
     @ParameterizedTest
@@ -88,12 +91,24 @@ class AuthenticatedResolverTest {
     }
 
     @Test
-    void resolveArgument_WhenNoAccountIsAvailable_ThenThrows() {
+    void resolveArgument_WhenAnAccountIsRequiredAndUnavailable_ThenThrows() {
+        when(parameter.getParameterAnnotation(Authenticated.class)).thenReturn(annotation);
+        when(annotation.required()).thenReturn(true);
         when(authService.tryGet()).thenReturn(Optional.empty());
+        doReturn(Helper.class).when(parameter).getParameterType();
         assertThatThrownBy(() -> fixture.resolveArgument(parameter, mock(), mock(), mock()))
                 .isInstanceOfSatisfying(
                         ResponseStatusException.class,
                         it -> assertThat(it.getStatusCode()).isEqualTo(HttpStatus.UNAUTHORIZED));
+    }
+
+    @Test
+    void resolveArgument_WhenAnAccountIsOptionalAndUnavailable_ThenReturnsNull() {
+        when(parameter.getParameterAnnotation(Authenticated.class)).thenReturn(annotation);
+        when(annotation.required()).thenReturn(false);
+        when(authService.tryGet()).thenReturn(Optional.empty());
+        doReturn(Helper.class).when(parameter).getParameterType();
+        assertThat(fixture.resolveArgument(parameter, mock(), mock(), mock())).isNull();
     }
 
 }
