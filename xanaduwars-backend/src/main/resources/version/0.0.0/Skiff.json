@@ -1,0 +1,7 @@
+{
+  "tags": ["Boat", "Transport"],
+  "vision": 1,
+  "speed": 6,
+  "costs": {"SUPPLIES": 300, "AETHER": 50},
+  "hangar": ["Soldier"]
+}

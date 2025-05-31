@@ -1,0 +1,14 @@
+{
+  "movementTable": {
+    "Air": 1,
+    "Boat": 1,
+    "Ship": 1
+  },
+  "cover": 0.80,
+  "targetRules": [
+    {
+      "rule": ".VisionRuleStage",
+      "criterion": "range(1-1)"
+    }
+  ]
+}

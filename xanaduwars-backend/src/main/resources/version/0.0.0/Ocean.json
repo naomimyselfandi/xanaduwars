@@ -1,0 +1,8 @@
+{
+  "movementTable": {
+    "Air": 1,
+    "Boat": 1,
+    "Ship": 1
+  },
+  "cover": 1.00
+}

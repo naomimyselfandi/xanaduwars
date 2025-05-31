@@ -1,0 +1,21 @@
+{
+  "tags": ["Treaded", "Vehicle", "Land"],
+  "vision": 2,
+  "speed": 6,
+  "costs": {"SUPPLIES": 700, "AETHER": 200},
+  "damageTable": {
+    "RifleSquad": 0.75,
+    "RepeaterSquad": 0.50,
+    "HavocSquad": 0.75,
+    "Engineer": 0.75,
+    "Vanguard": 0.55,
+    "Scorpion": 0.65,
+    "FieldGun": 0.75,
+    "APC": 0.55,
+    "RepairTruck": 0.75,
+    "Ornithopter": 0.40,
+    "Biplane": 0.40,
+    "Airship": 0.20,
+    "Skiff": 0.55
+  }
+}

@@ -1,0 +1,56 @@
+{
+  "globalRules": [
+    "MiscRules",
+    "AttackRules"
+  ],
+  "commanders": [
+    "Nemo"
+  ],
+  "spellTypes": [
+    "AttackUp",
+    "DefenseUp",
+    "SpeedUp"
+  ],
+  "tileTypes": [
+    "Plains",
+    "Road",
+    "Bridge",
+    "River",
+    "Ruins",
+    "Forest",
+    "Hill",
+    "Swamp",
+    "Mountain",
+    "Ocean",
+    "Beach",
+    "Fog",
+    "Quarry",
+    "FireLeyline",
+    "EarthLeyline",
+    "WaterLeyline",
+    "AirLeyline",
+    "Headquarters",
+    "Depot",
+    "Tower",
+    "Fort",
+    "BoatLaunch",
+    "Port",
+    "Airfield"
+  ],
+  "unitTypes": [
+    "Engineer",
+    "RifleSquad",
+    "RepeaterSquad",
+    "HavocSquad",
+    "Vanguard",
+    "Scorpion",
+    "FieldGun",
+    "APC",
+    "RepairTruck",
+    "Ornithopter",
+    "Biplane",
+    "Airship",
+    "Skiff"
+  ],
+  "$comment": "This is a temporary version and we won't necessarily maintain backwards compatibility."
+}

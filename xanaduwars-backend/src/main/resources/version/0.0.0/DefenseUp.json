@@ -1,0 +1,10 @@
+{
+  "spellType": ".PassiveSpellType",
+  "focusCost": 1800,
+  "targetRules": [
+    {
+      "rule": ".AttackMultiplierRule",
+      "multiplier": 0.80
+    }
+  ]
+}

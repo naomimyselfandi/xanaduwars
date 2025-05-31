@@ -1,0 +1,15 @@
+{
+  "movementTable": {
+    "Air": 1,
+    "Soldier": 2
+  },
+  "cover": 0.60,
+  "subjectRules": [
+    {
+      "rule": ".UnitStatRule",
+      "stat": "VISION",
+      "subjectFilter": "!tag.Air",
+      "amount": 2
+    }
+  ]
+}
