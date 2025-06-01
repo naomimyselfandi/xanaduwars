@@ -28,7 +28,7 @@ class LowLevelDataIntegrationTest extends AbstractIntegrationTest {
     private LowLevelDataRepository lowLevelDataRepository;
 
     @Autowired
-    private GameMapRepository gameMapRepository;
+    private MapDataRepository mapDataRepository;
 
     @Autowired
     private GameDataRepository gameDataRepository;
@@ -47,13 +47,13 @@ class LowLevelDataIntegrationTest extends AbstractIntegrationTest {
 
     @RepeatedTest(3)
     void createAndUpdateMap() {
-        var map = new GameMap().dimensions(3, 2).playerCount(3);
+        var map = new MapData().dimensions(3, 2).playerCount(3);
         id = lowLevelDataRepository.save(map).id();
         TestTransaction.end();
         TestTransaction.start();
-        assertThat(gameMapRepository.count()).isOne();
-        assertThat(gameMapRepository.findById(id)).contains(map);
-        gameMapRepository
+        assertThat(mapDataRepository.count()).isOne();
+        assertThat(mapDataRepository.findById(id)).contains(map);
+        mapDataRepository
                 .findById(id)
                 .orElseThrow()
                 .dimensions(2, 4)
@@ -61,7 +61,7 @@ class LowLevelDataIntegrationTest extends AbstractIntegrationTest {
                 .createUnitData(new TileId(1, 2), new UnitTypeId(3));
         TestTransaction.end();
         TestTransaction.start();
-        map = gameMapRepository.findById(id).orElseThrow();
+        map = mapDataRepository.findById(id).orElseThrow();
         assertThat(map.width()).isEqualTo(2);
         assertThat(map.height()).isEqualTo(4);
         assertThat(map.players()).hasSize(2);
@@ -74,7 +74,7 @@ class LowLevelDataIntegrationTest extends AbstractIntegrationTest {
 
     @Test
     void createGameData() {
-        var map = new GameMap().dimensions(2, 4).playerCount(2);
+        var map = new MapData().dimensions(2, 4).playerCount(2);
         map.createUnitData(new TileId(1, 2), new UnitTypeId(3));
         var data = gameDataFactory.create(map, new Version("1.2.3"));
         id = lowLevelDataRepository.save(data).id();
@@ -90,7 +90,7 @@ class LowLevelDataIntegrationTest extends AbstractIntegrationTest {
 
     @Test
     void updateCollections() {
-        var map = new GameMap().dimensions(2, 4).playerCount(2);
+        var map = new MapData().dimensions(2, 4).playerCount(2);
         var data = gameDataFactory.create(map, new Version("1.2.3"));
         id = lowLevelDataRepository.save(data).id();
         TestTransaction.end();

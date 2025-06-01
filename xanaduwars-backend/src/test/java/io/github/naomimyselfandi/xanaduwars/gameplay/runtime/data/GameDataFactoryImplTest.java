@@ -32,9 +32,9 @@ class GameDataFactoryImplTest {
     }
 
     @RepeatedTest(10)
-    void create_GameMap(SeededRng random) {
+    void create_MapData(SeededRng random) {
         var version = random.nextVersion();
-        var source = createGameMap(random);
+        var source = createMapData(random);
         var copy = fixture.create(source, version);
         assertIsSuccessfulClone(copy, source);
         assertThat(copy.version()).isEqualTo(version);
@@ -48,8 +48,8 @@ class GameDataFactoryImplTest {
         return initialize(result, random);
     }
 
-    private GameMap createGameMap(SeededRng random) {
-        return initialize(new GameMap(), random);
+    private MapData createMapData(SeededRng random) {
+        return initialize(new MapData(), random);
     }
 
     private <T extends LowLevelData> T initialize(T result, SeededRng random) {

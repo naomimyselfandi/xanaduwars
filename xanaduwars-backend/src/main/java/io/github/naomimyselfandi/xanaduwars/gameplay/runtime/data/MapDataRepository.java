@@ -5,4 +5,4 @@ import org.springframework.data.repository.CrudRepository;
 import java.util.UUID;
 
 /// A repository for managing low-level map data.
-public interface GameMapRepository extends CrudRepository<GameMap, UUID> {}
+public interface MapDataRepository extends CrudRepository<MapData, UUID> {}

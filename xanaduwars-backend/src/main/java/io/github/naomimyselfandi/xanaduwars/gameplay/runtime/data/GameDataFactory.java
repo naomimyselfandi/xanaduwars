@@ -7,6 +7,6 @@ public interface GameDataFactory {
 
     GameData create(GameData source);
 
-    GameData create(GameMap map, Version version);
+    GameData create(MapData map, Version version);
 
 }

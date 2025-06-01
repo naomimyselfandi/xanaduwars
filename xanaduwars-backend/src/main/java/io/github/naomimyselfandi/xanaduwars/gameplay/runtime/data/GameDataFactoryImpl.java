@@ -15,7 +15,7 @@ class GameDataFactoryImpl implements GameDataFactory {
     }
 
     @Override
-    public GameData create(GameMap map, Version version) {
+    public GameData create(MapData map, Version version) {
         return create(version, map);
     }
 

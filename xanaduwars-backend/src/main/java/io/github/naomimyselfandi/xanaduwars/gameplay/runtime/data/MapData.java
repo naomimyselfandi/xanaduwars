@@ -16,10 +16,10 @@ import lombok.ToString;
 @Entity
 @DiscriminatorValue("MAP")
 @ToString(callSuper = true)
-public class GameMap extends LowLevelData {
+public class MapData extends LowLevelData {
 
     /// Set the player count supported by this map.
-    public GameMap playerCount(int playerCount) {
+    public MapData playerCount(int playerCount) {
         var players = players();
         players.clear();
         for (var i = 0; i < playerCount; i++) {
@@ -30,7 +30,7 @@ public class GameMap extends LowLevelData {
     }
 
     /// Set this map's dimensions. This clears any existing tile and unit data.
-    public GameMap dimensions(int width, int height) {
+    public MapData dimensions(int width, int height) {
         var tiles = tiles();
         tiles.clear();
         for (var y = 0; y < height; y++) {
@@ -47,7 +47,7 @@ public class GameMap extends LowLevelData {
 
     @Override
     public int hashCode() {
-        return GameMap.class.hashCode();
+        return MapData.class.hashCode();
     }
 
 }

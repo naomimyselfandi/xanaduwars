@@ -14,9 +14,9 @@ import java.util.stream.IntStream;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-class GameMapTest {
+class MapDataTest {
 
-    private final GameMap fixture = new GameMap();
+    private final MapData fixture = new MapData();
 
     @BeforeEach
     void setup() {
@@ -25,7 +25,7 @@ class GameMapTest {
 
     @Test
     void testHashCode() {
-        assertThat(fixture).hasSameHashCodeAs(GameMap.class);
+        assertThat(fixture).hasSameHashCodeAs(MapData.class);
     }
 
     @ParameterizedTest
