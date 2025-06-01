@@ -203,9 +203,7 @@ class TileImplTest {
     @RepeatedTest(3)
     void createStructure(SeededRng random) {
         tileData.hitpoints(new Percent(random.nextDouble()))
-                .construction(new ConstructionData()
-                        .structureType(random.nextTileTypeId())
-                        .progress(new Percent(random.nextDouble())));
+                .construction(new ConstructionData(random.nextTileTypeId(), random.nextPercent()));
         var tileTypes = IntStream.range(0, 8).mapToObj(_ -> mock(TileType.class)).toList();
         when(ruleset.tileTypes()).thenReturn(tileTypes);
         var structureTypeId = new TileTypeId(random.nextInt(tileTypes.size()));
@@ -250,7 +248,7 @@ class TileImplTest {
         var owner = random.nextPlayerId();
         var constructionType = random.nextTileTypeId();
         var progress = random.nextPercent();
-        var constructionData = new ConstructionData().structureType(constructionType).progress(progress);
+        var constructionData = new ConstructionData(constructionType, progress);
         tileData.hitpoints(hitpoints).structureType(structureType).owner(owner).construction(constructionData);
         when(gameState.evaluate(new TileDestroyedEvent(fixture))).then(_ -> {
             // Since we can't use inOrder with something that isn't a mock...

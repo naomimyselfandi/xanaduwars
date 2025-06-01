@@ -102,7 +102,7 @@ final class TileImpl extends AbstractNode<TileId, TileType, TileData> implements
     public Tile construction(@Nullable Construction construction) {
         var constructionData = Optional
                 .ofNullable(construction)
-                .map(it -> new ConstructionData().structureType(it.type().id()).progress(it.progress()))
+                .map(it -> new ConstructionData(it.type().id(), it.progress()))
                 .orElse(null);
         data.construction(constructionData);
         return this;

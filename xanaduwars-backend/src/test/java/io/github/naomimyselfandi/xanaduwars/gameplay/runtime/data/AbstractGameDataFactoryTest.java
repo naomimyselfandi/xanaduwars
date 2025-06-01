@@ -8,6 +8,7 @@ import io.github.naomimyselfandi.xanaduwars.gameplay.value.Resource;
 import org.jetbrains.annotations.Nullable;
 import org.junit.jupiter.api.RepeatedTest;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mapstruct.factory.Mappers;
 
 import java.util.EnumMap;
 import java.util.UUID;
@@ -18,11 +19,11 @@ import java.util.stream.IntStream;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @ExtendWith(SeededRandomExtension.class)
-class GameDataFactoryImplTest {
+class AbstractGameDataFactoryTest {
 
     private final UUID sourceId = UUID.randomUUID();
 
-    private final GameDataFactoryImpl fixture = new GameDataFactoryImpl();
+    private final AbstractGameDataFactory fixture = Mappers.getMapper(AbstractGameDataFactory.class);
 
     @RepeatedTest(10)
     void create_GameData(SeededRng random) {
@@ -137,13 +138,7 @@ class GameDataFactoryImplTest {
     }
 
     private @Nullable ConstructionData createConstruction(SeededRng random) {
-        if (random.nextBoolean()) return null;
-        var result = new ConstructionData();
-        FieldIteration.forEachField(ConstructionData.Fields.values(), field -> switch (field) {
-            case structureType -> result.structureType(random.nextTileTypeId());
-            case progress -> result.progress(new Percent(random.nextDouble()));
-        });
-        return result;
+        return random.nextBoolean() ? null : new ConstructionData(random.nextTileTypeId(), random.nextPercent());
     }
 
     private void createUnits(LowLevelData source, SeededRng random) {
@@ -189,6 +184,7 @@ class GameDataFactoryImplTest {
     }
 
     private void assertHaveSameFields(PlayerData actual, PlayerData expected) {
+        assertThat(actual).isNotSameAs(expected);
         for (var field : PlayerData.Fields.values()) {
             Function<PlayerData, Object> extractor = switch (field) {
                 case playerId -> PlayerData::playerId;
@@ -204,6 +200,7 @@ class GameDataFactoryImplTest {
     }
 
     private void assertHaveSameFields(TileData actual, TileData expected) {
+        assertThat(actual).isNotSameAs(expected);
         for (var field : TileData.Fields.values()) {
             Function<TileData, Object> extractor = switch (field) {
                 case tileId -> TileData::tileId;
@@ -216,12 +213,10 @@ class GameDataFactoryImplTest {
             };
             assertThat(extractor.apply(actual)).isEqualTo(extractor.apply(expected));
         }
-        if (actual.construction() != null) {
-            assertThat(actual.construction()).isNotSameAs(expected.construction());
-        }
     }
 
     private void assertHaveSameFields(UnitData actual, UnitData expected) {
+        assertThat(actual).isNotSameAs(expected);
         for (var field : UnitData.Fields.values()) {
             Function<UnitData, Object> extractor = switch (field) {
                 case unitId -> UnitData::unitId;
