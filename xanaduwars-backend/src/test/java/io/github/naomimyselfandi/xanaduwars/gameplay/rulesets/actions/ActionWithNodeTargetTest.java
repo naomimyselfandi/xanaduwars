@@ -32,7 +32,7 @@ class ActionWithNodeTargetTest {
         when(gameState.tiles()).thenReturn(List.of(List.of(tile0, tile1), List.of(tile2, tile3)));
     }
 
-    private final ActionWithNodeTarget<Element> fixture = new ActionWithNodeTarget<>() {
+    private final ActionWithNodeTarget<Actor> fixture = new ActionWithNodeTarget<>() {
 
         @Override
         public Name name() {
@@ -40,7 +40,7 @@ class ActionWithNodeTargetTest {
         }
 
         @Override
-        public Execution execute(Element user, Node target) {
+        public Execution execute(Actor user, Node target) {
             throw new UnsupportedOperationException();
         }
 

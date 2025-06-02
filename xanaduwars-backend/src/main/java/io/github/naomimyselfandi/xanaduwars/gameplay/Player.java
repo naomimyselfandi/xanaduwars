@@ -9,7 +9,7 @@ import java.util.Map;
 import java.util.stream.Stream;
 
 /// A player.
-public non-sealed interface Player extends Element {
+public non-sealed interface Player extends Actor {
 
     /// The commander this player is playing as.
     @Override

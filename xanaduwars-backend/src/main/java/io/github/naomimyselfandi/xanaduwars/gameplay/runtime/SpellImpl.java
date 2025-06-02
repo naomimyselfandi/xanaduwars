@@ -3,6 +3,7 @@ package io.github.naomimyselfandi.xanaduwars.gameplay.runtime;
 import io.github.naomimyselfandi.xanaduwars.gameplay.Player;
 import io.github.naomimyselfandi.xanaduwars.gameplay.Spell;
 import io.github.naomimyselfandi.xanaduwars.gameplay.SpellType;
+import io.github.naomimyselfandi.xanaduwars.gameplay.value.SpellId;
 import lombok.Getter;
 
 import java.util.Optional;
@@ -14,7 +15,7 @@ final class SpellImpl extends AbstractElement<SpellId, SpellType<?>> implements 
     private final Player owner;
 
     SpellImpl(AugmentedGameState gameState, SpellType<?> type, Player owner, int index) {
-        super(gameState, new SpellId(owner.id().intValue(), index));
+        super(gameState, new SpellId(owner.id(), index));
         this.type = type;
         this.owner = owner;
     }

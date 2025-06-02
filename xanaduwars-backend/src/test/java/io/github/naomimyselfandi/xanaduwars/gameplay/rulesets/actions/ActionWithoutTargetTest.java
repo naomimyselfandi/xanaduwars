@@ -1,6 +1,6 @@
 package io.github.naomimyselfandi.xanaduwars.gameplay.rulesets.actions;
 
-import io.github.naomimyselfandi.xanaduwars.gameplay.Element;
+import io.github.naomimyselfandi.xanaduwars.gameplay.Actor;
 import io.github.naomimyselfandi.xanaduwars.gameplay.value.Execution;
 import io.github.naomimyselfandi.xanaduwars.gameplay.value.Name;
 import io.github.naomimyselfandi.xanaduwars.ext.None;
@@ -11,7 +11,7 @@ import static org.mockito.Mockito.mock;
 
 class ActionWithoutTargetTest {
 
-    private final ActionWithoutTarget<Element> fixture = new ActionWithoutTarget<>() {
+    private final ActionWithoutTarget<Actor> fixture = new ActionWithoutTarget<>() {
 
         @Override
         public Name name() {
@@ -19,7 +19,7 @@ class ActionWithoutTargetTest {
         }
 
         @Override
-        public Execution execute(Element user, None target) {
+        public Execution execute(Actor user, None target) {
             throw new UnsupportedOperationException();
         }
 

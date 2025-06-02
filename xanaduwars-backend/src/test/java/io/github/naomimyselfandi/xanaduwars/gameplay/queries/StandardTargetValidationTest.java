@@ -26,13 +26,13 @@ class StandardTargetValidationTest {
     private GameState gameState;
 
     @Mock
-    private Action<Element, Object> action;
+    private Action<Actor, Object> action;
 
     @Mock
-    private ActionWithFilter<Element, Object> actionWithFilter;
+    private ActionWithFilter<Actor, Object> actionWithFilter;
 
     @Mock
-    private BiFilter<Element, Object> filter;
+    private BiFilter<Actor, Object> filter;
 
     @Mock
     private Player player;

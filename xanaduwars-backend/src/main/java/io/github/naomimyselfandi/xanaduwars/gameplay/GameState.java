@@ -18,11 +18,11 @@ public interface GameState extends QueryEvaluator {
     /// modification is not reflected in this game state.
     GameState asSeenBy(Player player);
 
-    /// Look up the actions an element can use.
-    <S extends Element> List<Action<? super S, ?>> actions(S user);
+    /// Look up the actions an actor can use.
+    <S extends Actor> List<Action<? super S, ?>> actions(S user);
 
     /// Instruct an element to use some actions.
-    <S extends Element> void execute(List<ActionItem<S, ?>> items, S user) throws ActionException;
+    <S extends Actor> void execute(List<ActionItem<S, ?>> items, S user) throws ActionException;
 
     /// The current turn number. This increases after each full turn cycle, not
     /// after each player's turn.

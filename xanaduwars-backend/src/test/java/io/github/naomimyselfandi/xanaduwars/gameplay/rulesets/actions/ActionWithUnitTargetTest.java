@@ -28,7 +28,7 @@ class ActionWithUnitTargetTest {
         when(gameState.units()).thenReturn(List.of(unit0, unit1));
     }
 
-    private final ActionWithUnitTarget<Element> fixture = new ActionWithUnitTarget<>() {
+    private final ActionWithUnitTarget<Actor> fixture = new ActionWithUnitTarget<>() {
 
         @Override
         public Name name() {
@@ -36,7 +36,7 @@ class ActionWithUnitTargetTest {
         }
 
         @Override
-        public Execution execute(Element user, Unit target) {
+        public Execution execute(Actor user, Unit target) {
             throw new UnsupportedOperationException();
         }
 

@@ -10,19 +10,19 @@ import java.util.stream.Stream;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.params.provider.Arguments.arguments;
 
-class NodeIdConverterTest {
+class ActorIdConverterTest {
 
-    private final NodeIdConverter fixture = new NodeIdConverter();
+    private final ActorIdConverter fixture = new ActorIdConverter();
 
     @ParameterizedTest
     @MethodSource("testCases")
-    void convertToEntityAttribute(@Nullable NodeId entityAttribute, @Nullable String dbData) {
+    void convertToEntityAttribute(@Nullable ActorId entityAttribute, @Nullable String dbData) {
         assertThat(fixture.convertToEntityAttribute(dbData)).isEqualTo(entityAttribute);
     }
 
     @ParameterizedTest
     @MethodSource("testCases")
-    void convertToDatabaseColumn(@Nullable NodeId entityAttribute, @Nullable String dbData) {
+    void convertToDatabaseColumn(@Nullable ActorId entityAttribute, @Nullable String dbData) {
         assertThat(fixture.convertToDatabaseColumn(entityAttribute)).isEqualTo(dbData);
     }
 
@@ -36,7 +36,9 @@ class NodeIdConverterTest {
                 arguments(new TileId(1, 0), "1,0"),
                 arguments(new TileId(0, 1), "0,1"),
                 arguments(new TileId(1, 1), "1,1"),
-                arguments(new TileId(999, 999), "999,999")
+                arguments(new TileId(999, 999), "999,999"),
+                arguments(new PlayerId(0), "P0"),
+                arguments(new PlayerId(1), "P1")
         );
     }
 

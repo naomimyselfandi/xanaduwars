@@ -36,12 +36,12 @@ abstract class AbstractGameState implements AugmentedGameState {
     private final ActionExecutor actionExecutor;
 
     @Override
-    public <S extends Element> List<Action<? super S, ?>> actions(S user) {
+    public <S extends Actor> List<Action<? super S, ?>> actions(S user) {
         return actionPolicy.actions(ruleset, user);
     }
 
     @Override
-    public <S extends Element> void execute(List<ActionItem<S, ?>> items, S user) throws ActionException {
+    public <S extends Actor> void execute(List<ActionItem<S, ?>> items, S user) throws ActionException {
         try {
             actionExecutor.execute(items, user);
         } finally {

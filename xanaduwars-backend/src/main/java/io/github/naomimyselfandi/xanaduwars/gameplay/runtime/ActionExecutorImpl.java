@@ -20,11 +20,11 @@ import java.util.function.Consumer;
 final class ActionExecutorImpl implements ActionExecutor {
 
     @Override
-    public <S extends Element> void execute(List<? extends ActionItem<S, ?>> actionItems, S user) throws ActionException {
+    public <S extends Actor> void execute(List<? extends ActionItem<S, ?>> actionItems, S user) throws ActionException {
         new Attempt<>(actionItems, user).execute();
     }
 
-    private static class Attempt<S extends Element> implements Consumer<Rule<?, ?>> {
+    private static class Attempt<S extends Actor> implements Consumer<Rule<?, ?>> {
 
         private @Nullable Action<S, ?> action;
         private @Nullable Rule<?, ?> rule;

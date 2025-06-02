@@ -11,11 +11,10 @@ import java.util.stream.Stream;
 final class ActionPolicyImpl implements ActionPolicy {
 
     @Override
-    public <S extends Element> List<Action<? super S, ?>> actions(Ruleset ruleset, S user) {
+    public <S extends Actor> List<Action<? super S, ?>> actions(Ruleset ruleset, S user) {
         @SuppressWarnings("unchecked")
         var result = (List<Action<? super S, ?>>) switch (user) {
             case Player player -> actions(ruleset.details(), player);
-            case Spell _ -> List.of();
             case Tile tile -> actions(ruleset.details(), tile);
             case Unit unit -> actions(ruleset.details(), unit);
         };

@@ -8,7 +8,7 @@ import java.util.Optional;
 
 /// An element of a game state.
 @ExcludeFromCoverageReport
-public sealed interface Element extends Tagged permits Node, Player, Spell {
+public sealed interface Element extends Tagged permits Actor, Spell {
 
     /// The game state this element belongs to.
     GameState gameState();

@@ -63,9 +63,6 @@ class ActionPolicyImplTest {
     private Player player;
 
     @Mock
-    private Spell spell;
-
-    @Mock
     private Tile tile;
 
     @Mock
@@ -84,11 +81,6 @@ class ActionPolicyImplTest {
         when(details.passAction()).thenReturn(passAction);
         when(details.resignAction()).thenReturn(resignAction);
         assertThat(fixture.actions(ruleset, player)).containsExactly(spellType, passAction, resignAction);
-    }
-
-    @Test
-    void actions_Spell() {
-        assertThat(fixture.actions(ruleset, spell)).isEmpty();
     }
 
     @ParameterizedTest

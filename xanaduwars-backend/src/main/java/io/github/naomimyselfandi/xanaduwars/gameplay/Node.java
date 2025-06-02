@@ -8,7 +8,7 @@ import java.util.Optional;
 
 /// A game state element that physically appears on the map. Units and tiles are
 /// both nodes.
-public sealed interface Node extends Element permits Tile, Unit {
+public sealed interface Node extends Actor permits Tile, Unit {
 
     /// The type of node this is.
     @Override

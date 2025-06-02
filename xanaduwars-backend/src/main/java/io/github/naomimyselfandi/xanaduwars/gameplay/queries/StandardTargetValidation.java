@@ -10,7 +10,7 @@ import io.github.naomimyselfandi.xanaduwars.gameplay.rulesets.actions.ActionWith
 /// @param action  The action the element wants to use.
 /// @param subject The element that wants to use the action.
 /// @param target  The object the element wants to use the action on.
-public record StandardTargetValidation<S extends Element, T>(
+public record StandardTargetValidation<S extends Actor, T>(
         @Override Action<S, T> action,
         @Override S subject,
         @Override T target

@@ -1,12 +1,12 @@
 package io.github.naomimyselfandi.xanaduwars.gameplay.queries;
 
 import io.github.naomimyselfandi.xanaduwars.gameplay.Action;
-import io.github.naomimyselfandi.xanaduwars.gameplay.Element;
+import io.github.naomimyselfandi.xanaduwars.gameplay.Actor;
 
 /// A query that validates whether an element can use an action on a target.
 /// This does not consider whether the element can act at all;
 /// use [ActionValidation] for that.
-public sealed interface ActionTargetValidation<S extends Element, T> extends TargetQuery.Validation<S, T>
+public sealed interface ActionTargetValidation<S extends Actor, T> extends TargetQuery.Validation<S, T>
         permits CounterattackValidation, StandardTargetValidation {
 
     /// The action the element wants to use.

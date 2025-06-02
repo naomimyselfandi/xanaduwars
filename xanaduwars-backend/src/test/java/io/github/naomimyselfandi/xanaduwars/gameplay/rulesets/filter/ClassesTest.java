@@ -10,8 +10,9 @@ class ClassesTest {
     @Test
     void test() {
         assertThat(Classes.ELEMENT_TYPES_BY_NAME)
-                .hasSize(6)
+                .hasSize(7)
                 .containsEntry("Element", Element.class)
+                .containsEntry("Actor", Actor.class)
                 .containsEntry("Player", Player.class)
                 .containsEntry("Spell", Spell.class)
                 .containsEntry("Node", Node.class)

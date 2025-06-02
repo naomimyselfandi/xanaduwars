@@ -10,7 +10,7 @@ import org.hibernate.validator.constraints.Range;
 @Embeddable
 @SuppressWarnings("com.intellij.jpb.NoArgsConstructorInspection")
 public record PlayerId(@Column(name = "player_id") @JsonValue @Range(min = 0, max = 255) int intValue)
-        implements Comparable<PlayerId> {
+        implements Comparable<PlayerId>, ActorId {
 
     /// The ID of a player.
     @JsonCreator(mode = JsonCreator.Mode.DELEGATING)

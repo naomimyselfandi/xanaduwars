@@ -91,6 +91,10 @@ public class SeededRng extends SeededRandom {
         return new PlayerId(nextIntNotNegative());
     }
 
+    public SpellId nextSpellId() {
+        return new SpellId(nextPlayerId(), nextIntNotNegative());
+    }
+
     public CommanderId nextCommanderId() {
         return new CommanderId(nextIntNotNegative());
     }

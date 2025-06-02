@@ -6,8 +6,6 @@ import io.github.naomimyselfandi.xanaduwars.testing.TestUtils;
 import org.junit.jupiter.api.RepeatedTest;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.ValueSource;
 import com.fasterxml.jackson.core.type.TypeReference;
 
 import java.util.Map;
@@ -16,12 +14,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 @ExtendWith(SeededRandomExtension.class)
 class PlayerIdTest {
-
-    @ParameterizedTest
-    @ValueSource(ints = {0, 1, 10, 100, 255})
-    void intValue(int intValue) {
-        TestUtils.assertJson(new PlayerId(intValue), String.valueOf(intValue));
-    }
 
     @Test
     void compareTo() {
@@ -36,8 +28,8 @@ class PlayerIdTest {
 
     @Test
     void json(SeededRng random) {
-        var intValue = random.nextIntNotNegative();
-        TestUtils.assertJson(new PlayerId(intValue), "" + intValue);
+        var playerId = random.nextPlayerId();
+        TestUtils.assertJson(playerId, "" + playerId.intValue());
     }
 
     @Test

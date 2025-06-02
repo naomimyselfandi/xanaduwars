@@ -11,7 +11,7 @@ import java.util.stream.Stream;
 
 /// An action that an element can execute.
 @ExcludeFromCoverageReport
-public interface Action<S extends Element, T> {
+public interface Action<S extends Actor, T> {
 
     /// This action's name. Action names are not necessarily unique.
     Name name();

@@ -14,7 +14,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 class SimpleActionMixinTest {
 
-    private final SimpleActionMixin<Element, List<String>> fixture = new SimpleActionMixin<>() {
+    private final SimpleActionMixin<Actor, List<String>> fixture = new SimpleActionMixin<>() {
 
         @Override
         public Name name() {
@@ -27,7 +27,7 @@ class SimpleActionMixinTest {
         }
 
         @Override
-        public Execution execute(Element user, List<String> target) {
+        public Execution execute(Actor user, List<String> target) {
             throw new UnsupportedOperationException();
         }
 
