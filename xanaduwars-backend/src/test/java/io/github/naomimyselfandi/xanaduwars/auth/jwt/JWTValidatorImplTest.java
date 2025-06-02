@@ -58,7 +58,7 @@ class JWTValidatorImplTest {
     void setup(SeededRng random) {
         keyId = random.nextUUID();
         dto = new UserDetailsDto();
-        dto.setId(random.nextUUID());
+        dto.setId(random.nextAccountId());
         var now = Instant.now().minusSeconds(random.nextInt(1, 256));
         duration = Duration.ofMinutes(random.nextInt(1, 100));
         var bonusDuration = Duration.ofMinutes(random.nextInt(1, 100));

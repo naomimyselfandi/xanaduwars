@@ -30,7 +30,7 @@ class UserDetailsServiceImplTest {
     void loadUserByUsername(SeededRng random) {
         var username = random.nextUsername();
         var dto = new UserDetailsDto();
-        dto.setId(random.nextUUID());
+        dto.setId(random.nextAccountId());
         when(accountService.find(UserDetailsDto.class, username)).thenReturn(Optional.of(dto));
         assertThat(fixture.loadUserByUsername(username.toString())).isEqualTo(dto);
     }

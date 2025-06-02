@@ -75,9 +75,9 @@ class JWTAuthenticationFilterTest {
     @RepeatedTest(3)
     void doFilterInternal(SeededRng random) {
         var token = random.nextUUID().toString();
-        var accountId = random.nextUUID();
+        var accountId = random.nextAccountId();
         var principal = new UserDetailsDto();
-        principal.setId(random.nextUUID());
+        principal.setId(random.nextAccountId());
         principal.setAuthorities(random.shuffle(Role.values()).subList(0, 2));
         when(request.getHeader("Authorization")).thenReturn("Bearer " + token);
         when(jwtValidator.validateToken(token, JWTPurpose.ACCESS_TOKEN, JWTClaim.NONE)).thenReturn(Optional.of(jwt));
@@ -123,7 +123,7 @@ class JWTAuthenticationFilterTest {
     @SneakyThrows
     void doFilterInternal_WhenTheAccountDoesNotExist_ThenDoesNothing(SeededRng random) {
         var token = random.nextUUID().toString();
-        var accountId = random.nextUUID();
+        var accountId = random.nextAccountId();
         when(request.getHeader("Authorization")).thenReturn("Bearer " + token);
         when(jwtValidator.validateToken(token, JWTPurpose.ACCESS_TOKEN, JWTClaim.NONE)).thenReturn(Optional.of(jwt));
         when(jwt.getSubject()).thenReturn(accountId.toString());

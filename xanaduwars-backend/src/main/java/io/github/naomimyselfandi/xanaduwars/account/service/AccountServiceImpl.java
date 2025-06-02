@@ -13,7 +13,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
-import java.util.UUID;
 import java.util.function.Function;
 
 @Slf4j
@@ -31,7 +30,7 @@ class AccountServiceImpl implements AccountService {
 
     @Override
     @Transactional(readOnly = true)
-    public <T extends AccountDto> Optional<T> find(Class<T> dto, UUID id) {
+    public <T extends AccountDto> Optional<T> find(Class<T> dto, AccountId id) {
         return accountRepository.findById(id).map(as(dto));
     }
 

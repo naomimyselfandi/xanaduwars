@@ -1,15 +1,15 @@
 package io.github.naomimyselfandi.xanaduwars.account.dto;
 
+import io.github.naomimyselfandi.xanaduwars.account.value.AccountId;
 import io.github.naomimyselfandi.xanaduwars.account.value.Username;
 import lombok.Data;
 
 import java.time.Instant;
-import java.util.UUID;
 
 /// The basic DTO representing an account.
 @Data
 public class BaseAccountDto implements AccountDto {
-    private UUID id;
+    private AccountId id;
     private Username username;
     private Instant createdAt;
     private Instant lastSeenAt;

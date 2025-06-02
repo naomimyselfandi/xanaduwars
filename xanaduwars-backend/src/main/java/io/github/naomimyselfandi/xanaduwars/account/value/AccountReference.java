@@ -1,10 +1,15 @@
 package io.github.naomimyselfandi.xanaduwars.account.value;
 
+import java.io.Serializable;
+
 /// A reference to an account. This can either be a specific account or the
 /// currently authenticated account.
-public sealed interface AccountReference permits AccountIdReference, CurrentAccountReference {
+public sealed interface AccountReference extends Serializable permits AccountId, AccountReference.Me {
 
     /// A reference to the currently authenticated account.
-    CurrentAccountReference CURRENT_ACCOUNT = new CurrentAccountReference();
+    Me ME = new Me();
+
+    /// A reference to the currently authenticated account.
+    record Me() implements AccountReference {}
 
 }

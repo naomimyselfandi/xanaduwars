@@ -49,7 +49,7 @@ class JWTFactoryImplTest {
     @BeforeEach
     void setup(SeededRng random) {
         dto = new UserDetailsDto();
-        dto.setId(random.nextUUID());
+        dto.setId(random.nextAccountId());
         var now = Instant.ofEpochMilli(random.nextLong());
         duration = Duration.ofMinutes(random.nextInt(1, 100));
         var bonusDuration = Duration.ofMinutes(random.nextInt(1, 100));
@@ -60,7 +60,7 @@ class JWTFactoryImplTest {
         claim = () -> Map.of(foo, bar);
         when(clock.instant()).thenReturn(now);
         when(secretKey.getEncoded()).thenReturn(SECRET.getBytes());
-        when(jwtKeyService.getForSigning(purpose, expiry)).thenReturn(new SecretKeyWithId(secretKey, dto.getId()));
+        when(jwtKeyService.getForSigning(purpose, expiry)).thenReturn(new SecretKeyWithId(secretKey, dto.getId().id()));
         fixture = new JWTFactoryImpl(bonusDuration, clock, jwtKeyService);
     }
 

@@ -43,7 +43,7 @@ class AccountServiceImplTest {
 
     @Test
     void find_ById(SeededRng random) {
-        var id = random.nextUUID();
+        var id = random.nextAccountId();
         var account = new HumanAccount();
         when(accountRepository.findById(id)).thenReturn(Optional.of(account));
         when(conversionService.convert(account, Helper.class)).thenReturn(dto);

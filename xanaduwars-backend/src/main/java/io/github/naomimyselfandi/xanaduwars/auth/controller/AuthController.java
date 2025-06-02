@@ -2,6 +2,7 @@ package io.github.naomimyselfandi.xanaduwars.auth.controller;
 
 import com.auth0.jwt.interfaces.DecodedJWT;
 import io.github.naomimyselfandi.xanaduwars.account.service.AccountService;
+import io.github.naomimyselfandi.xanaduwars.account.value.AccountId;
 import io.github.naomimyselfandi.xanaduwars.account.value.PlaintextPassword;
 import io.github.naomimyselfandi.xanaduwars.account.value.Username;
 import io.github.naomimyselfandi.xanaduwars.auth.dto.LoginRequest;
@@ -78,6 +79,7 @@ public class AuthController {
                 .validateToken(token, JWTPurpose.REFRESH_TOKEN, JWTClaim.NONE)
                 .map(DecodedJWT::getSubject)
                 .map(UUID::fromString)
+                .map(AccountId::new)
                 .flatMap(id -> accountService.find(UserDetailsDto.class, id))
                 .orElseThrow(UNAUTHORIZED);
     }

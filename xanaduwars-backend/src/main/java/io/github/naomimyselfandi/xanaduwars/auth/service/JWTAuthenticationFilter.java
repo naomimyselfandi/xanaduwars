@@ -2,6 +2,7 @@ package io.github.naomimyselfandi.xanaduwars.auth.service;
 
 import com.auth0.jwt.interfaces.DecodedJWT;
 import io.github.naomimyselfandi.xanaduwars.account.service.AccountService;
+import io.github.naomimyselfandi.xanaduwars.account.value.AccountId;
 import io.github.naomimyselfandi.xanaduwars.auth.dto.UserDetailsDto;
 import io.github.naomimyselfandi.xanaduwars.auth.jwt.JWTClaim;
 import io.github.naomimyselfandi.xanaduwars.auth.jwt.JWTValidator;
@@ -44,6 +45,7 @@ class JWTAuthenticationFilter extends OncePerRequestFilter {
                 .flatMap(token -> jwtValidator.validateToken(token, JWTPurpose.ACCESS_TOKEN, JWTClaim.NONE))
                 .map(DecodedJWT::getSubject)
                 .map(UUID::fromString)
+                .map(AccountId::new)
                 .map(id -> accountService.find(UserDetailsDto.class, id).orElseGet(() -> {
                     log.warn("Got nonexistent account ID {}.", id);
                     return null;

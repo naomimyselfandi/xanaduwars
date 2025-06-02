@@ -47,7 +47,7 @@ class AuthServiceImplTest {
     @Test
     void tryGet(SeededRng random) {
         var principal = new UserDetailsDto();
-        principal.setId(random.nextUUID());
+        principal.setId(random.nextAccountId());
         var authentication = new UsernamePasswordAuthenticationToken(principal, null);
         SecurityContextHolder.getContext().setAuthentication(authentication);
         assertThat(fixture.tryGet()).contains(principal);

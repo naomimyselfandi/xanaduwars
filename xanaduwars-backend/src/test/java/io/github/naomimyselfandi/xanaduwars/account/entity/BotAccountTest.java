@@ -13,7 +13,7 @@ class BotAccountTest {
     @Test
     void testToString(SeededRng random) {
         var account = (Account) new BotAccount();
-        account.id(random.nextUUID()).username(random.nextUsername());
+        account.id(random.nextAccountId()).username(random.nextUsername());
         var template = "BotAccount[id=%s, username=%s]";
         assertThat(account).hasToString(template, account.id(), account.username());
     }

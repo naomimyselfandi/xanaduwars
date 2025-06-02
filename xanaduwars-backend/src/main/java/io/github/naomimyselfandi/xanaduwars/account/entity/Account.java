@@ -9,7 +9,6 @@ import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 
 import java.time.Instant;
-import java.util.UUID;
 
 /// A user's account.
 @Entity
@@ -22,7 +21,7 @@ public abstract class Account {
     /// Primary key.
     @Id
     @GeneratedValue
-    private UUID id;
+    private AccountId id;
 
     /// This account's unique username.
     @Embedded

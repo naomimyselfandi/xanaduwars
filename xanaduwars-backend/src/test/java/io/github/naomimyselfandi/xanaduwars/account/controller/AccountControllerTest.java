@@ -3,7 +3,7 @@ package io.github.naomimyselfandi.xanaduwars.account.controller;
 import io.github.naomimyselfandi.seededrandom.SeededRandomExtension;
 import io.github.naomimyselfandi.xanaduwars.account.dto.*;
 import io.github.naomimyselfandi.xanaduwars.account.service.AccountReferenceResolver;
-import io.github.naomimyselfandi.xanaduwars.account.value.AccountIdReference;
+import io.github.naomimyselfandi.xanaduwars.account.value.AccountId;
 import io.github.naomimyselfandi.xanaduwars.testing.SeededRng;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -30,16 +30,16 @@ class AccountControllerTest {
 
     @Test
     void getBase(SeededRng random) {
-        var reference = new AccountIdReference(random.nextUUID());
+        var reference = new AccountId(random.nextUUID());
         var dto = new BaseAccountDto();
-        dto.setId(random.nextUUID());
+        dto.setId(random.nextAccountId());
         when(accountReferenceResolver.resolve(BaseAccountDto.class, reference)).thenReturn(Optional.of(dto));
         assertThat(fixture.getBase(reference)).isEqualTo(ResponseEntity.ok(dto));
     }
 
     @Test
     void getBase_WhenTheAccountDoesNotExist_ThenThrows(SeededRng random) {
-        var reference = new AccountIdReference(random.nextUUID());
+        var reference = new AccountId(random.nextUUID());
         when(accountReferenceResolver.resolve(BaseAccountDto.class, reference)).thenReturn(Optional.empty());
         assertThatThrownBy(() -> fixture.getBase(reference)).isInstanceOfSatisfying(
                 ResponseStatusException.class,
@@ -48,9 +48,9 @@ class AccountControllerTest {
 
     @Test
     void getFull(SeededRng random) {
-        var reference = new AccountIdReference(random.nextUUID());
+        var reference = new AccountId(random.nextUUID());
         var dto = new FullAccountDto();
-        dto.setId(random.nextUUID());
+        dto.setId(random.nextAccountId());
         dto.setSettings(new AccountSettingsDto());
         when(accountReferenceResolver.resolve(FullAccountDto.class, reference)).thenReturn(Optional.of(dto));
         assertThat(fixture.getFull(reference)).isEqualTo(ResponseEntity.ok(dto));
@@ -58,7 +58,7 @@ class AccountControllerTest {
 
     @Test
     void getFull_WhenTheAccountDoesNotExist_ThenThrows(SeededRng random) {
-        var reference = new AccountIdReference(random.nextUUID());
+        var reference = new AccountId(random.nextUUID());
         when(accountReferenceResolver.resolve(FullAccountDto.class, reference)).thenReturn(Optional.empty());
         assertThatThrownBy(() -> fixture.getFull(reference)).isInstanceOfSatisfying(
                 ResponseStatusException.class,

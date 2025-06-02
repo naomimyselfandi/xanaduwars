@@ -1,14 +1,14 @@
 package io.github.naomimyselfandi.xanaduwars.account.entity;
 
+import io.github.naomimyselfandi.xanaduwars.account.value.AccountId;
 import io.github.naomimyselfandi.xanaduwars.account.value.CanonicalUsername;
 import io.github.naomimyselfandi.xanaduwars.account.value.EmailAddress;
 import org.springframework.data.repository.CrudRepository;
 
 import java.util.Optional;
-import java.util.UUID;
 
 /// A repository for user accounts.
-public interface AccountRepository extends CrudRepository<Account, UUID> {
+public interface AccountRepository extends CrudRepository<Account, AccountId> {
 
     /// Find an account by the canonical form of its username. This method
     /// should be used for all username-based lookups to ensure consistent

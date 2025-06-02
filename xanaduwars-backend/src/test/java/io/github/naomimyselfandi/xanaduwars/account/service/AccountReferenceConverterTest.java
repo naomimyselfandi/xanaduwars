@@ -1,8 +1,8 @@
 package io.github.naomimyselfandi.xanaduwars.account.service;
 
 import io.github.naomimyselfandi.seededrandom.SeededRandomExtension;
-import io.github.naomimyselfandi.xanaduwars.account.value.AccountIdReference;
-import io.github.naomimyselfandi.xanaduwars.account.value.CurrentAccountReference;
+import io.github.naomimyselfandi.xanaduwars.account.value.AccountId;
+import io.github.naomimyselfandi.xanaduwars.account.value.AccountReference;
 import io.github.naomimyselfandi.xanaduwars.testing.SeededRng;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -26,12 +26,12 @@ class AccountReferenceConverterTest {
     @Test
     void convert_WhenTheStringIsAValidUUID_ThenWrapsIt(SeededRng random) {
         var uuid = random.nextUUID();
-        assertThat(fixture.convert(uuid.toString())).isEqualTo(new AccountIdReference(uuid));
+        assertThat(fixture.convert(uuid.toString())).isEqualTo(new AccountId(uuid));
     }
 
     @Test
     void convert_WhenTheStringIsMe_ThenReturnsTheCurrentAccountReference() {
-        assertThat(fixture.convert("me")).isInstanceOf(CurrentAccountReference.class);
+        assertThat(fixture.convert("me")).isInstanceOf(AccountReference.Me.class);
     }
 
     @ParameterizedTest

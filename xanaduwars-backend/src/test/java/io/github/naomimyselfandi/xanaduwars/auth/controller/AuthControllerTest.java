@@ -70,7 +70,7 @@ class AuthControllerTest {
         var username = random.nextUsername();
         var password = random.nextPlaintextPassword();
         var dto = new UserDetailsDto();
-        dto.setId(random.nextUUID());
+        dto.setId(random.nextAccountId());
         when(authService.find(username, password)).thenReturn(Optional.of(dto));
         var accessTokenDuration = Duration.ofMinutes(random.nextInt(5, 60));
         var accessToken = random.nextUUID().toString();
@@ -106,7 +106,7 @@ class AuthControllerTest {
         var originalToken = random.nextUUID().toString();
         when(jwtValidator.validateToken(originalToken, REFRESH_TOKEN, NONE)).thenReturn(Optional.of(jwt));
         var dto = new UserDetailsDto();
-        dto.setId(random.nextUUID());
+        dto.setId(random.nextAccountId());
         when(jwt.getSubject()).thenReturn(dto.getId().toString());
         when(accountService.find(UserDetailsDto.class, dto.getId())).thenReturn(Optional.of(dto));
         var accessTokenDuration = Duration.ofMinutes(random.nextInt(5, 60));

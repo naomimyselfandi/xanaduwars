@@ -73,7 +73,7 @@ class AuthenticatedResolverTest {
     void resolveArgument(SeededRng random) {
         var helper = mock(Helper.class);
         var dto = new UserDetailsDto();
-        dto.setId(random.nextUUID());
+        dto.setId(random.nextAccountId());
         when(authService.tryGet()).thenReturn(Optional.of(dto));
         doReturn(Helper.class).when(parameter).getParameterType();
         when(accountService.find(Helper.class, dto.getId())).thenReturn(Optional.of(helper));
@@ -84,7 +84,7 @@ class AuthenticatedResolverTest {
     @ValueSource(classes = {UserDetailsDto.class, AccountDto.class})
     void resolveArgument(Class<?> type, SeededRng random) {
         var dto = new UserDetailsDto();
-        dto.setId(random.nextUUID());
+        dto.setId(random.nextAccountId());
         when(authService.tryGet()).thenReturn(Optional.of(dto));
         doReturn(type).when(parameter).getParameterType();
         assertThat(fixture.resolveArgument(parameter, mock(), mock(), mock())).isEqualTo(dto);

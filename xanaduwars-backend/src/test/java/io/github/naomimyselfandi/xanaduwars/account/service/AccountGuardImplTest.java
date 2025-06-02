@@ -1,7 +1,7 @@
 package io.github.naomimyselfandi.xanaduwars.account.service;
 
 import io.github.naomimyselfandi.seededrandom.SeededRandomExtension;
-import io.github.naomimyselfandi.xanaduwars.account.value.AccountIdReference;
+import io.github.naomimyselfandi.xanaduwars.account.value.AccountId;
 import io.github.naomimyselfandi.xanaduwars.account.value.AccountReference;
 import io.github.naomimyselfandi.xanaduwars.auth.dto.UserDetailsDto;
 import io.github.naomimyselfandi.xanaduwars.auth.service.AuthService;
@@ -35,17 +35,17 @@ class AccountGuardImplTest {
     @ParameterizedTest
     @ValueSource(booleans = {true, false})
     void isCurrentUser(boolean expected, SeededRng random) {
-        var id = random.nextUUID();
+        var id = random.nextAccountId();
         var account = new UserDetailsDto();
-        account.setId(expected ? id : random.nextUUID());
+        account.setId(expected ? id : random.nextAccountId());
         account.setAuthorities(List.of());
         when(authService.tryGet()).thenReturn(Optional.of(account));
-        assertThat(fixture.isCurrentAccount(new AccountIdReference(id))).isEqualTo(expected);
+        assertThat(fixture.isCurrentAccount(id)).isEqualTo(expected);
     }
 
     @Test
     void isCurrentUser_WhenTheSpecialCurrentUserReferenceIsGiven_ThenTrue() {
-        assertThat(fixture.isCurrentAccount(AccountReference.CURRENT_ACCOUNT)).isTrue();
+        assertThat(fixture.isCurrentAccount(AccountReference.ME)).isTrue();
     }
 
 }

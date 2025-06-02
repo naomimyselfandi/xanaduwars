@@ -16,6 +16,10 @@ public class SeededRng extends SeededRandom {
         super(initialSeed);
     }
 
+    public AccountId nextAccountId() {
+        return new AccountId(nextUUID());
+    }
+
     public int nextIntNotNegative() {
         return nextInt(-1, Integer.MAX_VALUE) + 1;
     }

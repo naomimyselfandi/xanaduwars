@@ -5,13 +5,12 @@ import io.github.naomimyselfandi.xanaduwars.account.entity.Account;
 import io.github.naomimyselfandi.xanaduwars.account.value.*;
 
 import java.util.Optional;
-import java.util.UUID;
 
 /// A service for working with accounts.
 public interface AccountService {
 
     /// Find an account by its ID.
-    <T extends AccountDto> Optional<T> find(Class<T> dto, UUID id);
+    <T extends AccountDto> Optional<T> find(Class<T> dto, AccountId id);
 
     /// Find an account by its username.
     <T extends AccountDto> Optional<T> find(Class<T> dto, Username username);

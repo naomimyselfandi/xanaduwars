@@ -47,7 +47,7 @@ public class AbstractE2ETest extends AbstractIntegrationTest {
             .registerModule(new Jdk8Module())
             .registerModule(new JavaTimeModule());
 
-    private final Map<UUID, Plaintext<?>> secrets = new HashMap<>();
+    private final Map<AccountId, Plaintext<?>> secrets = new HashMap<>();
 
     private SeededRng random;
 

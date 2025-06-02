@@ -2,7 +2,6 @@ package io.github.naomimyselfandi.xanaduwars.account.service;
 
 import io.github.naomimyselfandi.seededrandom.SeededRandomExtension;
 import io.github.naomimyselfandi.xanaduwars.account.dto.AccountDto;
-import io.github.naomimyselfandi.xanaduwars.account.value.AccountIdReference;
 import io.github.naomimyselfandi.xanaduwars.account.value.AccountReference;
 import io.github.naomimyselfandi.xanaduwars.auth.dto.UserDetailsDto;
 import io.github.naomimyselfandi.xanaduwars.auth.service.AuthService;
@@ -37,28 +36,28 @@ class AccountReferenceResolverImplTest {
 
     @Test
     void resolve_ById(SeededRng random) {
-        var id = random.nextUUID();
+        var id = random.nextAccountId();
         when(accountService.find(Helper.class, id)).thenReturn(Optional.of(dto));
-        assertThat(fixture.resolve(Helper.class, new AccountIdReference(id))).contains(dto);
+        assertThat(fixture.resolve(Helper.class, id)).contains(dto);
     }
 
     @Test
     void resolve_CurrentAccount(SeededRng random) {
-        var id = random.nextUUID();
+        var id = random.nextAccountId();
         var details = new UserDetailsDto();
         details.setId(id);
         when(authService.tryGet()).thenReturn(Optional.of(details));
         when(accountService.find(Helper.class, id)).thenReturn(Optional.of(dto));
-        assertThat(fixture.resolve(Helper.class, AccountReference.CURRENT_ACCOUNT)).contains(dto);
+        assertThat(fixture.resolve(Helper.class, AccountReference.ME)).contains(dto);
     }
 
     @Test
     void resolve_CurrentAccount_AsUserDetailsDto(SeededRng random) {
-        var id = random.nextUUID();
+        var id = random.nextAccountId();
         var details = new UserDetailsDto();
         details.setId(id);
         when(authService.tryGet()).thenReturn(Optional.of(details));
-        assertThat(fixture.resolve(UserDetailsDto.class, AccountReference.CURRENT_ACCOUNT)).contains(details);
+        assertThat(fixture.resolve(UserDetailsDto.class, AccountReference.ME)).contains(details);
     }
 
 }
