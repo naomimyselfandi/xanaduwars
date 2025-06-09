@@ -1,5 +1,7 @@
 package io.github.naomimyselfandi.xanaduwars.account.value;
 
+import io.github.naomimyselfandi.xanaduwars.ext.ExcludeFromCoverageReport;
+
 import java.io.Serializable;
 
 /// A reference to an account. This can either be a specific account or the
@@ -10,6 +12,7 @@ public sealed interface AccountReference extends Serializable permits AccountId,
     Me ME = new Me();
 
     /// A reference to the currently authenticated account.
+    @ExcludeFromCoverageReport // False positive
     record Me() implements AccountReference {}
 
 }

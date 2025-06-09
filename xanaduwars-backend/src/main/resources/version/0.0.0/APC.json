@@ -1,7 +1,0 @@
-{
-  "tags": ["Treaded", "Vehicle", "Land", "Transport"],
-  "vision": 1,
-  "speed": 6,
-  "costs": {"SUPPLIES": 300},
-  "hangar": ["Soldier"]
-}

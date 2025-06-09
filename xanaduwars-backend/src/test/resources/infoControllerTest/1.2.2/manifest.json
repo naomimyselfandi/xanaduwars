@@ -1,7 +1,0 @@
-{
-  "globalRules": [],
-  "commanders": ["Nemo"],
-  "spellTypes": ["Abracadabra"],
-  "tileTypes": ["Foo"],
-  "unitTypes": ["Bar"]
-}

@@ -64,8 +64,8 @@ class JWTValidatorImplTest {
         var bonusDuration = Duration.ofMinutes(random.nextInt(1, 100));
         var expiry = now.plus(duration).plus(bonusDuration);
         purpose = random.pick(JWTPurpose.values());
-        var foo = random.nextUnitId().toString();
-        var bar = random.nextUnitId().toString();
+        var foo = random.nextUUID().toString();
+        var bar = random.nextUUID().toString();
         claim = () -> Map.of(foo, bar);
         when(clock.instant()).thenReturn(now);
         when(secretKey.getEncoded()).thenReturn(SECRET.getBytes());

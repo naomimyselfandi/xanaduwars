@@ -1,7 +1,0 @@
-{
-  "tags": ["Air", "Transport"],
-  "vision": 5,
-  "speed": 6,
-  "costs": {"SUPPLIES": 300, "AETHER": 50},
-  "hangar": ["Soldier"]
-}

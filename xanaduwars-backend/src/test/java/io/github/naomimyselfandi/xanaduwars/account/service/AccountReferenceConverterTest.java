@@ -31,7 +31,7 @@ class AccountReferenceConverterTest {
 
     @Test
     void convert_WhenTheStringIsMe_ThenReturnsTheCurrentAccountReference() {
-        assertThat(fixture.convert("me")).isInstanceOf(AccountReference.Me.class);
+        assertThat(fixture.convert("me")).isEqualTo(new AccountReference.Me());
     }
 
     @ParameterizedTest

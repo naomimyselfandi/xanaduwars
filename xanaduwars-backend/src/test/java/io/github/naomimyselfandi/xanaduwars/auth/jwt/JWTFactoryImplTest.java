@@ -55,8 +55,8 @@ class JWTFactoryImplTest {
         var bonusDuration = Duration.ofMinutes(random.nextInt(1, 100));
         var expiry = now.plus(duration).plus(bonusDuration);
         purpose = random.pick(JWTPurpose.values());
-        var foo = random.nextUnitId().toString();
-        var bar = random.nextUnitId().toString();
+        var foo = random.nextUUID().toString();
+        var bar = random.nextUUID().toString();
         claim = () -> Map.of(foo, bar);
         when(clock.instant()).thenReturn(now);
         when(secretKey.getEncoded()).thenReturn(SECRET.getBytes());
@@ -67,9 +67,9 @@ class JWTFactoryImplTest {
     @RepeatedTest(3)
     void generateToken(RepetitionInfo repetitionInfo) {
         var expected = """
-                eyJraWQiOiI0YTdiZTFhZi04YzFhLWU0YjktMWM0ZS1jNTI3NzJiM2E3Y2IiLCJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI0YTdiZTFhZi04YzFhLWU0YjktMWM0ZS1jNTI3NzJiM2E3Y2IiLCJwdXJwb3NlIjoiUkVGUkVTSF9UT0tFTiIsImlhdCI6LTI2NDI2MDQxNTg5MTA3OTIsImV4cCI6LTI2NDI2MDQxNTg5MDEzMTIsIlVuaXQoMTcyMjg2NDc4MikiOiJVbml0KDMyMTIzMTgzNykifQ.qqICDaWu_-BNLbvHbX3-8kAbjQXUODuCu_6rYp3q0Qw
-                eyJraWQiOiIyZjhhYjFlYS02NWI4LTEyMGMtNzNhNS04NmE4MzZkNDY5MzMiLCJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIyZjhhYjFlYS02NWI4LTEyMGMtNzNhNS04NmE4MzZkNDY5MzMiLCJwdXJwb3NlIjoiQUNDRVNTX1RPS0VOIiwiaWF0IjotMjQ2MjAyNzc1NzA1MDA1MCwiZXhwIjotMjQ2MjAyNzc1NzA0MTgzMCwiVW5pdCgxODI3NjcyODgxKSI6IlVuaXQoNDc1MzAzMjQ0KSJ9.f3cydv2mlGDWZo_bjvX3NlZMe2i0YH61b2lWo-zHsw4
-                eyJraWQiOiIwZmE2ZWU5Ny1mNWU0LWJjOWEtMzVkZi03YzFlNmU4MmM2ZDEiLCJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIwZmE2ZWU5Ny1mNWU0LWJjOWEtMzVkZi03YzFlNmU4MmM2ZDEiLCJwdXJwb3NlIjoiUkVGUkVTSF9UT0tFTiIsImlhdCI6LTc1OTkwNTAwNTY4OTg2MjgsImV4cCI6LTc1OTkwNTAwNTY4ODk5ODgsIlVuaXQoMTQzMjgyMSkiOiJVbml0KDk2NTAyNzQxOSkifQ.afA41la0FManAEtodgEvSA0klnDHRjSwvSQwYvfFD9Y
+                eyJraWQiOiI0YTdiZTFhZi04YzFhLWU0YjktMWM0ZS1jNTI3NzJiM2E3Y2IiLCJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI0YTdiZTFhZi04YzFhLWU0YjktMWM0ZS1jNTI3NzJiM2E3Y2IiLCJwdXJwb3NlIjoiUkVGUkVTSF9UT0tFTiIsImlhdCI6LTI2NDI2MDQxNTg5MTA3OTIsImV4cCI6LTI2NDI2MDQxNTg5MDEzMTIsIjY2YjBkNDhlLTEzMjUtOWJkZC05MGQ0LTA5OTlkNjczNGFlOCI6IjRhNzBmYTEwLTU1NDktY2U5ZC0xOWUzLWFjMDg2NzA0MWNkNyJ9.JMJ_B9VJOw_cxtE9xWY_-hox9t0wU0ZJu6rREMHm5L4
+                eyJraWQiOiIyZjhhYjFlYS02NWI4LTEyMGMtNzNhNS04NmE4MzZkNDY5MzMiLCJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIyZjhhYjFlYS02NWI4LTEyMGMtNzNhNS04NmE4MzZkNDY5MzMiLCJwdXJwb3NlIjoiQUNDRVNTX1RPS0VOIiwiaWF0IjotMjQ2MjAyNzc1NzA1MDA1MCwiZXhwIjotMjQ2MjAyNzc1NzA0MTgzMCwiNmNmMDEzMzEtMWM1NC04ZDRjLWMxMTctYzIyNjMxMDNkMTExIjoiYjEyYjI0OTItNGJiMS01NzI3LWFjZmUtN2Q3MDQzZTBjNDRmIn0.sIwadRkI6anO1CGMTR-fLroysZVLoltiWdG4MgjynuA
+                eyJraWQiOiIwZmE2ZWU5Ny1mNWU0LWJjOWEtMzVkZi03YzFlNmU4MmM2ZDEiLCJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIwZmE2ZWU5Ny1mNWU0LWJjOWEtMzVkZi03YzFlNmU4MmM2ZDEiLCJwdXJwb3NlIjoiUkVGUkVTSF9UT0tFTiIsImlhdCI6LTc1OTkwNTAwNTY4OTg2MjgsImV4cCI6LTc1OTkwNTAwNTY4ODk5ODgsIjgwMTVkY2Y1LTM5ODUtMjY1Yi00NDI0LTkxYWEyZGUyMWY4ZSI6IjhjMDgzNWIyLTAxMTgtZDY4Yy1kZjEwLTgzZDE1NjBlOGM4MiJ9.wcx7qMGBetQYXIyr3Xb4Ke-yFk4shq6hHGcxYxB9_Qo
                 """
                 .lines()
                 .skip(repetitionInfo.getCurrentRepetition() - 1)
