@@ -11,8 +11,8 @@ public record VisionRangeQuery(Asset subject) implements Query<Integer> {
     @Override
     public Integer defaultValue() {
         return switch (subject) {
-            case Structure structure -> structure.type().vision();
-            case Unit unit -> unit.type().vision();
+            case Structure structure -> structure.getType().getVision();
+            case Unit unit -> unit.getType().getVision();
         };
     }
 

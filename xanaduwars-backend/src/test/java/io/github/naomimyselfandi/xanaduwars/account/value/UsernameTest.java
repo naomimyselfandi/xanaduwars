@@ -19,8 +19,8 @@ class UsernameTest {
     }
 
     @Test
-    void canonicalForm() {
-        assertThat(fixture.canonicalForm()).isEqualTo(new CanonicalUsername(fixture.username()));
+    void toCanonicalForm() {
+        assertThat(fixture.toCanonicalForm()).isEqualTo(new CanonicalUsername(fixture.username()));
     }
 
     @Test

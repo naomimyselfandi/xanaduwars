@@ -28,8 +28,8 @@ class SpeedQueryTest {
     @RepeatedTest(2)
     void defaultValue(SeededRng random) {
         var speed = random.nextInt();
-        when(unitType.speed()).thenReturn(speed);
-        when(unit.type()).thenReturn(unitType);
+        when(unitType.getSpeed()).thenReturn(speed);
+        when(unit.getType()).thenReturn(unitType);
         assertThat(fixture.defaultValue()).isEqualTo(speed);
     }
 

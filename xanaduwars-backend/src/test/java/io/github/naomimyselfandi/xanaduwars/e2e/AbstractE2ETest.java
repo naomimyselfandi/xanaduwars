@@ -191,14 +191,14 @@ public class AbstractE2ETest extends AbstractIntegrationTest {
             case BOT -> random.nextPlaintextAPIKey();
         };
         var account = accountService.create(username, emailAddress, hashService.hash(authenticationSecret)).orElseThrow();
-        secrets.put(account.id(), authenticationSecret);
+        secrets.put(account.getId(), authenticationSecret);
         for (var role : roles) account.setRole(role, true);
         return account;
     }
 
     protected void login(@Nullable Account account) {
         this.account = account;
-        authorization = account == null ? null : switch (account.authenticationSecret()) {
+        authorization = account == null ? null : switch (account.getAuthenticationSecret()) {
             case Password _ -> {
                 var duration = Duration.ofHours(42);
                 var dto = Objects.requireNonNull(conversionService.convert(account, UserDetailsDto.class));
@@ -206,7 +206,7 @@ public class AbstractE2ETest extends AbstractIntegrationTest {
                 yield "Bearer " + token;
             }
             case APIKey _ -> {
-                var id = account.id();
+                var id = account.getId();
                 var credentials = "%s:%s".formatted(id, secrets.get(id).text());
                 var encodedCredentials = Base64.getEncoder().encodeToString(credentials.getBytes());
                 yield "Basic " + encodedCredentials;

@@ -14,6 +14,6 @@ import java.util.Map;
 public interface Rule {
 
     /// The query handlers associated with this rule.
-    @Unmodifiable Map<QueryName, Script> handlers();
+    @Unmodifiable Map<QueryName, Script> getHandlers();
 
 }

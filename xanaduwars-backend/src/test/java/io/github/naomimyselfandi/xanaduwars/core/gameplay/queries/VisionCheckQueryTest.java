@@ -33,8 +33,8 @@ class VisionCheckQueryTest {
             NaN,3,false
             """)
     void defaultValue(double distance, int vision, boolean expected) {
-        when(actor.distance(tile)).thenReturn(distance);
-        when(actor.vision()).thenReturn(vision);
+        when(actor.getDistance(tile)).thenReturn(distance);
+        when(actor.getVision()).thenReturn(vision);
         assertThat(fixture.defaultValue()).isEqualTo(expected);
     }
 

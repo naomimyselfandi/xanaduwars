@@ -11,8 +11,8 @@ import static org.assertj.core.api.Assertions.*;
 class CommanderImplTest {
 
     @Test
-    void tags(SeededRng random) {
-        assertThat(new CommanderImpl(random.get(), random.get()).tags()).isEmpty();
+    void getTags(SeededRng random) {
+        assertThat(new CommanderImpl(random.get(), random.get()).getTags()).isEmpty();
     }
 
 }

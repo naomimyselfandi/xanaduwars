@@ -11,8 +11,8 @@ public record DefenseQuery(Asset subject, Unit attacker) implements Query<Double
 
     @Override
     public Double defaultValue() {
-        if (subject instanceof Unit && subject.terrain() instanceof Terrain terrain) {
-            return terrain.cover();
+        if (subject instanceof Unit && subject.getTerrain() instanceof Terrain terrain) {
+            return terrain.getCover();
         } else {
             return 0.0;
         }

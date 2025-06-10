@@ -10,27 +10,27 @@ import java.util.Set;
 public non-sealed interface StructureType extends AssetType, TerrainType {
 
     /// This structure type's ID.
-    StructureTypeId id();
+    StructureTypeId getId();
 
     /// Any tags that apply to this structure type.
-    @Override @Unmodifiable Set<StructureTag> tags();
+    @Override @Unmodifiable Set<StructureTag> getTags();
 
     /// The type of tile that a structure of this type can be built on.
-    TileType foundation();
+    TileType getFoundation();
 
     /// The units a structure of this type can deploy.
-    @Unmodifiable List<UnitType> deploymentRoster();
+    @Unmodifiable List<UnitType> getDeploymentRoster();
 
     /// The supplies a structure of this type grants every turn.
-    int supplyIncome();
+    int getSupplyIncome();
 
     /// The aether a structure of this type grants every turn.
-    int aetherIncome();
+    int getAetherIncome();
 
     /// How long this structure takes to build.
-    int buildTime();
+    int getBuildTime();
 
     /// How far a structure of this type can see.
-    int vision();
+    int getVision();
 
 }

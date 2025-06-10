@@ -8,9 +8,9 @@ import java.util.Set;
 public sealed interface Element permits Actor, Physical {
 
     /// The game state this element is part of.
-    GameState gameState();
+    GameState getGameState();
 
     /// Any tags that apply to this element.
-    Set<? extends Tag> tags();
+    Set<? extends Tag> getTags();
 
 }

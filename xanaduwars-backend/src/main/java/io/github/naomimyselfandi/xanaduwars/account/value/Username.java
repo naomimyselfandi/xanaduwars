@@ -18,7 +18,7 @@ public record Username(
     /// Get this username's canonical form. This is the form used when looking
     /// up users by name, both to provide a cleaner experience and to protect
     /// against misleading usernames.
-    public CanonicalUsername canonicalForm() {
+    public CanonicalUsername toCanonicalForm() {
         return new CanonicalUsername(username);
     }
 

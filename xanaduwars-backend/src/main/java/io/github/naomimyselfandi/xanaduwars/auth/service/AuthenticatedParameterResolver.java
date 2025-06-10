@@ -19,7 +19,7 @@ import java.util.Objects;
 
 @Component
 @RequiredArgsConstructor
-class AuthenticatedResolver implements HandlerMethodArgumentResolver {
+class AuthenticatedParameterResolver implements HandlerMethodArgumentResolver {
 
     private final @Lazy AuthService authService;
     private final @Lazy AccountService accountService;

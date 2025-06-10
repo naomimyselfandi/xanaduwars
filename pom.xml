@@ -24,7 +24,6 @@
 
     <modules>
         <module>xanaduwars-backend</module>
-        <module>xanaduwars-naming</module>
     </modules>
 
     <properties>

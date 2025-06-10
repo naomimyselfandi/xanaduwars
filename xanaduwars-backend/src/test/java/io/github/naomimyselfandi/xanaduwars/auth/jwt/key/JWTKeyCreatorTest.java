@@ -41,17 +41,17 @@ class JWTKeyCreatorTest {
         when(jwtKeyRepository.save(any()))
                 .thenAnswer(invocation -> {
                     var key = invocation.<JWTKey>getArgument(0);
-                    assertThat(key.encodedSecret()).isEqualTo("NZ1BuveK/g3hu+euKMBFDOQ8CE9Luyvxg53uRm2FLLU=");
-                    assertThat(key.purpose()).isEqualTo(purpose);
-                    assertThat(key.expiry()).isEqualTo(expiry);
-                    return key.id(id);
+                    assertThat(key.getEncodedSecret()).isEqualTo("NZ1BuveK/g3hu+euKMBFDOQ8CE9Luyvxg53uRm2FLLU=");
+                    assertThat(key.getPurpose()).isEqualTo(purpose);
+                    assertThat(key.getExpiry()).isEqualTo(expiry);
+                    return key.setId(id);
                 })
                 .thenThrow(AssertionError.class);
         var key = fixture.apply(purpose, expiry);
-        assertThat(key.id()).isEqualTo(id);
-        assertThat(key.encodedSecret()).isEqualTo("NZ1BuveK/g3hu+euKMBFDOQ8CE9Luyvxg53uRm2FLLU=");
-        assertThat(key.purpose()).isEqualTo(purpose);
-        assertThat(key.expiry()).isEqualTo(expiry);
+        assertThat(key.getId()).isEqualTo(id);
+        assertThat(key.getEncodedSecret()).isEqualTo("NZ1BuveK/g3hu+euKMBFDOQ8CE9Luyvxg53uRm2FLLU=");
+        assertThat(key.getPurpose()).isEqualTo(purpose);
+        assertThat(key.getExpiry()).isEqualTo(expiry);
         var inOrder = inOrder(jwtKeyRepository);
         inOrder.verify(jwtKeyRepository).awaitTransactionalLock();
         inOrder.verify(jwtKeyRepository).findExistingKey(purpose, expiry);

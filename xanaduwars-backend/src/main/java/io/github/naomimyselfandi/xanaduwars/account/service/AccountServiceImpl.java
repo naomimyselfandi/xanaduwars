@@ -37,7 +37,7 @@ class AccountServiceImpl implements AccountService {
     @Override
     @Transactional(readOnly = true)
     public <T extends AccountDto> Optional<T> find(Class<T> dto, Username username) {
-        return accountRepository.findByCanonicalUsername(username.canonicalForm()).map(as(dto));
+        return accountRepository.findByCanonicalUsername(username.toCanonicalForm()).map(as(dto));
     }
 
     @Override
@@ -49,13 +49,13 @@ class AccountServiceImpl implements AccountService {
     @Override
     @Transactional
     public Optional<Account> create(Username username, EmailAddress emailAddress, Hash secret) {
-        if (accountRepository.existsByCanonicalUsernameOrEmailAddress(username.canonicalForm(), emailAddress)) {
+        if (accountRepository.existsByCanonicalUsernameOrEmailAddress(username.toCanonicalForm(), emailAddress)) {
             return Optional.empty();
         } else {
             var account = (switch (secret) {
-                case APIKey apiKey -> new BotAccount().authenticationSecret(apiKey);
-                case Password password -> new HumanAccount().authenticationSecret(password);
-            }).username(username).emailAddress(emailAddress);
+                case APIKey apiKey -> new BotAccount().setAuthenticationSecret(apiKey);
+                case Password password -> new HumanAccount().setAuthenticationSecret(password);
+            }).setUsername(username).setEmailAddress(emailAddress);
             return Optional.of(accountRepository.save(account));
         }
     }

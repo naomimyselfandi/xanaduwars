@@ -43,26 +43,26 @@ class GameStateImplTest {
 
     @BeforeEach
     void setup(SeededRng random) {
-        alice = random.nextPlayerData().id(new PlayerId(0));
-        bob = random.nextPlayerData().id(new PlayerId(1));
-        tile0 = random.nextTileData().id(new TileId(0, 0));
-        tile1 = random.nextTileData().id(new TileId(1, 0));
+        alice = random.nextPlayerData().setId(new PlayerId(0));
+        bob = random.nextPlayerData().setId(new PlayerId(1));
+        tile0 = random.nextTileData().setId(new TileId(0, 0));
+        tile1 = random.nextTileData().setId(new TileId(1, 0));
         unit0 = random.nextUnitData();
         unit1 = random.nextUnitData();
         preview = random.nextBoolean();
         gameStateData = new GameStateData()
-                .id(random.get())
-                .version(random.get())
-                .turn(random.get())
-                .playerData(List.of(alice, bob))
-                .tileData(List.of(tile0, tile1))
-                .unitData(List.of(unit0, unit1));
+                .setId(random.get())
+                .setVersion(random.get())
+                .setTurn(random.get())
+                .setPlayerData(List.of(alice, bob))
+                .setTileData(List.of(tile0, tile1))
+                .setUnitData(List.of(unit0, unit1));
         fixture = new GameStateImpl(ruleset, gameStateData, queryEvaluator, preview);
     }
 
     @Test
-    void id() {
-        assertThat(fixture.id()).isEqualTo(gameStateData.id());
+    void getId() {
+        assertThat(fixture.getId()).isEqualTo(gameStateData.getId());
     }
 
     @Test
@@ -74,60 +74,60 @@ class GameStateImplTest {
     }
 
     @RepeatedTest(4)
-    void preview() {
-        assertThat(fixture.preview()).isEqualTo(preview);
+    void isPreview() {
+        assertThat(fixture.isPreview()).isEqualTo(preview);
     }
 
     @Test
     void pass() {
-        gameStateData.pass(false);
+        gameStateData.setPass(false);
         fixture.pass();
-        assertThat(gameStateData.pass()).isTrue();
+        assertThat(gameStateData.isPass()).isTrue();
     }
 
     @Test
-    void players() {
-        assertThat(fixture.players()).containsExactly(
+    void getPlayers() {
+        assertThat(fixture.getPlayers()).containsExactly(
                 new PlayerImpl(alice, fixture, ruleset),
                 new PlayerImpl(bob, fixture, ruleset)
         );
     }
 
     @Test
-    void player() {
-        assertThat(fixture.player(new PlayerId(0))).isEqualTo(new PlayerImpl(alice, fixture, ruleset));
-        assertThat(fixture.player(new PlayerId(1))).isEqualTo(new PlayerImpl(bob, fixture, ruleset));
+    void getPlayer() {
+        assertThat(fixture.getPlayer(new PlayerId(0))).isEqualTo(new PlayerImpl(alice, fixture, ruleset));
+        assertThat(fixture.getPlayer(new PlayerId(1))).isEqualTo(new PlayerImpl(bob, fixture, ruleset));
     }
 
     @Test
-    void activePlayer(SeededRng random) {
-        gameStateData.turn(new Turn(random.nextInt(0, Short.MAX_VALUE) * 2));
-        assertThat(fixture.activePlayer()).isEqualTo(new PlayerImpl(alice, fixture, ruleset));
-        gameStateData.turn(new Turn(random.nextInt(0, Short.MAX_VALUE) * 2 + 1));
-        assertThat(fixture.activePlayer()).isEqualTo(new PlayerImpl(bob, fixture, ruleset));
+    void getActivePlayer(SeededRng random) {
+        gameStateData.setTurn(new Turn(random.nextInt(0, Short.MAX_VALUE) * 2));
+        assertThat(fixture.getActivePlayer()).isEqualTo(new PlayerImpl(alice, fixture, ruleset));
+        gameStateData.setTurn(new Turn(random.nextInt(0, Short.MAX_VALUE) * 2 + 1));
+        assertThat(fixture.getActivePlayer()).isEqualTo(new PlayerImpl(bob, fixture, ruleset));
     }
 
     @Test
-    void tiles() {
-        assertThat(fixture.tiles()).containsExactly(
+    void getTiles() {
+        assertThat(fixture.getTiles()).containsExactly(
                 new TileImpl(tile0, fixture, ruleset, new CreatorImpl(gameStateData)),
                 new TileImpl(tile1, fixture, ruleset, new CreatorImpl(gameStateData))
         );
     }
 
     @Test
-    void tile() {
-        assertThat(fixture.tile(new TileId(0, 0)))
+    void getTile() {
+        assertThat(fixture.getTile(new TileId(0, 0)))
                 .isEqualTo(new TileImpl(tile0, fixture, ruleset, new CreatorImpl(gameStateData)));
-        assertThat(fixture.tile(new TileId(1, 0)))
+        assertThat(fixture.getTile(new TileId(1, 0)))
                 .isEqualTo(new TileImpl(tile1, fixture, ruleset, new CreatorImpl(gameStateData)));
     }
 
     @Test
-    void maybeTile() {
-        assertThat(fixture.maybeTile(new TileId(0, 0)))
+    void findTile() {
+        assertThat(fixture.findTile(new TileId(0, 0)))
                 .isEqualTo(new TileImpl(tile0, fixture, ruleset, new CreatorImpl(gameStateData)));
-        assertThat(fixture.maybeTile(new TileId(1, 0)))
+        assertThat(fixture.findTile(new TileId(1, 0)))
                 .isEqualTo(new TileImpl(tile1, fixture, ruleset, new CreatorImpl(gameStateData)));
     }
 
@@ -138,31 +138,31 @@ class GameStateImplTest {
             2,0
             1,1
             """)
-    void maybeTile_WhenTheTileIsOutOfBounds_ThenNull(int x, int y) {
-        assertThat(fixture.maybeTile(new TileId(x, y))).isNull();
+    void findTile_WhenTheTileIsOutOfBounds_ThenNull(int x, int y) {
+        assertThat(fixture.findTile(new TileId(x, y))).isNull();
     }
 
     @Test
-    void structures(SeededRng random) {
-        tile0.structureData(null);
+    void getStructures(SeededRng random) {
+        tile0.setStructureData(null);
         var structureData = random.nextStructureData();
-        tile1.structureData(structureData);
-        var tile = fixture.tile(new TileId(1, 0));
-        assertThat(fixture.structures()).containsExactly(new StructureImpl(structureData, tile, ruleset));
+        tile1.setStructureData(structureData);
+        var tile = fixture.getTile(new TileId(1, 0));
+        assertThat(fixture.getStructures()).containsExactly(new StructureImpl(structureData, tile, ruleset));
     }
 
     @Test
-    void units() {
-        assertThat(fixture.units()).containsExactly(
+    void getUnits() {
+        assertThat(fixture.getUnits()).containsExactly(
                 new UnitImpl(unit0, fixture, ruleset),
                 new UnitImpl(unit1, fixture, ruleset)
         );
     }
 
     @Test
-    void unit() {
-        assertThat(fixture.unit(unit0.id())).isEqualTo(new UnitImpl(unit0, fixture, ruleset));
-        assertThat(fixture.unit(unit1.id())).isEqualTo(new UnitImpl(unit1, fixture, ruleset));
+    void getUnit() {
+        assertThat(fixture.getUnit(unit0.getId())).isEqualTo(new UnitImpl(unit0, fixture, ruleset));
+        assertThat(fixture.getUnit(unit1.getId())).isEqualTo(new UnitImpl(unit1, fixture, ruleset));
     }
 
 }

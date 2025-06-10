@@ -29,94 +29,94 @@ final class UnitImpl extends AbstractAsset<UnitData> implements Unit {
     }
 
     @Override
-    public UnitId id() {
-        return data.id();
+    public UnitId getId() {
+        return data.getId();
     }
 
     @Override
-    public UnitType type() {
-        return ruleset.unitType(data.type());
+    public UnitType getType() {
+        return ruleset.getUnitType(data.getType());
     }
 
     @Override
-    public Set<UnitTag> tags() {
-        return type().tags();
+    public Set<UnitTag> getTags() {
+        return getType().getTags();
     }
 
     @Override
-    public Node location() {
-        return switch (data.location()) {
-            case TileId tileId -> gameState.tile(tileId);
-            case UnitId unitId -> gameState.unit(unitId);
+    public Node getLocation() {
+        return switch (data.getLocation()) {
+            case TileId tileId -> gameState.getTile(tileId);
+            case UnitId unitId -> gameState.getUnit(unitId);
         };
     }
 
     @Override
-    public Unit location(Node location) {
-        data.location(switch (location) {
-            case Tile tile -> tile.id();
-            case Unit unit -> unit.id();
+    public Unit setLocation(Node location) {
+        data.setLocation(switch (location) {
+            case Tile tile -> tile.getId();
+            case Unit unit -> unit.getId();
         });
         return this;
     }
 
     @Override
-    public @Nullable Tile tile() {
-        return data.location() instanceof TileId tileId ? gameState.tile(tileId) : null;
+    public @Nullable Tile getTile() {
+        return data.getLocation() instanceof TileId tileId ? gameState.getTile(tileId) : null;
     }
 
     @Override
-    public @Nullable Terrain terrain() {
-        var tile = tile();
-        return tile instanceof Tile it && it.structure() instanceof Structure structure ? structure : tile;
+    public @Nullable Terrain getTerrain() {
+        var tile = getTile();
+        return tile instanceof Tile it && it.getStructure() instanceof Structure structure ? structure : tile;
     }
 
     @Override
-    public double distance(Physical that) {
-        var tile = this.tile();
-        return tile == null ? Double.NaN : tile.distance(that);
+    public double getDistance(Physical that) {
+        var tile = this.getTile();
+        return tile == null ? Double.NaN : tile.getDistance(that);
     }
 
     @Override
-    public @Nullable Unit cargo() {
-        return gameState.units().filter(unit -> equals(unit.location())).findFirst().orElse(null);
+    public @Nullable Unit getCargo() {
+        return gameState.getUnits().filter(unit -> equals(unit.getLocation())).findFirst().orElse(null);
     }
 
     @Override
-    public Hangar hangar() {
-        return type().hangar();
+    public Hangar getHangar() {
+        return getType().getHangar();
     }
 
     @Override
-    public int speed() {
+    public int getSpeed() {
         return gameState.evaluate(new SpeedQuery(this));
     }
 
     @Override
-    public @Unmodifiable List<Name> actionsThisTurn() {
-        return data.history().names();
+    public @Unmodifiable List<Name> getHistory() {
+        return data.getHistory().names();
     }
 
     @Override
-    public Unit actionsThisTurn(List<Name> actionsThisTurn) {
-        data.history(new History(actionsThisTurn));
+    public Unit setHistory(List<Name> actionsThisTurn) {
+        data.setHistory(new History(actionsThisTurn));
         return this;
     }
 
     @Override
     @SuppressWarnings("RedundantTypeArguments")
-    public @Unmodifiable List<Action> actions() {
-        var type = type();
+    public @Unmodifiable List<Action> getAction() {
+        var type = getType();
         return Stream.of(
-                type.weapons().stream(),
-                type.abilities().stream(),
-                ruleset.commonUnitActions().stream()
+                type.getWeapons().stream(),
+                type.getAbilities().stream(),
+                ruleset.getCommonUnitActions().stream()
         ).<Action>flatMap(Function.identity()).toList();
     }
 
     @Override
     public String toString() {
-        return "Unit[id=%d, type=%s]".formatted(data.id().unitId(), type());
+        return "Unit[id=%d, type=%s]".formatted(data.getId().unitId(), getType());
     }
 
 }

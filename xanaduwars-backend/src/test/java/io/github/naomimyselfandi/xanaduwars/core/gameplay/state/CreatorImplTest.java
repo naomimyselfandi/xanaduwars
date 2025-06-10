@@ -25,19 +25,19 @@ class CreatorImplTest {
 
     @BeforeEach
     void setup(SeededRng random) {
-        data = new GameStateData().tileData(List.of(
-                random.nextTileData().id(new TileId(0, 0)).structureData(null),
-                random.nextTileData().id(new TileId(1, 0)).structureData(null),
-                random.nextTileData().id(new TileId(2, 0)).structureData(null),
-                random.nextTileData().id(new TileId(3, 0)).structureData(null),
-                random.nextTileData().id(new TileId(0, 1)).structureData(null),
-                random.nextTileData().id(new TileId(1, 1)).structureData(null),
-                random.nextTileData().id(new TileId(2, 1)).structureData(null),
-                random.nextTileData().id(new TileId(3, 1)).structureData(null),
-                random.nextTileData().id(new TileId(0, 2)).structureData(null),
-                random.nextTileData().id(new TileId(1, 2)).structureData(null),
-                random.nextTileData().id(new TileId(2, 2)).structureData(null),
-                random.nextTileData().id(new TileId(3, 2)).structureData(null)
+        data = new GameStateData().setTileData(List.of(
+                random.nextTileData().setId(new TileId(0, 0)).setStructureData(null),
+                random.nextTileData().setId(new TileId(1, 0)).setStructureData(null),
+                random.nextTileData().setId(new TileId(2, 0)).setStructureData(null),
+                random.nextTileData().setId(new TileId(3, 0)).setStructureData(null),
+                random.nextTileData().setId(new TileId(0, 1)).setStructureData(null),
+                random.nextTileData().setId(new TileId(1, 1)).setStructureData(null),
+                random.nextTileData().setId(new TileId(2, 1)).setStructureData(null),
+                random.nextTileData().setId(new TileId(3, 1)).setStructureData(null),
+                random.nextTileData().setId(new TileId(0, 2)).setStructureData(null),
+                random.nextTileData().setId(new TileId(1, 2)).setStructureData(null),
+                random.nextTileData().setId(new TileId(2, 2)).setStructureData(null),
+                random.nextTileData().setId(new TileId(3, 2)).setStructureData(null)
         ));
         fixture = new CreatorImpl(data);
     }
@@ -48,16 +48,16 @@ class CreatorImplTest {
         var location = random.<NodeId>get();
         var type = random.<UnitTypeId>get();
         var owner = random.<PlayerId>get();
-        data.nextUnitId(unitId);
+        data.setNextUnitId(unitId);
         fixture.createUnitData(location, type, owner);
-        assertThat(data.unitData()).singleElement().isEqualTo(new UnitData()
-                .id(unitId)
-                .type(type)
-                .owner(owner)
-                .hp(100)
-                .location(location)
-                .history(History.NONE));
-        assertThat(data.nextUnitId()).isEqualTo(new UnitId(unitId.unitId() + 1));
+        assertThat(data.getUnitData()).singleElement().isEqualTo(new UnitData()
+                .setId(unitId)
+                .setType(type)
+                .setOwner(owner)
+                .setHp(100)
+                .setLocation(location)
+                .setHistory(History.NONE));
+        assertThat(data.getNextUnitId()).isEqualTo(new UnitId(unitId.unitId() + 1));
     }
 
     @Test
@@ -75,11 +75,11 @@ class CreatorImplTest {
         var type = random.<StructureTypeId>get();
         var owner = random.<PlayerId>get();
         fixture.createStructureData(location, type, owner);
-        assertThat(data.tileDataAt(location).orElseThrow().structureData()).isEqualTo(new StructureData()
-                .type(type)
-                .owner(owner)
-                .hp(0)
-                .complete(false));
+        assertThat(data.tileDataAt(location).orElseThrow().getStructureData()).isEqualTo(new StructureData()
+                .setType(type)
+                .setOwner(owner)
+                .setHp(0)
+                .setComplete(false));
     }
 
     @Test

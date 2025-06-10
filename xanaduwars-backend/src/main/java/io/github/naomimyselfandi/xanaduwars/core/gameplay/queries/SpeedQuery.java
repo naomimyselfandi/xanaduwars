@@ -8,7 +8,7 @@ public record SpeedQuery(Unit subject) implements Query<Integer> {
 
     @Override
     public Integer defaultValue() {
-        return subject.type().speed();
+        return subject.getType().getSpeed();
     }
 
 }

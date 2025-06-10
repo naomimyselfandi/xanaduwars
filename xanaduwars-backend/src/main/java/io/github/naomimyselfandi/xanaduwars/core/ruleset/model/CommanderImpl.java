@@ -37,7 +37,7 @@ class CommanderImpl implements Commander {
     private @NotNull Map<@NotNull @Valid QueryName, @NotNull @Valid Script> handlers = Map.of();
 
     @Override
-    public @Unmodifiable Set<Tag> tags() {
+    public @Unmodifiable Set<Tag> getTags() {
         return Set.of();
     }
 

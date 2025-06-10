@@ -57,65 +57,64 @@ class StructureImplTest {
 
     @BeforeEach
     void setup(SeededRng random) {
-        when(tile.gameState()).thenReturn(gameState);
+        when(tile.getGameState()).thenReturn(gameState);
         structureData = random.nextStructureData();
-        when(ruleset.structureType(structureData.type())).thenReturn(type);
+        when(ruleset.getStructureType(structureData.getType())).thenReturn(type);
         fixture = new StructureImpl(structureData, tile, ruleset);
     }
 
     @Test
-    void gameState() {
-        assertThat(fixture.gameState()).isEqualTo(gameState);
+    void getGameState() {
+        assertThat(fixture.getGameState()).isEqualTo(gameState);
     }
 
     @Test
-    void type() {
-        assertThat(fixture.type()).isEqualTo(type);
+    void getType() {
+        assertThat(fixture.getType()).isEqualTo(type);
     }
 
     @Test
-    void tags(SeededRng random) {
-        when(type.tags()).thenReturn(Set.of(random.get(), random.get()));
-        assertThat(fixture.tags()).isEqualTo(type.tags());
+    void getTags(SeededRng random) {
+        when(type.getTags()).thenReturn(Set.of(random.get(), random.get()));
+        assertThat(fixture.getTags()).isEqualTo(type.getTags());
     }
 
     @Test
-    void complete() {
-        assertThat(fixture.complete()).isFalse();
-        assertThat(fixture.complete(true)).isSameAs(fixture);
-        assertThat(fixture.complete()).isTrue();
-        assertThat(structureData.complete()).isTrue();
-        assertThat(fixture.complete(false)).isSameAs(fixture);
-        assertThat(fixture.complete()).isFalse();
-        assertThat(structureData.complete()).isFalse();
+    void isComplete() {
+        assertThat(fixture.setComplete(true)).isSameAs(fixture);
+        assertThat(fixture.isComplete()).isTrue();
+        assertThat(structureData.isComplete()).isTrue();
+        assertThat(fixture.setComplete(false)).isSameAs(fixture);
+        assertThat(fixture.isComplete()).isFalse();
+        assertThat(structureData.isComplete()).isFalse();
     }
 
     @Test
     void owner(SeededRng random) {
         var playerId = random.<PlayerId>get();
-        when(gameState.player(playerId)).thenReturn(player);
-        structureData.owner(playerId);
-        assertThat(fixture.owner()).isEqualTo(player);
+        when(gameState.getPlayer(playerId)).thenReturn(player);
+        structureData.setOwner(playerId);
+        assertThat(fixture.getOwner()).isEqualTo(player);
     }
 
     @Test
     void owner_ToleratesNull() {
-        structureData.owner(null);
-        assertThat(fixture.owner()).isNull();
+        structureData.setOwner(null);
+        assertThat(fixture.getOwner()).isNull();
     }
 
     @Test
     void rules(SeededRng random) {
         when(player.rules()).then(_ -> Stream.of(rule));
         var playerId = random.<PlayerId>get();
-        when(gameState.player(playerId)).thenReturn(player);
-        structureData.owner(playerId);
+        when(gameState.getPlayer(playerId)).thenReturn(player);
+        structureData.setOwner(playerId);
         assertThat(fixture.rules()).containsExactly(rule);
     }
 
     @Test
     void rules_ToleratesNull() {
-        structureData.owner(null);
+        structureData.setOwner(null);
         assertThat(fixture.rules()).isEmpty();
     }
 
@@ -133,16 +132,16 @@ class StructureImplTest {
             -100,0
             """)
     void hp(int hp, int actualHp) {
-        assertThat(fixture.hp(hp)).isSameAs(fixture);
-        assertThat(fixture.hp()).isEqualTo(actualHp);
-        assertThat(structureData.hp()).isEqualTo(actualHp);
+        assertThat(fixture.setHp(hp)).isSameAs(fixture);
+        assertThat(fixture.getHp()).isEqualTo(actualHp);
+        assertThat(structureData.getHp()).isEqualTo(actualHp);
     }
 
     @Test
     void vision(SeededRng random) {
         var range = random.nextIntNotNegative();
         when(gameState.evaluate(new VisionRangeQuery(fixture))).thenReturn(range);
-        assertThat(fixture.vision()).isEqualTo(range);
+        assertThat(fixture.getVision()).isEqualTo(range);
     }
 
     @ParameterizedTest
@@ -153,40 +152,40 @@ class StructureImplTest {
     }
 
     @Test
-    void movementTable(SeededRng random) {
-        when(type.movementTable()).thenReturn(random.get());
-        assertThat(fixture.movementTable()).isEqualTo(type.movementTable());
+    void getMovementTable(SeededRng random) {
+        when(type.getMovementTable()).thenReturn(random.get());
+        assertThat(fixture.getMovementTable()).isEqualTo(type.getMovementTable());
     }
 
     @Test
-    void cover(SeededRng random) {
-        when(type.cover()).thenReturn(random.get());
-        assertThat(fixture.cover()).isEqualTo(fixture.cover());
+    void getCover(SeededRng random) {
+        when(type.getCover()).thenReturn(random.get());
+        assertThat(fixture.getCover()).isEqualTo(fixture.getCover());
     }
 
     @Test
-    void actions() {
-        when(ruleset.deploymentAction()).thenReturn(action);
-        assertThat(fixture.actions()).containsExactly(action);
+    void getAction() {
+        when(ruleset.getDeploymentAction()).thenReturn(action);
+        assertThat(fixture.getAction()).containsExactly(action);
     }
 
     @Test
-    void distance(SeededRng random) {
+    void getDistance(SeededRng random) {
         var distance = random.nextIntNotNegative();
-        when(tile.distance((Physical) anotherTile)).thenReturn((double) distance);
-        assertThat(fixture.distance(anotherTile)).isEqualTo(distance);
+        when(tile.getDistance((Physical) anotherTile)).thenReturn((double) distance);
+        assertThat(fixture.getDistance(anotherTile)).isEqualTo(distance);
     }
 
     @Test
-    void terrain() {
-        assertThat(fixture.terrain()).isSameAs(fixture);
+    void getTerrain() {
+        assertThat(fixture.getTerrain()).isSameAs(fixture);
     }
 
     @Test
     void testToString(SeededRng random) {
         var x = random.nextIntNotNegative();
         var y = random.nextIntNotNegative();
-        when(tile.id()).thenReturn(new TileId(x, y));
+        when(tile.getId()).thenReturn(new TileId(x, y));
         assertThat(fixture).hasToString("Structure[x=%d, y=%d, type=%s]", x, y, type);
     }
 

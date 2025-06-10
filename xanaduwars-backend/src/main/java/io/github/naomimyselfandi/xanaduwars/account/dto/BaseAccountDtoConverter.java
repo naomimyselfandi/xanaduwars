@@ -5,4 +5,5 @@ import org.mapstruct.Mapper;
 import org.springframework.core.convert.converter.Converter;
 
 @Mapper
-public interface BaseAccountDtoConverter extends Converter<Account, BaseAccountDto> {}
+@SuppressWarnings("unused")
+interface BaseAccountDtoConverter extends Converter<Account, BaseAccountDto> {}

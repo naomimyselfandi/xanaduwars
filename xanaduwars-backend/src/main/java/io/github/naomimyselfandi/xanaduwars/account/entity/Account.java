@@ -68,7 +68,7 @@ public abstract class Account {
     private boolean developer;
 
     /// The hash of this account's password or API key.
-    public abstract Hash authenticationSecret();
+    public abstract Hash getAuthenticationSecret();
 
     /// Test if this account has a given role. This does *not* automatically
     /// consider implied permissions, which is intentional; we want to be able
@@ -94,7 +94,7 @@ public abstract class Account {
             case DEVELOPER -> developer = grant;
         };
         if (grant) {
-            for (var impliedRole : role.impliedRoles()) {
+            for (var impliedRole : role.getImpliedRoles()) {
                 setRole(impliedRole, true);
             }
         }
@@ -106,7 +106,7 @@ public abstract class Account {
     @PrePersist
     public void prepare() {
         if (username != null) {
-            canonicalUsername = username.canonicalForm();
+            canonicalUsername = username.toCanonicalForm();
         }
     }
 

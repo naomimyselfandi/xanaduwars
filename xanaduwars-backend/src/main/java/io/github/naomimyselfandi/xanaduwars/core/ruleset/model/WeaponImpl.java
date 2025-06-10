@@ -51,7 +51,7 @@ class WeaponImpl implements Weapon {
 
     @Override
     @JsonProperty
-    public @Unmodifiable List<TargetSpec> targets() {
+    public @Unmodifiable List<TargetSpec> getTargets() {
         if (damage.keySet().stream().anyMatch(StructureTag.class::isInstance)) {
             return List.of(new TargetSpec.AssetTargetSpec(IFF.FOE, minimumRange, maximumRange));
         } else {

@@ -33,16 +33,16 @@ class ScriptSelectorImplTest {
     @ParameterizedTest
     @ValueSource(booleans = {true, false})
     void select(boolean subjectIsNull) {
-        when(rule0.handlers()).thenReturn(Map.of(
+        when(rule0.getHandlers()).thenReturn(Map.of(
                 new QueryName("Baz"), script1,
                 new QueryName("Bar"), unusedScript
         ));
-        when(rule1.handlers()).thenReturn(Map.of(
+        when(rule1.getHandlers()).thenReturn(Map.of(
                 new QueryName("Baz"), script2,
                 new QueryName("Bar"), unusedScript
         ));
-        when(rule2.handlers()).thenReturn(Map.of(new QueryName("Bar"), unusedScript));
-        when(rule3.handlers()).thenReturn(Map.of());
+        when(rule2.getHandlers()).thenReturn(Map.of(new QueryName("Bar"), unusedScript));
+        when(rule3.getHandlers()).thenReturn(Map.of());
         when(globals.rules()).then(_ -> Stream.of(rule0, rule1, rule2, rule3));
         var query = new BazEvent(subjectIsNull ? null : new Object(), script0, script3);
         assertThat(fixture.select(globals, query)).containsExactly(script0, script1, script2, script3);
@@ -50,16 +50,16 @@ class ScriptSelectorImplTest {
 
     @Test
     void select_WhenTheSubjectIsARuleSource_ThenUsesThoseRules() {
-        when(rule0.handlers()).thenReturn(Map.of(
+        when(rule0.getHandlers()).thenReturn(Map.of(
                 new QueryName("Baz"), script1,
                 new QueryName("Bar"), unusedScript
         ));
-        when(rule1.handlers()).thenReturn(Map.of());
-        when(rule2.handlers()).thenReturn(Map.of(
+        when(rule1.getHandlers()).thenReturn(Map.of());
+        when(rule2.getHandlers()).thenReturn(Map.of(
                 new QueryName("Baz"), script2,
                 new QueryName("Bar"), unusedScript
         ));
-        when(rule3.handlers()).thenReturn(Map.of());
+        when(rule3.getHandlers()).thenReturn(Map.of());
         when(globals.rules()).then(_ -> Stream.of(rule0, rule1));
         var query = new BazEvent((RuleSource) () -> Stream.of(rule2, rule3), script0, script3);
         assertThat(fixture.select(globals, query)).containsExactly(script0, script1, script2, script3);

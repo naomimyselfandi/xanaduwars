@@ -27,11 +27,11 @@ class RulesetDeserializer extends StdDeserializer<Ruleset> {
         var ruleset = init(objectMapper, tree);
         objectMapper.registerModule(new ResolverModule(ruleset));
         objectMapper.readerForUpdating(ruleset).readValue(tree);
-        expand(objectMapper, tree.get(RulesetImpl.Fields.commanders), ruleset.commanders());
-        expand(objectMapper, tree.get(RulesetImpl.Fields.spells), ruleset.spells());
-        expand(objectMapper, tree.get(RulesetImpl.Fields.structureTypes), ruleset.structureTypes());
-        expand(objectMapper, tree.get(RulesetImpl.Fields.tileTypes), ruleset.tileTypes());
-        expand(objectMapper, tree.get(RulesetImpl.Fields.unitTypes), ruleset.unitTypes());
+        expand(objectMapper, tree.get(RulesetImpl.Fields.commanders), ruleset.getCommanders());
+        expand(objectMapper, tree.get(RulesetImpl.Fields.spells), ruleset.getSpells());
+        expand(objectMapper, tree.get(RulesetImpl.Fields.structureTypes), ruleset.getStructureTypes());
+        expand(objectMapper, tree.get(RulesetImpl.Fields.tileTypes), ruleset.getTileTypes());
+        expand(objectMapper, tree.get(RulesetImpl.Fields.unitTypes), ruleset.getUnitTypes());
         objectMapper.readerForUpdating(ruleset).readValue(tree);
         return ruleset;
     }
@@ -39,11 +39,11 @@ class RulesetDeserializer extends StdDeserializer<Ruleset> {
     private static RulesetImpl init(ObjectMapper objectMapper, JsonNode tree) throws IOException {
         var stubs = objectMapper.readerFor(Stubs.class).<Stubs>readValue(tree);
         return new RulesetImpl()
-                .commanders(init(stubs.commanders, untagged(CommanderImpl::new), CommanderId::new))
-                .spells(init(stubs.spells, SpellImpl::new, SpellId::new))
-                .structureTypes(init(stubs.structureTypes, StructureTypeImpl::new, StructureTypeId::new))
-                .tileTypes(init(stubs.tileTypes, TileTypeImpl::new, TileTypeId::new))
-                .unitTypes(init(stubs.unitTypes, UnitTypeImpl::new, UnitTypeId::new));
+                .setCommanders(init(stubs.commanders, untagged(CommanderImpl::new), CommanderId::new))
+                .setSpells(init(stubs.spells, SpellImpl::new, SpellId::new))
+                .setStructureTypes(init(stubs.structureTypes, StructureTypeImpl::new, StructureTypeId::new))
+                .setTileTypes(init(stubs.tileTypes, TileTypeImpl::new, TileTypeId::new))
+                .setUnitTypes(init(stubs.unitTypes, UnitTypeImpl::new, UnitTypeId::new));
     }
 
     private static void expand(ObjectMapper mapper, JsonNode source, List<?> targets) throws IOException {

@@ -68,12 +68,12 @@ public class GameStateData {
 
     /// The width of the playable area.
     public int width() {
-        return tileData.getLast().id().x() + 1;
+        return tileData.getLast().getId().x() + 1;
     }
 
     /// The height of the playable area.
     public int height() {
-        return tileData.getLast().id().y() + 1;
+        return tileData.getLast().getId().y() + 1;
     }
 
     /// Find the index of the tile with some ID.
@@ -96,12 +96,12 @@ public class GameStateData {
 
     /// Find a unit's description by ID.
     public Optional<UnitData> unitDataOf(UnitId id) {
-        return unitData.stream().filter(it -> it.id().equals(id)).findFirst();
+        return unitData.stream().filter(it -> it.getId().equals(id)).findFirst();
     }
 
     /// Find a unit's description by location.
     public Optional<UnitData> unitDataAt(NodeId id) {
-        return unitData.stream().filter(it -> it.location().equals(id)).findFirst();
+        return unitData.stream().filter(it -> it.getLocation().equals(id)).findFirst();
     }
 
     @Override

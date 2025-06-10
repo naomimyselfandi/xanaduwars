@@ -2,7 +2,6 @@ package io.github.naomimyselfandi.xanaduwars.auth.jwt;
 
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
-import io.github.naomimyselfandi.xanaduwars.account.entity.Account;
 import io.github.naomimyselfandi.xanaduwars.auth.dto.UserDetailsDto;
 import io.github.naomimyselfandi.xanaduwars.auth.jwt.key.JWTKeyService;
 import lombok.RequiredArgsConstructor;

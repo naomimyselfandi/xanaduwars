@@ -13,9 +13,9 @@ class HumanAccountTest {
     @Test
     void testToString(SeededRng random) {
         var account = (Account) new HumanAccount();
-        account.id(random.nextAccountId()).username(random.nextUsername());
+        account.setId(random.nextAccountId()).setUsername(random.nextUsername());
         var template = "HumanAccount[id=%s, username=%s]";
-        assertThat(account).hasToString(template, account.id(), account.username());
+        assertThat(account).hasToString(template, account.getId(), account.getUsername());
     }
 
 }

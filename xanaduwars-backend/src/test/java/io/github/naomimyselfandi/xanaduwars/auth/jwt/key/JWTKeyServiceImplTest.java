@@ -61,7 +61,7 @@ class JWTKeyServiceImplTest {
     @ParameterizedTest
     void getForSigning(JWTPurpose purpose, SeededRng random) {
         var id = random.nextUUID();
-        var key = new JWTKey().id(id).encodedSecret(SECRET);
+        var key = new JWTKey().setId(id).setEncodedSecret(SECRET);
         when(jwtKeyRepository.findExistingKey(purpose, instant)).thenReturn(Optional.of(key));
         assertThat(fixture.getForSigning(purpose, instant)).isEqualTo(new SecretKeyWithId(SECRET_KEY, id));
     }
@@ -70,7 +70,7 @@ class JWTKeyServiceImplTest {
     @ParameterizedTest
     void getForSigning_CreatesANewKeyIfNeeded(JWTPurpose purpose, SeededRng random) {
         var id = random.nextUUID();
-        var key = new JWTKey().id(id).encodedSecret(SECRET);
+        var key = new JWTKey().setId(id).setEncodedSecret(SECRET);
         when(creator.apply(purpose, instant)).thenReturn(key);
         assertThat(fixture.getForSigning(purpose, instant)).isEqualTo(new SecretKeyWithId(SECRET_KEY, id));
     }
@@ -79,7 +79,7 @@ class JWTKeyServiceImplTest {
     @ParameterizedTest
     void getForValidation(JWTPurpose purpose, SeededRng random) {
         var id = random.nextUUID();
-        var key = new JWTKey().encodedSecret(SECRET);
+        var key = new JWTKey().setEncodedSecret(SECRET);
         when(clock.instant()).thenReturn(instant);
         when(jwtKeyRepository.findExistingKey(id, purpose, instant)).thenReturn(Optional.of(key));
         assertThat(fixture.getForValidation(purpose, id)).contains(SECRET_KEY);

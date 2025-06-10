@@ -12,45 +12,45 @@ import java.util.List;
 public interface Ruleset extends GlobalRuleSource {
 
     /// The global rules in this ruleset.
-    @Unmodifiable List<Rule> globalRules();
+    @Unmodifiable List<Rule> getGlobalRules();
 
     /// The commanders in this ruleset.
-    @Unmodifiable List<Commander> commanders();
+    @Unmodifiable List<Commander> getCommanders();
 
     /// Get a commander by ID.
-    Commander commander(CommanderId id);
+    Commander getCommander(CommanderId id);
 
     /// The spells in this ruleset.
-    @Unmodifiable List<Spell> spells();
+    @Unmodifiable List<Spell> getSpells();
 
     /// Get a spell by ID.
-    Spell spell(SpellId id);
+    Spell getSpell(SpellId id);
 
     /// The structure types in this ruleset.
-    @Unmodifiable List<StructureType> structureTypes();
+    @Unmodifiable List<StructureType> getStructureTypes();
 
     /// Get a structure type by ID.
-    StructureType structureType(StructureTypeId id);
+    StructureType getStructureType(StructureTypeId id);
 
     /// The tile types in this ruleset.
-    @Unmodifiable List<TileType> tileTypes();
+    @Unmodifiable List<TileType> getTileTypes();
 
     /// Get a tile type by ID.
-    TileType tileType(TileTypeId id);
+    TileType getTileTypes(TileTypeId id);
 
     /// The unit types in this ruleset.
-    @Unmodifiable List<UnitType> unitTypes();
+    @Unmodifiable List<UnitType> getUnitTypes();
 
     /// Get a unit type by ID.
-    UnitType unitType(UnitTypeId id);
+    UnitType getUnitType(UnitTypeId id);
 
     /// Actions automatically available to units, like movement.
-    @Unmodifiable List<Action> commonUnitActions();
+    @Unmodifiable List<Action> getCommonUnitActions();
 
     /// Actions automatically available to players, like ending their turn.
-    @Unmodifiable List<Action> commonPlayerActions();
+    @Unmodifiable List<Action> getCommonPlayerActions();
 
     /// The action that deploys a unit from a structure.
-    Action deploymentAction();
+    Action getDeploymentAction();
 
 }

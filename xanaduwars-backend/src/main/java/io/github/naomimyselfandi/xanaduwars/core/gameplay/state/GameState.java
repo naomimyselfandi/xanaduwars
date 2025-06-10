@@ -12,44 +12,44 @@ import java.util.stream.Stream;
 public interface GameState {
 
     /// This game state's unique ID.
-    @Nullable GameStateId id();
+    @Nullable GameStateId getId();
 
     /// Evaluate a query. Every rule applying to the query is checked, starting
     /// with the global rules.
     <T> T evaluate(Query<T> query);
 
     /// Whether this game state is being used to preview an action.
-    boolean preview();
+    boolean isPreview();
 
     /// Indicate that the active player's turn should end. This is deferred
     /// until the end of action processing to avoid edge cases.
     void pass();
 
     /// The players in this game state, in turn order.
-    @Unmodifiable List<Player> players();
+    @Unmodifiable List<Player> getPlayers();
 
     /// Get a player by ID.
-    Player player(PlayerId id);
+    Player getPlayer(PlayerId id);
 
     /// The player who is currently acting.
-    Player activePlayer();
+    Player getActivePlayer();
 
     /// The tiles in this game state, in row-column order.
-    @Unmodifiable List<Tile> tiles();
+    @Unmodifiable List<Tile> getTiles();
 
     /// Get a tile by ID.
-    Tile tile(TileId id);
+    Tile getTile(TileId id);
 
     /// Get a tile by ID, if it is in this game state's bounds.
-    @Nullable Tile maybeTile(TileId id);
+    @Nullable Tile findTile(TileId id);
 
     /// The structures in this game state, in row-column order.
-    Stream<Structure> structures();
+    Stream<Structure> getStructures();
 
     /// The units in this game state, in creation order.
-    Stream<Unit> units();
+    Stream<Unit> getUnits();
 
     /// Get a unit by ID.
-    Unit unit(UnitId id);
+    Unit getUnit(UnitId id);
 
 }

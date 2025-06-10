@@ -1,6 +1,5 @@
 package io.github.naomimyselfandi.xanaduwars.core.scripting;
 
-import io.github.naomimyselfandi.xanaduwars.core.gameplay.state.GameplayException;
 import org.jetbrains.annotations.Nullable;
 import org.springframework.expression.EvaluationContext;
 
@@ -20,8 +19,6 @@ record ScriptImpl(List<Statement> statements) implements Script {
                 statement.execute(context);
             } catch (Statement.Return e) {
                 return e.value;
-            } catch (GameplayException e) {
-                throw e;
             } catch (Exception | Statement.Break | Statement.Continue e) {
                 var root = context.getRootObject().getValue();
                 var message = "Failed executing `%s` for %s in `%s`.".formatted(statement, root, this);

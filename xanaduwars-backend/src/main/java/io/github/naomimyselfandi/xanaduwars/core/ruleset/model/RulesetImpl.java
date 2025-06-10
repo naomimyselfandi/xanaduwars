@@ -51,33 +51,33 @@ class RulesetImpl implements Ruleset {
     private @NotNull @Valid ActionImpl deploymentAction;
 
     @Override
-    public Commander commander(CommanderId id) {
+    public Commander getCommander(CommanderId id) {
         return commanders.get(id.index());
     }
 
     @Override
-    public Spell spell(SpellId id) {
+    public Spell getSpell(SpellId id) {
         return spells.get(id.index());
     }
 
     @Override
-    public StructureType structureType(StructureTypeId id) {
+    public StructureType getStructureType(StructureTypeId id) {
         return structureTypes.get(id.index());
     }
 
     @Override
-    public TileType tileType(TileTypeId id) {
+    public TileType getTileTypes(TileTypeId id) {
         return tileTypes.get(id.index());
     }
 
     @Override
-    public UnitType unitType(UnitTypeId id) {
+    public UnitType getUnitType(UnitTypeId id) {
         return unitTypes.get(id.index());
     }
 
     @Override
     public Stream<ScriptConstant> constants() {
-        return Stream.concat(declarations(), declarations().map(Declaration::tags).flatMap(Set::stream).distinct());
+        return Stream.concat(declarations(), declarations().map(Declaration::getTags).flatMap(Set::stream).distinct());
     }
 
     @Override

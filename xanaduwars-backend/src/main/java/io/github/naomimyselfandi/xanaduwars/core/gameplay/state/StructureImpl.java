@@ -25,60 +25,60 @@ final class StructureImpl extends AbstractAsset<StructureData> implements Struct
     }
 
     @Override
-    public GameState gameState() {
-        return tile.gameState();
+    public GameState getGameState() {
+        return tile.getGameState();
     }
 
     @Override
-    public StructureType type() {
-        return ruleset.structureType(data.type());
+    public StructureType getType() {
+        return ruleset.getStructureType(data.getType());
     }
 
     @Override
-    public Set<? extends Tag> tags() {
-        return type().tags();
+    public Set<? extends Tag> getTags() {
+        return getType().getTags();
     }
 
     @Override
-    public boolean complete() {
-        return data.complete();
+    public boolean isComplete() {
+        return data.isComplete();
     }
 
     @Override
-    public Structure complete(boolean complete) {
-        data.complete(complete);
+    public Structure setComplete(boolean complete) {
+        data.setComplete(complete);
         return this;
     }
 
     @Override
-    public double cover() {
-        return type().cover();
+    public double getCover() {
+        return getType().getCover();
     }
 
     @Override
-    public MovementTable movementTable() {
-        return type().movementTable();
+    public MovementTable getMovementTable() {
+        return getType().getMovementTable();
     }
 
     @Override
-    public @Unmodifiable List<Action> actions() {
-        return List.of(ruleset.deploymentAction());
+    public @Unmodifiable List<Action> getAction() {
+        return List.of(ruleset.getDeploymentAction());
     }
 
     @Override
-    public double distance(Physical that) {
-        return tile.distance(that);
+    public double getDistance(Physical that) {
+        return tile.getDistance(that);
     }
 
     @Override
-    public Terrain terrain() {
+    public Terrain getTerrain() {
         return this;
     }
 
     @Override
     public String toString() {
-        var id = tile.id();
-        return "Structure[x=%d, y=%d, type=%s]".formatted(id.x(), id.y(), type());
+        var id = tile.getId();
+        return "Structure[x=%d, y=%d, type=%s]".formatted(id.x(), id.y(), getType());
     }
 
 }

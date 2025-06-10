@@ -22,7 +22,7 @@ public record QueryName(@JsonValue String queryName) implements Function<Rule, S
 
     @Override
     public Stream<Script> apply(Rule rule) {
-        return Stream.ofNullable(rule.handlers().get(this));
+        return Stream.ofNullable(rule.getHandlers().get(this));
     }
 
     @Override

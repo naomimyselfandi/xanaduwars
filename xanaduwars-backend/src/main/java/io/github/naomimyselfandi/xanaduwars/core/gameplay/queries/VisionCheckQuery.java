@@ -9,7 +9,7 @@ public record VisionCheckQuery(Asset subject, Tile target) implements Query<Bool
 
     @Override
     public Boolean defaultValue() {
-        return subject.distance(target) <= subject.vision();
+        return subject.getDistance(target) <= subject.getVision();
     }
 
 }

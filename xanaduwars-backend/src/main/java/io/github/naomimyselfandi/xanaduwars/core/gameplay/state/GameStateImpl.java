@@ -42,13 +42,13 @@ class GameStateImpl implements GameState {
     }
 
     @Override
-    public @Nullable GameStateId id() {
-        return gameStateData.id();
+    public @Nullable GameStateId getId() {
+        return gameStateData.getId();
     }
 
     @Override
     public void pass() {
-        gameStateData.pass(true);
+        gameStateData.setPass(true);
     }
 
     @Override
@@ -57,43 +57,43 @@ class GameStateImpl implements GameState {
     }
 
     @Override
-    public Player player(PlayerId id) {
+    public Player getPlayer(PlayerId id) {
         return players.get(id.playerId());
     }
 
     @Override
-    public Player activePlayer() {
-        return players.get(gameStateData.turn().turn() % gameStateData.playerData().size());
+    public Player getActivePlayer() {
+        return players.get(gameStateData.getTurn().turn() % gameStateData.getPlayerData().size());
     }
 
     @Override
-    public Tile tile(TileId id) {
+    public Tile getTile(TileId id) {
         return tiles.get(gameStateData.tileDataIndex(id).orElseThrow());
     }
 
     @Override
-    public @Nullable Tile maybeTile(TileId id) {
+    public @Nullable Tile findTile(TileId id) {
         return gameStateData.tileDataIndex(id).map(tiles::get).orElse(null);
     }
 
     @Override
-    public Stream<Structure> structures() {
-        return tiles.stream().map(Tile::structure).filter(Objects::nonNull);
+    public Stream<Structure> getStructures() {
+        return tiles.stream().map(Tile::getStructure).filter(Objects::nonNull);
     }
 
     @Override
-    public Stream<Unit> units() {
-        return gameStateData.unitData().stream().map(it -> new UnitImpl(it, this, ruleset));
+    public Stream<Unit> getUnits() {
+        return gameStateData.getUnitData().stream().map(it -> new UnitImpl(it, this, ruleset));
     }
 
     @Override
-    public Unit unit(UnitId id) {
+    public Unit getUnit(UnitId id) {
         return new UnitImpl(gameStateData.unitDataOf(id).orElseThrow(), this, ruleset);
     }
 
     private List<Player> initPlayers() {
         return gameStateData
-                .playerData()
+                .getPlayerData()
                 .stream()
                 .<Player>map(data -> new PlayerImpl(data, this, ruleset))
                 .toList();
@@ -102,7 +102,7 @@ class GameStateImpl implements GameState {
     private List<Tile> initTiles() {
         var creator = new CreatorImpl(gameStateData);
         return gameStateData
-                .tileData()
+                .getTileData()
                 .stream()
                 .<Tile>map(data -> new TileImpl(data, this, ruleset, creator))
                 .toList();

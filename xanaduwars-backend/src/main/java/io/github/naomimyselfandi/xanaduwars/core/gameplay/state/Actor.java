@@ -11,11 +11,11 @@ import java.util.List;
 public sealed interface Actor extends Element, RuleSource permits Asset, Player {
 
     /// The actions this actor can take.
-    @Unmodifiable List<Action> actions();
+    @Unmodifiable List<Action> getAction();
 
     /// The player who owns this actor. (Players are considered to own
     /// themselves.)
-    @Nullable Player owner();
+    @Nullable Player getOwner();
 
     /// Check if two actors are on the same team.
     boolean isFriend(@Nullable Actor actor);

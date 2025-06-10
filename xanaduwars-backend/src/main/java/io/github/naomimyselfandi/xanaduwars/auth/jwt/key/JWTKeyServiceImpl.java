@@ -32,7 +32,7 @@ class JWTKeyServiceImpl implements JWTKeyService {
         var jwtKey = jwtKeyRepository
                 .findExistingKey(purpose, expiry)
                 .orElseGet(() -> creator.apply(purpose, expiry));
-        return new SecretKeyWithId(toSecretKey(jwtKey), jwtKey.id());
+        return new SecretKeyWithId(toSecretKey(jwtKey), jwtKey.getId());
     }
 
     @Override
@@ -56,7 +56,7 @@ class JWTKeyServiceImpl implements JWTKeyService {
     }
 
     private static SecretKey toSecretKey(JWTKey jwtKey) {
-        var key = Base64.getDecoder().decode(jwtKey.encodedSecret());
+        var key = Base64.getDecoder().decode(jwtKey.getEncodedSecret());
         return new SecretKeySpec(key, 0, key.length, "HmacSHA256");
     }
 

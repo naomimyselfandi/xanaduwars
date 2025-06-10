@@ -13,9 +13,9 @@ class UserDetailsDtoConverter implements Converter<Account, UserDetailsDto> {
     @Override
     public UserDetailsDto convert(Account source) {
         var dto = new UserDetailsDto();
-        dto.setId(source.id());
-        dto.setUsername(source.username().username());
-        dto.setPassword(source.authenticationSecret().text());
+        dto.setId(source.getId());
+        dto.setUsername(source.getUsername().username());
+        dto.setPassword(source.getAuthenticationSecret().text());
         dto.setAuthorities(Arrays.stream(Role.values()).filter(source::hasRole).toList());
         return dto;
     }

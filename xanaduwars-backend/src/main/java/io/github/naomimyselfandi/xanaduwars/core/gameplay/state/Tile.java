@@ -11,23 +11,23 @@ import java.util.stream.Stream;
 public non-sealed interface Tile extends Node, Terrain {
 
     /// This tile's ID.
-    TileId id();
+    TileId getId();
 
     /// The type of tile this is.
-    TileType type();
+    TileType getType();
 
     /// Any tags that apply to this tile.
-    Set<TileTag> tags();
+    Set<TileTag> getTags();
 
     /// The structure on this tile, if any.
-    @Nullable Structure structure();
+    @Nullable Structure getStructure();
 
     /// The unit on this tile, if any.
-    @Nullable Unit unit();
+    @Nullable Unit getUnit();
 
     /// Look up the movement cost for a unit to enter this tile. If the unit
     /// cannot enter this tile, `NaN` is returned.
-    double cost(Unit unit);
+    double getMovementCost(Unit unit);
 
     /// Create a unit on this tile.
     /// @throws IllegalStateException if this tile already has a unit.
@@ -38,7 +38,7 @@ public non-sealed interface Tile extends Node, Terrain {
     void createStructure(StructureType type, Player owner);
 
     /// Get the distance between two tiles.
-    int distance(Tile that);
+    int getDistance(Tile that);
 
     /// Get the tile one step in the given direction from this one.
     @Nullable Tile step(Direction direction);
@@ -49,6 +49,6 @@ public non-sealed interface Tile extends Node, Terrain {
 
     @Override
     @Contract("-> this")
-    Tile tile();
+    Tile getTile();
 
 }

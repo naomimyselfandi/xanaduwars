@@ -10,12 +10,12 @@ import java.util.Map;
 public non-sealed interface Commander extends ActorType, Rule {
 
     /// This commander's ID.
-    CommanderId id();
+    CommanderId getId();
 
     /// This commander's signature spells.
-    @Unmodifiable List<Spell> signatureSpells();
+    @Unmodifiable List<Spell> getSignatureSpells();
 
     /// This commander's affinities for various spells.
-    @Unmodifiable Map<SpellTag, Affinity> affinities();
+    @Unmodifiable Map<SpellTag, Affinity> getAffinities();
 
 }

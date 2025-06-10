@@ -9,9 +9,9 @@ public sealed interface TerrainType extends PhysicalType permits StructureType, 
     /// of this type, if any of its tags are keys into this map, it may enter
     /// the terrain by expending an amount of speed equal to the corresponding
     /// value. Otherwise, it may not enter the terrain.
-    @Unmodifiable MovementTable movementTable();
+    @Unmodifiable MovementTable getMovementTable();
 
     /// The defensive cover applied by terrain of this type.
-    double cover();
+    double getCover();
 
 }

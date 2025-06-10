@@ -9,12 +9,12 @@ import java.io.Serializable;
 public interface AssetData extends Serializable {
 
     /// The ID of the asset's owner.
-    @Nullable PlayerId owner();
+    @Nullable PlayerId getOwner();
 
     /// The asset's current hit points.
-    int hp();
+    int getHp();
 
     /// The asset's current hit points.
-    AssetData hp(int hp);
+    AssetData setHp(int hp);
 
 }

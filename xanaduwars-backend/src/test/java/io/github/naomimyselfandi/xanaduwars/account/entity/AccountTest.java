@@ -25,11 +25,11 @@ class AccountTest {
     void hasRole(Role role, boolean bot, boolean expected) {
         var account = bot ? new BotAccount() : new HumanAccount();
         var _ = switch (role) {
-            case SUPPORT -> account.support(expected);
-            case MODERATOR -> account.moderator(expected);
-            case JUDGE -> account.judge(expected);
-            case ADMIN -> account.admin(expected);
-            case DEVELOPER -> account.developer(expected);
+            case SUPPORT -> account.setSupport(expected);
+            case MODERATOR -> account.setModerator(expected);
+            case JUDGE -> account.setJudge(expected);
+            case ADMIN -> account.setAdmin(expected);
+            case DEVELOPER -> account.setDeveloper(expected);
         };
         assertThat(account.hasRole(role)).isEqualTo(expected);
     }
@@ -54,7 +54,7 @@ class AccountTest {
     }
 
     private static Stream<Role> transitivelyImpliedRoles(Role role) {
-        var implications = role.impliedRoles().stream().flatMap(AccountTest::transitivelyImpliedRoles);
+        var implications = role.getImpliedRoles().stream().flatMap(AccountTest::transitivelyImpliedRoles);
         return Stream.concat(Stream.of(role), implications);
     }
 
@@ -65,7 +65,7 @@ class AccountTest {
         grantAllRoles(account);
         assertThat(account.setRole(role, false)).isSameAs(account);
         assertThat(account.hasRole(role)).isFalse();
-        assertThat(role.impliedRoles()).allMatch(account::hasRole);
+        assertThat(role.getImpliedRoles()).allMatch(account::hasRole);
     }
 
     private static void grantAllRoles(Account account) {
@@ -79,9 +79,9 @@ class AccountTest {
     void prepare(boolean bot, SeededRng random) {
         var account = bot ? new BotAccount() : new HumanAccount();
         var username = random.nextUsername();
-        assertThat(account.username(username)).isSameAs(account);
+        assertThat(account.setUsername(username)).isSameAs(account);
         account.prepare();
-        assertThat(account.canonicalUsername()).isEqualTo(username.canonicalForm());
+        assertThat(account.getCanonicalUsername()).isEqualTo(username.toCanonicalForm());
     }
 
     @ParameterizedTest

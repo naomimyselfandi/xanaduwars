@@ -8,6 +8,6 @@ import java.util.Map;
 public interface Weapon extends Action {
 
     /// The damage this weapon inflicts to various targets.
-    @Unmodifiable Map<WeaponTarget, Integer> damage();
+    @Unmodifiable Map<WeaponTarget, Integer> getDamage();
 
 }

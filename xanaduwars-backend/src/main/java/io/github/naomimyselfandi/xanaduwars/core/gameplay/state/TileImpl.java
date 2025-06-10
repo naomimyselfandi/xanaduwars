@@ -25,96 +25,96 @@ final class TileImpl implements Tile {
     private final Creator creator;
 
     @Override
-    public TileId id() {
-        return data.id();
+    public TileId getId() {
+        return data.getId();
     }
 
     @Override
-    public TileType type() {
-        return ruleset.tileType(data.type());
+    public TileType getType() {
+        return ruleset.getTileTypes(data.getType());
     }
 
     @Override
-    public Set<TileTag> tags() {
-        return type().tags();
+    public Set<TileTag> getTags() {
+        return getType().getTags();
     }
 
     @Override
-    public MovementTable movementTable() {
-        return switch (structure()) {
-            case Structure structure -> structure.movementTable();
-            case null -> type().movementTable();
+    public MovementTable getMovementTable() {
+        return switch (getStructure()) {
+            case Structure structure -> structure.getMovementTable();
+            case null -> getType().getMovementTable();
         };
     }
 
     @Override
-    public double cost(Unit unit) {
-        return movementTable().cost(unit.tags());
+    public double getMovementCost(Unit unit) {
+        return getMovementTable().cost(unit.getTags());
     }
 
     @Override
-    public double cover() {
-        return switch (structure()) {
-            case Structure structure -> structure.cover();
-            case null -> type().cover();
+    public double getCover() {
+        return switch (getStructure()) {
+            case Structure structure -> structure.getCover();
+            case null -> getType().getCover();
         };
     }
 
     @Override
-    public @Nullable Structure structure() {
-        var structureData = data.structureData();
+    public @Nullable Structure getStructure() {
+        var structureData = data.getStructureData();
         return structureData == null ? null : new StructureImpl(structureData, this, ruleset);
     }
 
     @Override
-    public @Nullable Unit unit() {
-        return gameState.units().filter(unit -> equals(unit.location())).findFirst().orElse(null);
+    public @Nullable Unit getUnit() {
+        return gameState.getUnits().filter(unit -> equals(unit.getLocation())).findFirst().orElse(null);
     }
 
     @Override
     public void createUnit(UnitType type, Player owner) {
-        creator.createUnitData(id(), type.id(), owner.id());
+        creator.createUnitData(getId(), type.getId(), owner.getId());
     }
 
     @Override
     public void createStructure(StructureType type, Player owner) {
-        creator.createStructureData(id(), type.id(), owner.id());
+        creator.createStructureData(getId(), type.getId(), owner.getId());
     }
 
     @Override
-    public int distance(Tile that) {
-        var thisId = this.id();
-        var thatId = that.id();
+    public int getDistance(Tile that) {
+        var thisId = this.getId();
+        var thatId = that.getId();
         var dx = Math.abs(thisId.x() - thatId.x());
         var dy = Math.abs(thisId.y() - thatId.y());
         return dx + dy;
     }
 
     @Override
-    public double distance(Physical that) {
-        var thatTile = that.tile();
-        return thatTile == null ? Double.NaN : distance(thatTile);
+    public double getDistance(Physical that) {
+        var thatTile = that.getTile();
+        return thatTile == null ? Double.NaN : getDistance(thatTile);
     }
 
     @Override
     public Stream<Tile> area(int radius) {
-        return data.id().area(radius).map(gameState::maybeTile).filter(Objects::nonNull);
+        return data.getId().area(radius).map(gameState::findTile).filter(Objects::nonNull);
     }
 
     @Override
     public @Nullable Tile step(Direction direction) {
-        return gameState.maybeTile(data.id().step(direction));
+        return gameState.findTile(data.getId().step(direction));
     }
 
     @Override
-    public Tile tile() {
+    public Tile getTile() {
         return this;
     }
 
     @Override
     public String toString() {
-        var id = data.id();
-        return "Tile[x=%d, y=%d, type=%s]".formatted(id.x(), id.y(), type());
+        var id = data.getId();
+        return "Tile[x=%d, y=%d, type=%s]".formatted(id.x(), id.y(), getType());
     }
 
 }

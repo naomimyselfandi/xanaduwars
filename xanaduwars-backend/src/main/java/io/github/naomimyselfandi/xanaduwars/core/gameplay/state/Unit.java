@@ -18,37 +18,37 @@ public non-sealed interface Unit extends Asset, Node {
     /// player loses and regains vision of an enemy unit, if they can peek at
     /// its ID, they will know that it's the same unit instead of another unit
     /// of the same type.
-    UnitId id();
+    UnitId getId();
 
     /// The type of unit this is.
-    UnitType type();
+    UnitType getType();
 
     /// Any tags that apply to this unit.
-    Set<UnitTag> tags();
+    Set<UnitTag> getTags();
 
     /// The tile this unit is on or the unit carrying it.
-    Node location();
+    Node getLocation();
 
-    /// The tile this unit is on or the unit carrying it.
-    Unit location(Node location);
+    /// Move this unit to another tile or into another unit.
+    Unit setLocation(Node location);
 
     /// The tile this unit is on.
     @Override
-    @Nullable Tile tile();
+    @Nullable Tile getTile();
 
     /// The unit this unit is carrying, if any.
-    @Nullable Unit cargo();
+    @Nullable Unit getCargo();
 
     /// This unit's hangar.
-    Hangar hangar();
+    Hangar getHangar();
 
     /// This unit's base speed.
-    int speed();
+    int getSpeed();
 
     /// The names of the actions this unit has taken this turn.
-    @Unmodifiable List<Name> actionsThisTurn();
+    @Unmodifiable List<Name> getHistory();
 
     /// The names of the actions this unit has taken this turn.
-    Unit actionsThisTurn(List<Name> actionsThisTurn);
+    Unit setHistory(List<Name> actionsThisTurn);
 
 }

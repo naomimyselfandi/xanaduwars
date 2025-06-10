@@ -28,8 +28,8 @@ class DefenseQueryTest {
     @Test
     void defaultValue_WhenTheSubjectIsAUnit_ThenDelegatesToTheTerrain(SeededRng random) {
         var cover = random.nextDouble();
-        when(unitSubject.terrain()).thenReturn(tile);
-        when(tile.cover()).thenReturn(cover);
+        when(unitSubject.getTerrain()).thenReturn(tile);
+        when(tile.getCover()).thenReturn(cover);
         assertThat(new DefenseQuery(unitSubject, attacker).defaultValue()).isEqualTo(cover);
     }
 

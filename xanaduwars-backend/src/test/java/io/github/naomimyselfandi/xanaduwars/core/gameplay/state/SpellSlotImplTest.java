@@ -29,36 +29,36 @@ class SpellSlotImplTest {
 
     @ParameterizedTest
     @ValueSource(ints = {0, 1, 2})
-    void spell(int index, SeededRng random) {
+    void getSpell(int index, SeededRng random) {
         var spells = List.of(foo, bar, baz);
-        when(ruleset.spells()).thenReturn(spells);
+        when(ruleset.getSpells()).thenReturn(spells);
         var spellId = new SpellId(index);
         var revealed = random.nextBoolean();
         var timesCastThisTurn = random.nextIntNotNegative();
         var data = new SpellSlotData(spellId, revealed, timesCastThisTurn);
         var slot = new SpellSlotImpl(data, ruleset);
-        assertThat(slot.spell()).isEqualTo(spells.get(index));
+        assertThat(slot.getSpell()).isEqualTo(spells.get(index));
         assertThat(slot).hasToString("SpellSlot[spell=%s]", spells.get(index));
     }
 
     @ParameterizedTest
     @ValueSource(booleans = {true, false})
-    void revealed(boolean revealed, SeededRng random) {
+    void isRevealed(boolean revealed, SeededRng random) {
         var spellId = new SpellId(random.nextInt(0, 4));
         var timesCastThisTurn = random.nextIntNotNegative();
         var data = new SpellSlotData(spellId, revealed, timesCastThisTurn);
         var slot = new SpellSlotImpl(data, ruleset);
-        assertThat(slot.revealed()).isEqualTo(revealed);
+        assertThat(slot.isRevealed()).isEqualTo(revealed);
     }
 
     @RepeatedTest(2)
-    void timesCastThisTurn(SeededRng random) {
+    void getCastsThisTurn(SeededRng random) {
         var spellId = new SpellId(random.nextInt(0, 4));
         var revealed = random.nextBoolean();
         var timesCastThisTurn = random.nextIntNotNegative();
         var data = new SpellSlotData(spellId, revealed, timesCastThisTurn);
         var slot = new SpellSlotImpl(data, ruleset);
-        assertThat(slot.timesCastThisTurn()).isEqualTo(timesCastThisTurn);
+        assertThat(slot.getCastsThisTurn()).isEqualTo(timesCastThisTurn);
     }
 
 }

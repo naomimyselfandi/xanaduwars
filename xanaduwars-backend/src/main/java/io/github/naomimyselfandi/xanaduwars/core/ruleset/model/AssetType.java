@@ -5,9 +5,9 @@ package io.github.naomimyselfandi.xanaduwars.core.ruleset.model;
 public sealed interface AssetType extends ActorType, PhysicalType permits StructureType, UnitType {
 
     /// The supply cost to create an asset of this type.
-    int supplyCost();
+    int getSupplyCost();
 
     /// The aether cost to create an asset of this type.
-    int aetherCost();
+    int getAetherCost();
 
 }

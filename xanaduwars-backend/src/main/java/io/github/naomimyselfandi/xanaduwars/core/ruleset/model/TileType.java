@@ -8,9 +8,9 @@ import java.util.Set;
 public non-sealed interface TileType extends NodeType, TerrainType {
 
     /// This tile type's ID.
-    TileTypeId id();
+    TileTypeId getId();
 
     /// Any tags that apply to this tile type.
-    @Override @Unmodifiable Set<TileTag> tags();
+    @Override @Unmodifiable Set<TileTag> getTags();
 
 }

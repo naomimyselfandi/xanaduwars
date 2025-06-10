@@ -32,16 +32,16 @@ class VisionRangeQueryTest {
     @Test
     void defaultValue_Structure(SeededRng random) {
         var vision = random.nextInt();
-        when(structureType.vision()).thenReturn(vision);
-        when(structure.type()).thenReturn(structureType);
+        when(structureType.getVision()).thenReturn(vision);
+        when(structure.getType()).thenReturn(structureType);
         assertThat(new VisionRangeQuery(structure).defaultValue()).isEqualTo(vision);
     }
 
     @Test
     void defaultValue_Unit(SeededRng random) {
         var vision = random.nextInt();
-        when(unitType.vision()).thenReturn(vision);
-        when(unit.type()).thenReturn(unitType);
+        when(unitType.getVision()).thenReturn(vision);
+        when(unit.getType()).thenReturn(unitType);
         assertThat(new VisionRangeQuery(unit).defaultValue()).isEqualTo(vision);
     }
 

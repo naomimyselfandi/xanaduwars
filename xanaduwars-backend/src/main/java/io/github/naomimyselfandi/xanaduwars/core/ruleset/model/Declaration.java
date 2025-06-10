@@ -9,9 +9,9 @@ import java.util.Set;
 public sealed interface Declaration extends ScriptConstant permits ActorType, PhysicalType, Spell {
 
     /// This declaration's unique name.
-    Name name();
+    Name getName();
 
     /// Any tags that apply to this declaration.
-    @Unmodifiable Set<? extends Tag> tags();
+    @Unmodifiable Set<? extends Tag> getTags();
 
 }

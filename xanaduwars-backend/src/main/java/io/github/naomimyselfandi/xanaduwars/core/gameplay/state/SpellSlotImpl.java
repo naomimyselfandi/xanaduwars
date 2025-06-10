@@ -7,23 +7,23 @@ import io.github.naomimyselfandi.xanaduwars.core.ruleset.model.Spell;
 record SpellSlotImpl(SpellSlotData spellSlotData, Ruleset ruleset) implements SpellSlot {
 
     @Override
-    public Spell spell() {
-        return ruleset.spells().get(spellSlotData.spellId().index());
+    public Spell getSpell() {
+        return ruleset.getSpells().get(spellSlotData.spellId().index());
     }
 
     @Override
-    public boolean revealed() {
+    public boolean isRevealed() {
         return spellSlotData.revealed();
     }
 
     @Override
-    public int timesCastThisTurn() {
+    public int getCastsThisTurn() {
         return spellSlotData.casts();
     }
 
     @Override
     public String toString() {
-        return "SpellSlot[spell=%s]".formatted(spell());
+        return "SpellSlot[spell=%s]".formatted(getSpell());
     }
 
 }

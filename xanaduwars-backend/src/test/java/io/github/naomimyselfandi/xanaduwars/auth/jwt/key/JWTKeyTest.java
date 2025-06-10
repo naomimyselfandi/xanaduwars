@@ -16,11 +16,11 @@ class JWTKeyTest {
     @RepeatedTest(3)
     void testToString(SeededRng random) {
         var key = new JWTKey()
-                .id(random.nextUUID())
-                .encodedSecret(random.nextUUID().toString())
-                .purpose(random.pick(JWTPurpose.values()))
-                .expiry(Instant.ofEpochMilli(random.nextLong()));
-        assertThat(key.toString()).doesNotContain(key.encodedSecret());
+                .setId(random.nextUUID())
+                .setEncodedSecret(random.nextUUID().toString())
+                .setPurpose(random.pick(JWTPurpose.values()))
+                .setExpiry(Instant.ofEpochMilli(random.nextLong()));
+        assertThat(key.toString()).doesNotContain(key.getEncodedSecret());
     }
 
 }

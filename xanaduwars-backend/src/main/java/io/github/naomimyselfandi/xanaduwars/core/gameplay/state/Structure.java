@@ -7,17 +7,17 @@ public non-sealed interface Structure extends Asset, Terrain {
 
     /// The tile this structure was built on.
     @Override
-    Tile tile();
+    Tile getTile();
 
     /// The type of structure this is.
-    StructureType type();
+    StructureType getType();
 
     /// Whether this structure was completed. An incomplete structure cannot
     /// take actions.
-    boolean complete();
+    boolean isComplete();
 
     /// Whether this structure was completed. An incomplete structure cannot
     /// take actions.
-    Structure complete(boolean complete);
+    Structure setComplete(boolean complete);
 
 }

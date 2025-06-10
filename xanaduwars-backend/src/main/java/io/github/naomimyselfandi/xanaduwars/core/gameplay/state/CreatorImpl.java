@@ -10,21 +10,21 @@ record CreatorImpl(GameStateData data) implements Creator {
 
     @Override
     public void createUnitData(NodeId location, UnitTypeId type, PlayerId owner) {
-        if (data.unitData().stream().anyMatch(it -> it.location().equals(location))) {
+        if (data.getUnitData().stream().anyMatch(it -> it.getLocation().equals(location))) {
             throw new IllegalStateException("%s already has a unit.".formatted(location));
         }
-        var unitId = data.nextUnitId();
-        var unitData = new UnitData().id(unitId).type(type).owner(owner).location(location);
-        data.unitData().add(unitData);
-        data.nextUnitId(new UnitId(unitId.unitId() + 1));
+        var unitId = data.getNextUnitId();
+        var unitData = new UnitData().setId(unitId).setType(type).setOwner(owner).setLocation(location);
+        data.getUnitData().add(unitData);
+        data.setNextUnitId(new UnitId(unitId.unitId() + 1));
     }
 
     @Override
     public void createStructureData(TileId location, StructureTypeId type, PlayerId owner) {
         var tileData = data.tileDataAt(location).orElseThrow();
-        if (tileData.structureData() == null) {
-            var structureData = new StructureData().type(type).owner(owner);
-            tileData.structureData(structureData);
+        if (tileData.getStructureData() == null) {
+            var structureData = new StructureData().setType(type).setOwner(owner);
+            tileData.setStructureData(structureData);
         } else {
             throw new IllegalStateException("%s already has a structure.".formatted(location));
         }

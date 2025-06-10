@@ -30,7 +30,7 @@ class JWTKeyCreator implements BiFunction<JWTPurpose, Instant, JWTKey> {
     private JWTKey create(JWTPurpose purpose, Instant expiry) {
         log.info("Creating {} JWT key.", purpose);
         var secret = createRandomSecret();
-        var key = new JWTKey().encodedSecret(secret).purpose(purpose).expiry(expiry);
+        var key = new JWTKey().setEncodedSecret(secret).setPurpose(purpose).setExpiry(expiry);
         return jwtKeyRepository.save(key);
     }
 

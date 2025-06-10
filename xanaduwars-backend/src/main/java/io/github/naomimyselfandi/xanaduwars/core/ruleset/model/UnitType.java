@@ -9,24 +9,24 @@ import java.util.Set;
 public non-sealed interface UnitType extends AssetType, NodeType, WeaponTarget {
 
     /// This unit type's ID.
-    UnitTypeId id();
+    UnitTypeId getId();
 
     /// Any tags that apply to this unit type.
-    @Override @Unmodifiable Set<UnitTag> tags();
+    @Override @Unmodifiable Set<UnitTag> getTags();
 
     /// The base speed of a unit of this type.
-    int speed();
+    int getSpeed();
 
     /// The vision range of a unit of this type.
-    int vision();
+    int getVision();
 
     /// The weapons carried by units of this type, if any.
-    List<Weapon> weapons();
+    List<Weapon> getWeapons();
 
     /// Any special abilities a unit of this type can use.
-    @Unmodifiable List<Action> abilities();
+    @Unmodifiable List<Action> getAbilities();
 
     /// Any unit types a unit of this type can carry.
-    Hangar hangar();
+    Hangar getHangar();
 
 }

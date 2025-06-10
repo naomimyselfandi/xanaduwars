@@ -6,14 +6,14 @@ import io.github.naomimyselfandi.xanaduwars.core.ruleset.model.Spell;
 public interface SpellSlot {
 
     /// The spell in this slot.
-    Spell spell();
+    Spell getSpell();
 
     /// Whether the spell in this slot is revealed. A spell slot starts off
     /// revealed if it holds the player's commander's signature spell; other
     /// slots become revealed as the spells in them are cast.
-    boolean revealed();
+    boolean isRevealed();
 
     /// How many times the player has cast the spell in this slot this turn.
-    int timesCastThisTurn();
+    int getCastsThisTurn();
 
 }

@@ -4,21 +4,21 @@
     {
       "name": "VictoryConditions",
       "handlers": {
-        "StructureDeath": "if subject.type() == @Headquarters; subject.owner()?.defeat(); fi"
+        "StructureDeath": "if subject.type == @Headquarters; subject.owner?.defeat(); fi"
       }
     },
     {
       "name": "TerrainEffects",
       "handlers": {
         "VisionCheck": [
-          "if target.tags().contains(@HidingSpot) && (target.unit()?.tags()?.contains(@Land) || target.type() == @Fog)",
-          "  validate subject.distance(target) <= 1",
+          "if target.tags.contains(@HidingSpot) && (target.unit?.tags?.contains(@Land) || target.type == @Fog)",
+          "  validate subject.getDistance(target) <= 1",
           "fi"
         ],
         "VisionRange": [
-          "if subject.tags().contains(@Land)",
-          "  if subject.tile()?.type() == @Hill; return #value + 1; fi",
-          "  if subject.tile()?.type() == @Mountain; return #value + 2; fi",
+          "if subject.tags.contains(@Land)",
+          "  if subject.tile?.type == @Hill; return #value + 1; fi",
+          "  if subject.tile?.type == @Mountain; return #value + 2; fi",
           "fi"
         ]
       }
@@ -41,7 +41,7 @@
       "name": "MagicMissile",
       "tags": ["Offensive"],
       "targets": [{"type": "Unit", "iff": "FOE"}],
-      "effect": "target.hp(target.hp - 30)",
+      "effect": "target.hp = (target.hp - 30)",
       "focusCost": 4000
     },
     {
@@ -50,14 +50,14 @@
       "targets": [{"type": "Tile", "visible": true}],
       "validation": [
         "for tile : target.area(1)",
-        "  if tile.unit()?.isFriendly(subject); return #value; fi",
+        "  if tile.unit?.isFriendly(subject); return #value; fi",
         "done",
         "return false"
       ],
       "effect": [
         "for tile : target.area(1)",
-        "  #unit = tile.unit()",
-        "  if #unit?.isFriendly(subject); unit.hp(unit.hp() + 20); fi",
+        "  #unit = tile.unit",
+        "  if #unit?.isFriendly(subject); unit.hp = (unit.hp + 20); fi",
         "done"
       ],
       "focusCost": 2400
@@ -257,7 +257,9 @@
       "name": "Ruins",
       "tags": ["HidingSpot"],
       "movementTable": {
-        "Land": 1,
+        "Treaded": 1,
+        "Wheeled": 1,
+        "Soldier": 1,
         "Air": 1
       },
       "cover": 0.2
@@ -407,48 +409,48 @@
           "name": "Build",
           "targets": [{"type": "StructureType"}],
           "precondition": [
-            "#structure = subject.tile().structure",
+            "#structure = subject.tile.structure",
             "if #structure != null",
-            "  validate #structure.owner() == subject.owner()",
-            "  validate !#structure.complete()",
+            "  validate #structure.owner == subject.owner",
+            "  validate !#structure.complete",
             "fi"
           ],
           "validation": [
-            "validate subject.tile().type() == target.foundation()",
+            "validate subject.tile.type == target.foundation",
             "validate target != @Headquarters"
           ],
           "effect": [
-            "#tile = subject.tile()",
-            "#structure = #tile.structure()",
+            "#tile = subject.tile",
+            "#structure = #tile.structure",
             "if #structure == null",
-            "  #tile.createStructure(target, subject.owner())",
-            "  #structure = #tile.structure()",
+            "  #tile.createStructure(target, subject.owner)",
+            "  #structure = #tile.structure",
             "fi",
-            "#structure.hp(#structure.hp() + (100 * subject.hp() / target.buildTime()))",
-            "structure.complete(#structure.hp() == 100)"
+            "#structure.hp = (#structure.hp + (100 * subject.hp / target.buildTime))",
+            "#structure.complete = (#structure.hp == 100)"
           ],
           "supplyCost": [
-            "#before = (subject.tile().structure()?.hp() ?: 0)",
-            "#after = T(Math).min(100, #before + (100 * subject.hp() / target.buildTime()))",
-            "#beforeCost = #before * target.supplyCost() / 100",
-            "#afterCost = #after * target.supplyCost() / 100",
+            "#before = (subject.tile.structure?.hp ?: 0)",
+            "#after = T(Math).min(100, #before + (100 * subject.hp / target.buildTime))",
+            "#beforeCost = #before * target.supplyCost / 100",
+            "#afterCost = #after * target.supplyCost / 100",
             "return #afterCost - beforeCost"
           ],
           "aetherCost": [
-            "#before = (subject.tile().structure()?.hp() ?: 0)",
-            "#after = T(Math).min(100, #before + (100 * subject.hp() / target.buildTime()))",
-            "#beforeCost = #before * target.aetherCost() / 100",
-            "#afterCost = #after * target.aetherCost() / 100",
+            "#before = (subject.tile.structure?.hp ?: 0)",
+            "#after = T(Math).min(100, #before + (100 * subject.hp / target.buildTime))",
+            "#beforeCost = #before * target.aetherCost / 100",
+            "#afterCost = #after * target.aetherCost / 100",
             "return #afterCost - beforeCost"
           ]
         },
         {
           "name": "Repair",
           "targets": [{"type": "Structure", "minimumRange": 1, "maximumRange": 1}],
-          "validation": "validate target.hp() < 100",
-          "effect": "target.hp(target.hp() + subject.hp() * 0.3)",
-          "supplyCost": "return target.type().supplyCost() * T(Math).min(subject.hp() * 0.3, 100 - target.hp()) / 100",
-          "aetherCost": "return target.type().aetherCost() * T(Math).min(subject.hp() * 0.3, 100 - target.hp()) / 100"
+          "validation": "validate target.hp < 100",
+          "effect": "target.hp = (target.hp + subject.hp * 0.3)",
+          "supplyCost": "return target.type.supplyCost * T(Math).min(subject.hp * 0.3, 100 - target.hp) / 100",
+          "aetherCost": "return target.type.aetherCost * T(Math).min(subject.hp * 0.3, 100 - target.hp) / 100"
         }
       ]
     },
@@ -661,10 +663,10 @@
         {
           "name": "Repair",
           "targets": [{"type": "Unit", "iff": "FRIEND", "maximumRange": 1}],
-          "validation": "validate target.hp() < 100 && !target.tags().contains(@Soldier)",
-          "effect": "target.hp(target.hp() + subject.hp() * 0.3)",
-          "supplyCost": "return target.type().supplyCost() * T(Math).min(subject.hp() * 0.3, 100 - target.hp()) / 100",
-          "aetherCost": "return target.type().aetherCost() * T(Math).min(subject.hp() * 0.3, 100 - target.hp()) / 100"
+          "validation": "validate target.hp < 100 && !target.tags.contains(@Soldier)",
+          "effect": "target.hp = (target.hp + subject.hp * 0.3)",
+          "supplyCost": "return target.type.supplyCost * T(Math).min(subject.hp * 0.3, 100 - target.hp) / 100",
+          "aetherCost": "return target.type.aetherCost * T(Math).min(subject.hp * 0.3, 100 - target.hp) / 100"
         }
       ]
     },
@@ -971,41 +973,41 @@
       "name": "Move",
       "targets": [{"type": "Path"}],
       "validation": [
-        "validate !target.isEmpty()",
+        "validate !target.empty",
         "#cost = 0.0",
-        "#tile = subject.tile()",
-        "#speed = subject.speed()",
+        "#tile = subject.tile",
+        "#speed = subject.speed",
         "for direction : target",
-        "  #tile = #tile.step()",
+        "  #tile = #tile.step",
         "  validate #tile != null",
-        "  #cost = #tile.cost(subject)",
+        "  #cost = #tile.getMovementCost(subject)",
         "  validate #cost <= #speed",
-        "  #unit = #tile.unit()",
+        "  #unit = #tile.unit",
         "  validate (#unit == null) || #unit.isFriend(subject)",
         "done",
         "if #unit != null",
-        "  validate #unit.owner() == subject.owner()",
-        "  validate #unit.hangar().supports(subject)",
+        "  validate #unit.owner == subject.owner",
+        "  validate #unit.hangar.supports(subject)",
         "fi"
       ],
       "effect": [
         "// Double-check the path since unseen units aren't considered in validation.",
         "#cost = 0.0",
-        "#tile = subject.tile()",
-        "#speed = subject.speed()",
+        "#tile = subject.tile",
+        "#speed = subject.speed",
         "for direction : target",
-        "  #tile = #tile.step()",
-        "  #cost = #tile.cost(subject)",
+        "  #tile = #tile.step(direction)",
+        "  #cost = #tile.getMovementCost(subject)",
         "  validate #cost <= #speed",
-        "  #unit = #tile.unit()",
+        "  #unit = #tile.unit",
         "  if #unit == null",
-        "    subject.location(#tile)",
+        "    subject.location = #tile",
         "  else",
         "    validate #unit.isFriend(subject)",
         "  fi",
         "done",
         "if #unit != null",
-        "  subject.location(#unit)",
+        "  subject.location = #unit",
         "fi"
       ]
     },
@@ -1013,17 +1015,17 @@
       "name": "Drop",
       "targets": [{"type": "Tile", "minimumRange": 1, "maximumRange": 1}],
       "precondition": [
-        "validate subject.cargo() != null",
-        "validate !subject.tile().tags().contains(@DeepWater)"
+        "validate subject.cargo != null",
+        "validate !subject.tile.tags.contains(@DeepWater)"
       ],
       "validation": [
-        "#cargo = subject.cargo()",
+        "#cargo = subject.cargo",
         "validate !T(Double).isNaN(#from.cost(#cargo))",
-        "#unit = #target.unit()",
+        "#unit = #target.unit",
         "validate !#unit.hangar.supports(#cargo)",
-        "validate #unit.owner() != #cargo.owner()"
+        "validate #unit.owner != #cargo.owner"
       ],
-      "effect": "subject.cargo().location(target.unit() ?: target)"
+      "effect": "subject.cargo.location = (target.unit ?: target)"
     },
     {
       "name": "Wait"
@@ -1032,7 +1034,7 @@
   "commonPlayerActions": [
     {
       "name": "Pass",
-      "effect": "subject.gameState().pass()"
+      "effect": "subject.gameState.pass()"
     },
     {
       "name": "Yield",
@@ -1042,10 +1044,10 @@
   "deploymentAction": {
     "name": "Deploy",
     "targets": [{"type": "UnitType"}],
-    "precondition": "validate subject.unit() == null",
-    "validation": "validate subject.type().deploymentRoster().contains(target)",
-    "effect": "subject.tile().createUnit(target, subject.owner())",
-    "supplyCost": "return target.supplyCost()",
-    "aetherCost": "return target.aetherCost()"
+    "precondition": "validate subject.unit == null",
+    "validation": "validate subject.type.deploymentRoster.contains(target)",
+    "effect": "subject.tile.createUnit(target, subject.owner)",
+    "supplyCost": "return target.supplyCost",
+    "aetherCost": "return target.aetherCost"
   }
 }

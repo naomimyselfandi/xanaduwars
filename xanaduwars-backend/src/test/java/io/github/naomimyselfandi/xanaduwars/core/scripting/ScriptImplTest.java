@@ -1,7 +1,6 @@
 package io.github.naomimyselfandi.xanaduwars.core.scripting;
 
 import io.github.naomimyselfandi.seededrandom.SeededRandomExtension;
-import io.github.naomimyselfandi.xanaduwars.core.gameplay.state.GameplayException;
 import io.github.naomimyselfandi.xanaduwars.testing.SeededRng;
 import lombok.SneakyThrows;
 import org.junit.jupiter.api.BeforeEach;
@@ -50,18 +49,6 @@ class ScriptImplTest {
         var value = new Object();
         doThrow(new Statement.Return(value)).when(b).execute(context);
         assertThat(fixture.run(context)).isEqualTo(value);
-        var inOrder = inOrder(a, b, c);
-        inOrder.verify(a).execute(context);
-        inOrder.verify(b).execute(context);
-        verifyNoMoreInteractions(a, b, c);
-    }
-
-    @Test
-    @SneakyThrows
-    void run_CanThrowGameplayExceptions(SeededRng random) {
-        var e = new GameplayException(random.nextString());
-        doThrow(e).when(b).execute(context);
-        assertThatThrownBy(() -> fixture.run(context)).isEqualTo(e);
         var inOrder = inOrder(a, b, c);
         inOrder.verify(a).execute(context);
         inOrder.verify(b).execute(context);

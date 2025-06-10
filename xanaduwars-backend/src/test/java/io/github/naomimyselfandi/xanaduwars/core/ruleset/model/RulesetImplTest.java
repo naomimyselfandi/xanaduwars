@@ -41,63 +41,63 @@ class RulesetImplTest {
     @BeforeEach
     void setup() {
         fixture = new RulesetImpl()
-                .commanders(List.of(commander0, commander1))
-                .spells(List.of(spell0, spell1))
-                .structureTypes(List.of(structureType0, structureType1))
-                .tileTypes(List.of(tileType0, tileType1))
-                .unitTypes(List.of(unitType0, unitType1));
+                .setCommanders(List.of(commander0, commander1))
+                .setSpells(List.of(spell0, spell1))
+                .setStructureTypes(List.of(structureType0, structureType1))
+                .setTileTypes(List.of(tileType0, tileType1))
+                .setUnitTypes(List.of(unitType0, unitType1));
     }
 
     @Test
-    void commander() {
-        assertThat(fixture.commander(new CommanderId(0))).isEqualTo(commander0);
-        assertThat(fixture.commander(new CommanderId(1))).isEqualTo(commander1);
+    void getCommander() {
+        assertThat(fixture.getCommander(new CommanderId(0))).isEqualTo(commander0);
+        assertThat(fixture.getCommander(new CommanderId(1))).isEqualTo(commander1);
     }
 
     @Test
-    void spell() {
-        assertThat(fixture.spell(new SpellId(0))).isEqualTo(spell0);
-        assertThat(fixture.spell(new SpellId(1))).isEqualTo(spell1);
+    void getSpell() {
+        assertThat(fixture.getSpell(new SpellId(0))).isEqualTo(spell0);
+        assertThat(fixture.getSpell(new SpellId(1))).isEqualTo(spell1);
     }
 
     @Test
-    void structureType() {
-        assertThat(fixture.structureType(new StructureTypeId(0))).isEqualTo(structureType0);
-        assertThat(fixture.structureType(new StructureTypeId(1))).isEqualTo(structureType1);
+    void getStructureType() {
+        assertThat(fixture.getStructureType(new StructureTypeId(0))).isEqualTo(structureType0);
+        assertThat(fixture.getStructureType(new StructureTypeId(1))).isEqualTo(structureType1);
     }
 
     @Test
-    void tileType() {
-        assertThat(fixture.tileType(new TileTypeId(0))).isEqualTo(tileType0);
-        assertThat(fixture.tileType(new TileTypeId(1))).isEqualTo(tileType1);
+    void getTileTypes() {
+        assertThat(fixture.getTileTypes(new TileTypeId(0))).isEqualTo(tileType0);
+        assertThat(fixture.getTileTypes(new TileTypeId(1))).isEqualTo(tileType1);
     }
 
     @Test
-    void unitType() {
-        assertThat(fixture.unitType(new UnitTypeId(0))).isEqualTo(unitType0);
-        assertThat(fixture.unitType(new UnitTypeId(1))).isEqualTo(unitType1);
+    void getUnitType() {
+        assertThat(fixture.getUnitType(new UnitTypeId(0))).isEqualTo(unitType0);
+        assertThat(fixture.getUnitType(new UnitTypeId(1))).isEqualTo(unitType1);
     }
 
     @Test
     void declarations(SeededRng random) {
         var spellTag0 = random.<SpellTag>get();
         var spellTag1 = random.<SpellTag>get();
-        when(spell0.tags()).thenReturn(Set.of(spellTag0));
-        when(spell1.tags()).thenReturn(Set.of(spellTag1));
+        when(spell0.getTags()).thenReturn(Set.of(spellTag0));
+        when(spell1.getTags()).thenReturn(Set.of(spellTag1));
         var structureTag0 = random.<StructureTag>get();
         var structureTag1 = random.<StructureTag>get();
-        when(structureType0.tags()).thenReturn(Set.of(structureTag0));
-        when(structureType1.tags()).thenReturn(Set.of(structureTag1));
+        when(structureType0.getTags()).thenReturn(Set.of(structureTag0));
+        when(structureType1.getTags()).thenReturn(Set.of(structureTag1));
         var tileTag0 = random.<TileTag>get();
         var tileTag1 = random.<TileTag>get();
         var tileTag2 = random.<TileTag>get();
-        when(tileType0.tags()).thenReturn(Set.of(tileTag0, tileTag2));
-        when(tileType1.tags()).thenReturn(Set.of(tileTag1, tileTag2));
+        when(tileType0.getTags()).thenReturn(Set.of(tileTag0, tileTag2));
+        when(tileType1.getTags()).thenReturn(Set.of(tileTag1, tileTag2));
         var unitTag0 = random.<UnitTag>get();
         var unitTag1 = random.<UnitTag>get();
         var unitTag2 = random.<UnitTag>get();
-        when(unitType0.tags()).thenReturn(Set.of(unitTag0, unitTag2));
-        when(unitType1.tags()).thenReturn(Set.of(unitTag1, unitTag2));
+        when(unitType0.getTags()).thenReturn(Set.of(unitTag0, unitTag2));
+        when(unitType1.getTags()).thenReturn(Set.of(unitTag1, unitTag2));
         assertThat(fixture.constants()).containsOnly(
                 commander0,
                 commander1,
@@ -124,7 +124,7 @@ class RulesetImplTest {
 
     @Test
     void rules() {
-        var ruleset = new RulesetImpl().globalRules(List.of(foo, bar));
+        var ruleset = new RulesetImpl().setGlobalRules(List.of(foo, bar));
         assertThat(ruleset.rules()).containsExactly(foo, bar);
     }
 

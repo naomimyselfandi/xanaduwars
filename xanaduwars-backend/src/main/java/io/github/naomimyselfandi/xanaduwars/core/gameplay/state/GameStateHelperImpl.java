@@ -23,52 +23,53 @@ class GameStateHelperImpl implements GameStateHelper {
 
     @Override
     public void redact(GameState gameState, GameStateData data, Player player) {
-        var playerId = player.id();
-        for (var tile : gameState.tiles()) {
+        var playerId = player.getId();
+        for (var tile : gameState.getTiles()) {
             if (!player.canSee(tile)) {
-                var tileData = data.tileDataAt(tile.id()).orElseThrow();
-                if (tileData.memory().memory().get(playerId) instanceof StructureTypeId type) {
-                    var structureData = new StructureData().type(type).hp(Asset.FULL_HP).complete(true);
-                    tileData.structureData(structureData);
+                var tileData = data.tileDataAt(tile.getId()).orElseThrow();
+                if (tileData.getMemory().memory().get(playerId) instanceof StructureTypeId type) {
+                    var structureData = new StructureData().setType(type).setHp(Asset.FULL_HP).setComplete(true);
+                    tileData.setStructureData(structureData);
                 } else {
-                    tileData.structureData(null);
+                    tileData.setStructureData(null);
                 }
             }
         }
-        var unitIds = gameState.units().filter(player::canSee).map(Unit::id).collect(Collectors.toSet());
-        data.unitData().removeIf(it -> !unitIds.contains(it.id()));
-        var team = player.team();
-        var teams = data.playerData().stream().map(PlayerData::team).distinct().count();
-        data.playerData().stream().filter(it -> !it.team().equals(team)).forEach(it -> {
-            it.supplies(0).aether(0);
-            if (teams > 2) it.focus(0);
-            it.spellSlots(new SpellSlotList(it.spellSlots().slots().stream().filter(SpellSlotData::revealed).toList()));
+        var unitIds = gameState.getUnits().filter(player::canSee).map(Unit::getId).collect(Collectors.toSet());
+        data.getUnitData().removeIf(it -> !unitIds.contains(it.getId()));
+        var team = player.getTeam();
+        var teams = data.getPlayerData().stream().map(PlayerData::getTeam).distinct().count();
+        data.getPlayerData().stream().filter(it -> !it.getTeam().equals(team)).forEach(it -> {
+            it.setSupplies(0).setAether(0);
+            if (teams > 2) it.setFocus(0);
+            var slots = it.getSpellSlots().slots().stream().filter(SpellSlotData::revealed).toList();
+            it.setSpellSlots(new SpellSlotList(slots));
         });
     }
 
     @Override
     public void updateMemory(GameState gameState, GameStateData data) {
-        for (var tile : gameState.tiles()) {
-            var tileData = data.tileDataAt(tile.id()).orElseThrow();
-            var memory = new HashMap<>(tileData.memory().memory());
-            var structureData = tileData.structureData();
-            for (var player : gameState.players()) {
+        for (var tile : gameState.getTiles()) {
+            var tileData = data.tileDataAt(tile.getId()).orElseThrow();
+            var memory = new HashMap<>(tileData.getMemory().memory());
+            var structureData = tileData.getStructureData();
+            for (var player : gameState.getPlayers()) {
                 if (player.canSee(tile)) {
                     if (structureData == null) {
-                        memory.remove(player.id());
+                        memory.remove(player.getId());
                     } else {
-                        memory.put(player.id(), structureData.type());
+                        memory.put(player.getId(), structureData.getType());
                     }
                 }
             }
-            tileData.memory(new Memory(memory));
+            tileData.setMemory(new Memory(memory));
         }
     }
 
     @Override
     public void cleanup(GameState gameState, GameStateData data) {
-        var structures = gameState.structures().filter(it -> it.hp() <= 0).toList();
-        var units = gameState.units().filter(it -> it.hp() <= 0).toList();
+        var structures = gameState.getStructures().filter(it -> it.getHp() <= 0).toList();
+        var units = gameState.getUnits().filter(it -> it.getHp() <= 0).toList();
         for (var structure : structures) {
             gameState.evaluate(new StructureDeathEvent(structure));
         }
@@ -76,9 +77,9 @@ class GameStateHelperImpl implements GameStateHelper {
             gameState.evaluate(new UnitDeathEvent(unit));
         }
         for (var structure : structures) {
-            data.tileDataAt(structure.tile().id()).orElseThrow().structureData(null);
+            data.tileDataAt(structure.getTile().getId()).orElseThrow().setStructureData(null);
         }
-        data.unitData().removeIf(it -> it.hp() <= 0);
+        data.getUnitData().removeIf(it -> it.getHp() <= 0);
         if (!structures.isEmpty() || !units.isEmpty()) {
             gameState.evaluate(new CleanupEvent(gameState));
             self.cleanup(gameState, data);
@@ -87,23 +88,23 @@ class GameStateHelperImpl implements GameStateHelper {
 
     @Override
     public void pass(GameState gameState, GameStateData gameStateData) {
-        var players = gameState.players();
+        var players = gameState.getPlayers();
         var size = players.size();
-        var base = gameStateData.turn().turn();
+        var base = gameStateData.getTurn().turn();
         for (var offset = 1; offset < size; offset++) {
             var turn = base + offset;
             var player = players.get(turn % size);
-            if (!player.defeated()) {
-                gameStateData.turn(new Turn(turn));
-                var supplies = player.structures().map(Structure::type).mapToInt(StructureType::supplyIncome).sum();
-                var aether = player.structures().map(Structure::type).mapToInt(StructureType::aetherIncome).sum();
-                player.supplies(player.supplies() + supplies);
-                player.aether(player.aether() + aether);
-                player.units().forEach(it -> it.actionsThisTurn(List.of()));
+            if (!player.isDefeated()) {
+                gameStateData.setTurn(new Turn(turn));
+                var supplies = player.getStructures().map(Structure::getType).mapToInt(StructureType::getSupplyIncome).sum();
+                var aether = player.getStructures().map(Structure::getType).mapToInt(StructureType::getAetherIncome).sum();
+                player.setSupplies(player.getSupplies() + supplies);
+                player.setAether(player.getAether() + aether);
+                player.getUnits().forEach(it -> it.setHistory(List.of()));
                 gameState.evaluate(new PlayerTurnEvent(player));
-                var playerData = gameStateData.playerData().get(player.id().playerId());
-                var slots = playerData.spellSlots().slots().stream().map(it -> it.withCasts(0)).toList();
-                playerData.spellSlots(new SpellSlotList(slots));
+                var playerData = gameStateData.getPlayerData().get(player.getId().playerId());
+                var slots = playerData.getSpellSlots().slots().stream().map(it -> it.withCasts(0)).toList();
+                playerData.setSpellSlots(new SpellSlotList(slots));
                 break;
             }
         }

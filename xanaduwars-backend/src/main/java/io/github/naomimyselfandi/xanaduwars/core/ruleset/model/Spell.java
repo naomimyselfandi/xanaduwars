@@ -9,12 +9,12 @@ import java.util.Set;
 public non-sealed interface Spell extends Declaration, Action, Rule {
 
     /// This spell's ID.
-    SpellId id();
+    SpellId getId();
 
     /// Any tags that apply to this spell.
-    @Override @Unmodifiable Set<SpellTag> tags();
+    @Override @Unmodifiable Set<SpellTag> getTags();
 
     /// The focus cost to cast this spell.
-    int focusCost();
+    int getFocusCost();
 
 }

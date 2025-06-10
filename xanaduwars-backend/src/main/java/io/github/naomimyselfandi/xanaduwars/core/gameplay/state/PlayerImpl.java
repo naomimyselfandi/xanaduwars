@@ -31,29 +31,29 @@ final class PlayerImpl implements Player {
     private final Ruleset ruleset;
 
     @Override
-    public PlayerId id() {
-        return data.id();
+    public PlayerId getId() {
+        return data.getId();
     }
 
     @Override
-    public Team team() {
-        return data.team();
+    public Team getTeam() {
+        return data.getTeam();
     }
 
     @Override
-    public Commander commander() {
-        return ruleset.commander(data.commander());
+    public Commander getCommander() {
+        return ruleset.getCommander(data.getCommander());
     }
 
     @Override
-    public Set<? extends Tag> tags() {
-        return commander().tags();
+    public Set<? extends Tag> getTags() {
+        return getCommander().getTags();
     }
 
     @Override
-    public @Unmodifiable List<SpellSlot> spellSlots() {
+    public @Unmodifiable List<SpellSlot> getSpellSlots() {
         return data
-                .spellSlots()
+                .getSpellSlots()
                 .slots()
                 .stream()
                 .<SpellSlot>map(data -> new SpellSlotImpl(data, ruleset))
@@ -61,112 +61,112 @@ final class PlayerImpl implements Player {
     }
 
     @Override
-    public Stream<Unit> units() {
-        return gameState.units().filter(unit -> equals(unit.owner()));
+    public Stream<Unit> getUnits() {
+        return gameState.getUnits().filter(unit -> equals(unit.getOwner()));
     }
 
     @Override
-    public Stream<Structure> structures() {
+    public Stream<Structure> getStructures() {
         return gameState
-                .tiles()
+                .getTiles()
                 .stream()
-                .map(Tile::structure)
+                .map(Tile::getStructure)
                 .filter(Objects::nonNull)
-                .filter(structure -> equals(structure.owner()));
+                .filter(structure -> equals(structure.getOwner()));
     }
 
     @Override
     public boolean canSee(@Nullable Physical element) {
         return switch (element) {
-            case Asset asset when asset.owner() instanceof Player owner && team().equals(owner.team()) -> true;
-            case Asset asset -> canSee(asset.tile());
-            case Tile tile -> Stream.concat(units(), structures()).anyMatch(it -> it.canSee(tile));
+            case Asset asset when asset.getOwner() instanceof Player owner && getTeam().equals(owner.getTeam()) -> true;
+            case Asset asset -> canSee(asset.getTile());
+            case Tile tile -> Stream.concat(getUnits(), getStructures()).anyMatch(it -> it.canSee(tile));
             case null -> false;
         };
     }
 
     @Override
-    public boolean defeated() {
-        return data.defeated();
+    public boolean isDefeated() {
+        return data.isDefeated();
     }
 
     @Override
     public Player defeat() {
-        data.defeated(true);
+        data.setDefeated(true);
         gameState.evaluate(new DefeatEvent(this));
         return this;
     }
 
     @Override
-    public int supplies() {
-        return data.supplies();
+    public int getSupplies() {
+        return data.getSupplies();
     }
 
     @Override
-    public Player supplies(int supplies) {
-        data.supplies(supplies);
+    public Player setSupplies(int supplies) {
+        data.setSupplies(supplies);
         return this;
     }
 
     @Override
-    public int aether() {
-        return data.aether();
+    public int getAether() {
+        return data.getAether();
     }
 
     @Override
-    public Player aether(int aether) {
-        data.aether(aether);
+    public Player setAether(int aether) {
+        data.setAether(aether);
         return this;
     }
 
     @Override
-    public int focus() {
-        return data.focus();
+    public int getFocus() {
+        return data.getFocus();
     }
 
     @Override
-    public Player focus(int focus) {
-        data.focus(focus);
+    public Player setFocus(int focus) {
+        data.setFocus(focus);
         return this;
     }
 
     @Override
-    public Player owner() {
+    public Player getOwner() {
         return this;
     }
 
     @Override
     public boolean isSelf(@Nullable Actor actor) {
-        return actor instanceof Actor it && equals(it.owner());
+        return actor instanceof Actor it && equals(it.getOwner());
     }
 
     @Override
     public boolean isFoe(@Nullable Actor actor) {
-        return actor instanceof Actor it && it.owner() instanceof Player owner && !team().equals(owner.team());
+        return actor instanceof Actor it && it.getOwner() instanceof Player owner && !getTeam().equals(owner.getTeam());
     }
 
     @Override
     public boolean isFriend(@Nullable Actor actor) {
-        return actor instanceof Actor it && it.owner() instanceof Player owner && team().equals(owner.team());
+        return actor instanceof Actor it && it.getOwner() instanceof Player owner && getTeam().equals(owner.getTeam());
     }
 
     @Override
-    public @Unmodifiable List<Action> actions() {
+    public @Unmodifiable List<Action> getAction() {
         return Stream.of(
-                spellSlots().stream().map(SpellSlot::spell),
-                ruleset.commonPlayerActions().stream()
+                getSpellSlots().stream().map(SpellSlot::getSpell),
+                ruleset.getCommonPlayerActions().stream()
         ).<Action>flatMap(Function.identity()).toList();
     }
 
     @Override
     public Stream<Rule> rules() {
-        var spells = spellSlots().stream().filter(it -> it.timesCastThisTurn() > 0).map(SpellSlot::spell);
-        return Stream.concat(Stream.of(commander()), spells);
+        var spells = getSpellSlots().stream().filter(it -> it.getCastsThisTurn() > 0).map(SpellSlot::getSpell);
+        return Stream.concat(Stream.of(getCommander()), spells);
     }
 
     @Override
     public String toString() {
-        return "Player[id=%d, commander=%s]".formatted(data.id().playerId(), commander());
+        return "Player[id=%d, commander=%s]".formatted(data.getId().playerId(), getCommander());
     }
 
 }

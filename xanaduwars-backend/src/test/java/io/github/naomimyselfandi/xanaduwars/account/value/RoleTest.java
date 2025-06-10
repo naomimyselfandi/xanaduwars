@@ -26,7 +26,7 @@ class RoleTest {
     @EnumSource
     @ParameterizedTest
     void impliedRoles(Role role) {
-        assertThat(role.impliedRoles()).isEqualTo(switch (role) {
+        assertThat(role.getImpliedRoles()).isEqualTo(switch (role) {
             case SUPPORT, JUDGE, MODERATOR -> Set.of();
             case DEVELOPER -> Set.of(Role.SUPPORT);
             case ADMIN -> Set.of(Role.DEVELOPER, Role.MODERATOR, Role.JUDGE);
@@ -40,7 +40,7 @@ class RoleTest {
             @Override
             public void accept(Role role) {
                 assertThat(add(role)).isTrue();
-                role.impliedRoles().forEach(this);
+                role.getImpliedRoles().forEach(this);
             }
         }
         new Visitor().accept(role);

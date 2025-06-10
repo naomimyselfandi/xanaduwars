@@ -27,7 +27,7 @@ import static org.mockito.Mockito.*;
 
 @MockitoSettings(strictness = Strictness.LENIENT)
 @ExtendWith({MockitoExtension.class, SeededRandomExtension.class})
-class AuthenticatedResolverTest {
+class AuthenticatedParameterResolverTest {
 
     private interface Helper extends AccountDto {}
 
@@ -44,7 +44,7 @@ class AuthenticatedResolverTest {
     private AccountService accountService;
 
     @InjectMocks
-    private AuthenticatedResolver fixture;
+    private AuthenticatedParameterResolver fixture;
 
     @ParameterizedTest
     @CsvSource(textBlock = """

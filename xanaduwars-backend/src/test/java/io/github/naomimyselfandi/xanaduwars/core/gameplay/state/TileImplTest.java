@@ -59,107 +59,107 @@ class TileImplTest {
 
     @BeforeEach
     void setup(SeededRng random) {
-        tileData = random.nextTileData().structureData(null);
-        when(ruleset.tileType(tileData.type())).thenReturn(tileType);
+        tileData = random.nextTileData().setStructureData(null);
+        when(ruleset.getTileTypes(tileData.getType())).thenReturn(tileType);
         fixture = new TileImpl(tileData, gameState, ruleset, creator);
     }
 
     @Test
-    void id() {
-        assertThat(fixture.id()).isEqualTo(tileData.id());
+    void getId() {
+        assertThat(fixture.getId()).isEqualTo(tileData.getId());
     }
 
     @Test
-    void type() {
-        assertThat(fixture.type()).isEqualTo(tileType);
+    void getType() {
+        assertThat(fixture.getType()).isEqualTo(tileType);
     }
 
     @Test
-    void tags(SeededRng random) {
-        when(tileType.tags()).thenReturn(Set.of(random.get(), random.get()));
-        assertThat(fixture.tags()).isEqualTo(tileType.tags());
+    void getTags(SeededRng random) {
+        when(tileType.getTags()).thenReturn(Set.of(random.get(), random.get()));
+        assertThat(fixture.getTags()).isEqualTo(tileType.getTags());
     }
 
     @ParameterizedTest
     @ValueSource(booleans = {true, false})
-    void movementTable(boolean hasStructure, SeededRng random) {
-        when(tileType.movementTable()).thenReturn(random.get());
-        when(structureType.movementTable()).thenReturn(random.get());
+    void getMovementTable(boolean hasStructure, SeededRng random) {
+        when(tileType.getMovementTable()).thenReturn(random.get());
+        when(structureType.getMovementTable()).thenReturn(random.get());
         if (hasStructure) {
             var structureData = random.nextStructureData();
-            tileData.structureData(structureData);
-            when(ruleset.structureType(structureData.type())).thenReturn(structureType);
+            tileData.setStructureData(structureData);
+            when(ruleset.getStructureType(structureData.getType())).thenReturn(structureType);
         }
         var type = hasStructure ? structureType : tileType;
-        assertThat(fixture.movementTable()).isEqualTo(type.movementTable());
+        assertThat(fixture.getMovementTable()).isEqualTo(type.getMovementTable());
     }
 
     @ParameterizedTest
     @ValueSource(booleans = {true, false})
-    void cost(boolean hasStructure, SeededRng random) {
-        when(tileType.movementTable()).thenReturn(random.get());
-        when(structureType.movementTable()).thenReturn(random.get());
+    void getMovementCost(boolean hasStructure, SeededRng random) {
+        when(tileType.getMovementTable()).thenReturn(random.get());
+        when(structureType.getMovementTable()).thenReturn(random.get());
         if (hasStructure) {
             var structureData = random.nextStructureData();
-            tileData.structureData(structureData);
-            when(ruleset.structureType(structureData.type())).thenReturn(structureType);
+            tileData.setStructureData(structureData);
+            when(ruleset.getStructureType(structureData.getType())).thenReturn(structureType);
         }
         var type = hasStructure ? structureType : tileType;
-        var tags = Set.of(random.pick(type.movementTable().table().keySet()), random.get());
-        when(unit.tags()).thenReturn(tags);
-        assertThat(fixture.cost(unit)).isEqualTo(type.movementTable().cost(unit.tags()));
+        var tags = Set.of(random.pick(type.getMovementTable().table().keySet()), random.get());
+        when(unit.getTags()).thenReturn(tags);
+        assertThat(fixture.getMovementCost(unit)).isEqualTo(type.getMovementTable().cost(unit.getTags()));
     }
 
     @ParameterizedTest
     @ValueSource(booleans = {true, false})
-    void cover(boolean hasStructure, SeededRng random) {
-        when(tileType.cover()).thenReturn(random.nextDouble());
-        when(structureType.cover()).thenReturn(random.nextDouble());
+    void getCover(boolean hasStructure, SeededRng random) {
+        when(tileType.getCover()).thenReturn(random.nextDouble());
+        when(structureType.getCover()).thenReturn(random.nextDouble());
         if (hasStructure) {
             var structureData = random.nextStructureData();
-            tileData.structureData(structureData);
-            when(ruleset.structureType(structureData.type())).thenReturn(structureType);
+            tileData.setStructureData(structureData);
+            when(ruleset.getStructureType(structureData.getType())).thenReturn(structureType);
         }
         var type = hasStructure ? structureType : tileType;
-        assertThat(fixture.cover()).isEqualTo(type.cover());
+        assertThat(fixture.getCover()).isEqualTo(type.getCover());
     }
 
     @Test
-    void structure(SeededRng random) {
+    void getStructure(SeededRng random) {
         var structureData = random.nextStructureData();
-        tileData.structureData(structureData);
-        assertThat(fixture.structure()).isEqualTo(new StructureImpl(structureData, fixture, ruleset));
-        tileData.structureData(null);
-        assertThat(fixture.structure()).isNull();
+        tileData.setStructureData(structureData);
+        assertThat(fixture.getStructure()).isEqualTo(new StructureImpl(structureData, fixture, ruleset));
+        tileData.setStructureData(null);
+        assertThat(fixture.getStructure()).isNull();
     }
 
     @Test
-    void unit() {
-        assertThat(fixture.unit()).isNull();
-        when(gameState.units()).then(_ -> Stream.of(unit, anotherUnit));
-        when(unit.location()).thenReturn(fixture);
-        when(anotherUnit.location()).thenReturn(anotherTile);
-        assertThat(fixture.unit()).isEqualTo(unit);
+    void getUnit() {
+        assertThat(fixture.getUnit()).isNull();
+        when(gameState.getUnits()).then(_ -> Stream.of(unit, anotherUnit));
+        when(unit.getLocation()).thenReturn(fixture);
+        when(anotherUnit.getLocation()).thenReturn(anotherTile);
+        assertThat(fixture.getUnit()).isEqualTo(unit);
     }
 
     @Test
     void createUnit(SeededRng random) {
         var unitTypeId = random.<UnitTypeId>get();
-        when(unitType.id()).thenReturn(unitTypeId);
+        when(unitType.getId()).thenReturn(unitTypeId);
         var playerId = random.<PlayerId>get();
-        when(player.id()).thenReturn(playerId);
+        when(player.getId()).thenReturn(playerId);
         fixture.createUnit(unitType, player);
-        verify(creator).createUnitData(fixture.id(), unitTypeId, playerId);
+        verify(creator).createUnitData(fixture.getId(), unitTypeId, playerId);
     }
 
     @Test
     void createStructure(SeededRng random) {
         var structureTypeId = random.<StructureTypeId>get();
-        when(structureType.id()).thenReturn(structureTypeId);
+        when(structureType.getId()).thenReturn(structureTypeId);
         var playerId = random.<PlayerId>get();
-        when(player.id()).thenReturn(playerId);
+        when(player.getId()).thenReturn(playerId);
         fixture.createStructure(structureType, player);
-        verify(creator).createStructureData(fixture.id(), structureTypeId, playerId);
+        verify(creator).createStructureData(fixture.getId(), structureTypeId, playerId);
     }
 
     @ParameterizedTest
@@ -167,11 +167,11 @@ class TileImplTest {
             0,1,2,3,4
             1,0,0,1,2
             """)
-    void distance(int x0, int y0, int x1, int y1, int expected) {
-        tileData.id(new TileId(x0, y0));
-        when(anotherTile.id()).thenReturn(new TileId(x1, y1));
-        assertThat(fixture.distance(anotherTile)).isEqualTo(expected);
-        assertThat(fixture.distance(anotherTile)).isEqualTo(expected);
+    void getDistance(int x0, int y0, int x1, int y1, int expected) {
+        tileData.setId(new TileId(x0, y0));
+        when(anotherTile.getId()).thenReturn(new TileId(x1, y1));
+        assertThat(fixture.getDistance(anotherTile)).isEqualTo(expected);
+        assertThat(fixture.getDistance(anotherTile)).isEqualTo(expected);
     }
 
     @ParameterizedTest
@@ -179,45 +179,45 @@ class TileImplTest {
             0,1,2,3,4
             1,0,0,1,2
             """)
-    void distance_WhenTheOtherElementIsNotATile_ThenUsesItsTile(int x0, int y0, int x1, int y1, int expected) {
-        when(unit.tile()).thenReturn(anotherTile);
-        tileData.id(new TileId(x0, y0));
-        when(anotherTile.id()).thenReturn(new TileId(x1, y1));
-        assertThat(fixture.distance(unit)).isEqualTo(expected);
-        assertThat(fixture.distance(unit)).isEqualTo(expected);
+    void getDistance_WhenTheOtherElementIsNotATile_ThenUsesItsTile(int x0, int y0, int x1, int y1, int expected) {
+        when(unit.getTile()).thenReturn(anotherTile);
+        tileData.setId(new TileId(x0, y0));
+        when(anotherTile.getId()).thenReturn(new TileId(x1, y1));
+        assertThat(fixture.getDistance(unit)).isEqualTo(expected);
+        assertThat(fixture.getDistance(unit)).isEqualTo(expected);
     }
 
     @Test
-    void distance_WhenTheOtherElementIsAUnitInATransport_ThenNaN() {
-        assertThat(fixture.distance(unit)).isNaN();
+    void getDistance_WhenTheOtherElementIsAUnitInATransport_ThenNaN() {
+        assertThat(fixture.getDistance(unit)).isNaN();
     }
 
     @EnumSource
     @ParameterizedTest
     void step(Direction direction) {
-        when(gameState.maybeTile(tileData.id().step(direction))).thenReturn(anotherTile);
+        when(gameState.findTile(tileData.getId().step(direction))).thenReturn(anotherTile);
         assertThat(fixture.step(direction)).isEqualTo(anotherTile);
     }
 
     @Test
     void area() {
-        var ids = tileData.id().area(1).iterator();
-        when(gameState.maybeTile(ids.next())).thenReturn(null);
-        when(gameState.maybeTile(ids.next())).thenReturn(anotherTile);
-        when(gameState.maybeTile(ids.next())).thenReturn(fixture);
-        when(gameState.maybeTile(ids.next())).thenReturn(yetAnotherTile);
-        when(gameState.maybeTile(ids.next())).thenReturn(null);
+        var ids = tileData.getId().area(1).iterator();
+        when(gameState.findTile(ids.next())).thenReturn(null);
+        when(gameState.findTile(ids.next())).thenReturn(anotherTile);
+        when(gameState.findTile(ids.next())).thenReturn(fixture);
+        when(gameState.findTile(ids.next())).thenReturn(yetAnotherTile);
+        when(gameState.findTile(ids.next())).thenReturn(null);
         assertThat(fixture.area(1)).containsExactly(anotherTile, fixture, yetAnotherTile);
     }
 
     @Test
-    void tile() {
-        assertThat(fixture.tile()).isSameAs(fixture);
+    void getTile() {
+        assertThat(fixture.getTile()).isSameAs(fixture);
     }
 
     @Test
     void testToString() {
-        var id = tileData.id();
+        var id = tileData.getId();
         assertThat(fixture).hasToString("Tile[x=%d, y=%d, type=%s]", id.x(), id.y(), tileType);
     }
 

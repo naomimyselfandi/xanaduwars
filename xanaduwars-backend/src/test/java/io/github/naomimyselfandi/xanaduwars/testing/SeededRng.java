@@ -71,27 +71,38 @@ public class SeededRng extends SeededRandom {
 
     public PlayerData nextPlayerData() {
         return new PlayerData()
-                .id(get())
-                .team(get())
-                .commander(get())
-                .spellSlots(new SpellSlotList(List.of(get(), get(), get())))
-                .supplies(nextIntNotNegative())
-                .aether(nextIntNotNegative())
-                .focus(nextIntNotNegative());
+                .setId(get())
+                .setTeam(get())
+                .setCommander(get())
+                .setSpellSlots(new SpellSlotList(List.of(get(), get(), get())))
+                .setSupplies(nextIntNotNegative())
+                .setAether(nextIntNotNegative())
+                .setFocus(nextIntNotNegative());
     }
 
     public StructureData nextStructureData() {
-        return new StructureData().type(get()).owner(get()).hp(nextInt(0, 101)).complete(nextBoolean());
+        return new StructureData()
+                .setType(get())
+                .setOwner(get())
+                .setHp(nextInt(0, 101))
+                .setComplete(nextBoolean());
     }
 
     public TileData nextTileData() {
-        var structureData = nextBoolean() ? nextStructureData() : null;
-        var memory = new Memory(Map.of(get(), get()));
-        return new TileData().id(get()).type(get()).structureData(structureData).memory(memory);
+        return new TileData()
+                .setId(get())
+                .setType(get())
+                .setStructureData(nextBoolean() ? nextStructureData() : null)
+                .setMemory(new Memory(Map.of(get(), get())));
     }
 
     public UnitData nextUnitData() {
-        return new UnitData().id(get()).type(get()).owner(get()).hp(nextInt(0, 101)).location(get());
+        return new UnitData()
+                .setId(get())
+                .setType(get())
+                .setOwner(get())
+                .setHp(nextInt(0, 101))
+                .setLocation(get());
     }
 
     public AccountId nextAccountId() {

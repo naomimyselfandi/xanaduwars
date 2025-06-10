@@ -12,55 +12,55 @@ public non-sealed interface Player extends Actor {
     /// This player's ID. This corresponds directly to their position in the
     /// turn order: the first player's ID is zero, the second player's ID is
     /// one, and so on.
-    PlayerId id();
+    PlayerId getId();
 
     /// This player's team. In a one-on-one or free-for-all game, each player is
     /// simply assigned a unique team, typically derived from their player ID.
-    Team team();
+    Team getTeam();
 
     /// The commander this player is playing as.
-    Commander commander();
+    Commander getCommander();
 
     /// This player's spell slots.
-    @Unmodifiable List<SpellSlot> spellSlots();
+    @Unmodifiable List<SpellSlot> getSpellSlots();
 
     /// This player's units in creation order.
-    Stream<Unit> units();
+    Stream<Unit> getUnits();
 
     /// This player's structures in tile order.
-    Stream<Structure> structures();
+    Stream<Structure> getStructures();
 
     /// Check if this player can see an element.
     boolean canSee(Physical element);
 
     /// Whether this player has been defeated.
-    boolean defeated();
+    boolean isDefeated();
 
     /// Defeat this player.
     Player defeat();
 
     /// This player's available supplies. Supplies are the main resource used to
     /// deploy units and construct structures.
-    int supplies();
+    int getSupplies();
 
     /// This player's available supplies. Supplies are the main resource used to
     /// deploy units and construct structures.
-    Player supplies(int supplies);
+    Player setSupplies(int supplies);
 
     /// This player's available aether. Supplies are a secondary resource used
     /// to deploy advanced units.
-    int aether();
+    int getAether();
 
     /// This player's available aether. Supplies are a secondary resource used
     /// to deploy advanced units.
-    Player aether(int aether);
+    Player setAether(int aether);
 
     /// This player's available focus. Focus is the main resource used to cast
     /// spells.
-    int focus();
+    int getFocus();
 
     /// This player's available focus. Focus is the main resource used to cast
     /// spells.
-    Player focus(int focus);
+    Player setFocus(int focus);
 
 }
