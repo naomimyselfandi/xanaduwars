@@ -1,0 +1,20 @@
+package io.github.naomimyselfandi.xanaduwars.core.common;
+
+import com.fasterxml.jackson.annotation.JsonValue;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotNull;
+
+/// A tag that categorizes structures.
+public record StructureTag(@JsonValue @NotNull @Valid Name name) implements DamageKey, Tag {
+
+    /// A tag that categorizes structures.
+    public StructureTag(String name) {
+        this(new Name(name));
+    }
+
+    @Override
+    public String toString() {
+        return name.toString();
+    }
+
+}

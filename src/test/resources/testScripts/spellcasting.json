@@ -1,0 +1,108 @@
+{
+  "map": {
+    "players": [
+      {"team": 0},
+      {"team": 1}
+    ],
+    "tiles": [
+      [
+        {"type": 0},
+        {"type": 0},
+        {"type": 0},
+        {"type": 0},
+        {"type": 0},
+        {"type": 0},
+        {"type": 0}
+      ],
+      [
+        {"type": 0},
+        {"type": 0},
+        {"type": 0, "unit": {"type": 1, "owner": 0}},
+        {"type": 0},
+        {"type": 0, "unit": {"type": 1, "owner": 1}},
+        {"type": 0, "unit": {"type": 1, "owner": 1, "hp": 30}},
+        {"type": 0}
+      ],
+      [
+        {"type": 0},
+        {"type": 0},
+        {"type": 0},
+        {"type": 0},
+        {"type": 0},
+        {"type": 0},
+        {"type": 0}
+      ]
+    ]
+  },
+  "choices": [
+    {"commander": 0, "spells": [2, 6]},
+    {"commander": 1, "spells": [3, 4]}
+  ],
+  "steps": [
+    {
+      "setup": [
+        "player(0).focus = 9000"
+      ],
+      "actor": {"player": 0},
+      "items": [
+        {"name": "MagicMissile", "targets": [{"kind": "Unit", "x": 2, "y": 1}]}
+      ],
+      "invalid": true,
+      "postconditions": {
+        "player(0).spellSlots[0].active": "false",
+        "player(0).focus": "9000",
+        "unit(2, 1).hp.ordinal": "100"
+      }
+    },
+    {
+      "actor": {"player": 0},
+      "items": [
+        {"name": "MagicMissile", "targets": [{"kind": "Unit", "x": 4, "y": 1}]}
+      ],
+      "postconditions": {
+        "player(0).spellSlots[0].active": "true",
+        "player(0).focus": "5000",
+        "unit(4, 1).hp.ordinal": "70"
+      }
+    },
+    {
+      "actor": {"player": 0},
+      "items": [
+        {"name": "MagicMissile", "targets": [{"kind": "Unit", "x": 4, "y": 1}]}
+      ],
+      "invalid": true,
+      "postconditions": {
+        "player(0).spellSlots[0].active": "true",
+        "player(0).focus": "5000",
+        "unit(4, 1).hp.ordinal": "70"
+      }
+    },
+    {
+      "actor": {"player": 0},
+      "items": [{"name": "Pass", "targets": []}]
+    },
+    {
+      "setup": ["player(1).focus = 3000"],
+      "actor": {"player": 1},
+      "items": [
+        {"name": "QuickFix", "targets": [{"kind": "Tile", "x": 4, "y": 1}]}
+      ],
+      "postconditions": {
+        "player(0).spellSlots[0].active": "true",
+        "player(1).spellSlots[0].active": "true",
+        "player(0).focus": "5000",
+        "player(1).focus": "600",
+        "unit(4, 1).hp.ordinal": "90",
+        "unit(5, 1).hp.ordinal": "50"
+      }
+    },
+    {
+      "actor": {"player": 1},
+      "items": [{"name": "Pass", "targets": []}],
+      "postconditions": {
+        "player(0).spellSlots[0].active": "false",
+        "player(1).spellSlots[0].active": "true"
+      }
+    }
+  ]
+}

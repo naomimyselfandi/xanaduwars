@@ -1,0 +1,18 @@
+{
+  "$comment": "Minimal valid ruleset for testing.",
+  "rules": [],
+  "affinities": [],
+  "commanders": [],
+  "spells": [],
+  "structureTypes": [],
+  "tileTypes": [],
+  "unitTypes": [],
+  "actions": [
+    {"name": "Xyz"}
+  ],
+  "moveAction": "Xyz",
+  "dropAction": "Xyz",
+  "waitAction": "Xyz",
+  "passAction": "Xyz",
+  "yieldAction": "Xyz"
+}

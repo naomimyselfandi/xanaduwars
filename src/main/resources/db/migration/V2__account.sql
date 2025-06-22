@@ -1,0 +1,21 @@
+CREATE EXTENSION IF NOT EXISTS citext;
+
+CREATE TABLE account (
+    "id" UUID PRIMARY KEY,
+    "username" VARCHAR(64) NOT NULL,
+    "canonical_username" VARCHAR(64) UNIQUE NOT NULL,
+    "email_address" CITEXT UNIQUE NOT NULL,
+    "secret_hash" TEXT,
+    "created_at" TIMESTAMPTZ NOT NULL DEFAULT now(),
+    "last_seen_at" TIMESTAMPTZ NOT NULL DEFAULT '1970-01-01T00:00:00Z',
+    "email_notifications" BOOLEAN NOT NULL DEFAULT FALSE,
+    "allow_magic_links" BOOLEAN NOT NULL DEFAULT FALSE,
+    "hide_activity" BOOLEAN NOT NULL DEFAULT FALSE,
+    "timezone" VARCHAR(64) NOT NULL DEFAULT 'UTC',
+    "admin" BOOLEAN NOT NULL DEFAULT FALSE,
+    "moderator" BOOLEAN NOT NULL DEFAULT FALSE,
+    "support" BOOLEAN NOT NULL DEFAULT FALSE,
+    "judge" BOOLEAN NOT NULL DEFAULT FALSE,
+    "developer" BOOLEAN NOT NULL DEFAULT FALSE,
+    "bot" BOOLEAN NOT NULL DEFAULT FALSE
+);

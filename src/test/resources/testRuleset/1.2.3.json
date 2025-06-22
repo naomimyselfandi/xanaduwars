@@ -1,0 +1,1139 @@
+{
+  "$comment": "This is an early development version and won't necessarily maintain backwards compatibility.",
+  "rules": [
+    {
+      "name": "Rout",
+      "handlers": {
+        "Cleanup": [
+          "if !game.limitedCopy: // Avoid false positive in previews",
+          "  lambda #worth:ToIntFunction(#it):",
+          "    return #it.type.supplyCost * #it.hp / 100",
+          "  #average = game.units.values.join(game.structures.values).mapToInt(#worth).sum / game.players.size",
+          "  #threshold = #average / 2",
+          "  for #player in game.players:",
+          "    #score = #player.units.join(#player.structures).mapToInt(#worth).sum",
+          "    if #score < #threshold:",
+          "      #player.defeat()"
+        ],
+        "Defeat": [
+          "for #it in subject.units.join(subject.structures):",
+          "  #it.hp = 0"
+        ]
+      }
+    },
+    {
+      "name": "Income",
+      "handlers": {
+        "TurnStart": [
+          "subject.supplies = subject.supplies + 100",
+          "for #it in subject.structures:",
+          "  if #it.type == @Depot || #it.type == @Headquarters:",
+          "    subject.supplies = subject.supplies + 100",
+          "  if #it.type == @Tower:",
+          "    subject.aether = subject.aether + 100"
+        ]
+      }
+    },
+    {
+      "name": "UnitActions",
+      "handlers": {
+        "TurnStart": [
+          "for #unit in subject.units:",
+          "  #unit.ready = true"
+        ],
+        "ActionStatus": [
+          "if subject instanceof T(Unit):",
+          "  validate subject.ready :: 'That unit has already acted.'"
+        ],
+        "ActionExecution": [
+          "if subject instanceof T(Unit):",
+          "  subject.ready = false"
+        ],
+        "ActionGroup": [
+          "#movement = false",
+          "#standard = false",
+          "for #action in actions:",
+          "  if #action.tags.contains(@FreeAction):",
+          "    continue",
+          "  if #action == @Move:",
+          "    validate !(#movement) :: 'A unit can only move once per turn.'",
+          "    #movement = true",
+          "  else:",
+          "    validate !(#standard) :: 'A unit can only act once per turn.'",
+          "    #standard = true"
+        ]
+      }
+    },
+    {
+      "name": "Spells",
+      "handlers": {
+        "SpellChoice": [
+          "#positive = 0",
+          "for #spell in spells:",
+          "  for #tag in #spell.tags:",
+          "    if commander.affinities[#tag] == @Positive:",
+          "      #positive++",
+          "      continue 2",
+          "for #spell in spells:",
+          "  for #tag in #spell.tags:",
+          "    if commander.affinities[#tag] == @Negative:",
+          "      validate #positive >= (spells.size - 1) :: _",
+          "        'Invalid combination of spells for %s.'.formatted(commander.name)",
+          "      break 2"
+        ],
+        "ActionUsage": [
+          "if action instanceof T(Spell):",
+          "  lambda #active:Predicate(#slot):",
+          "    return #slot.active",
+          "  validate subject.spellSlots.stream.noneMatch(#active) :: 'You already cast a spell this turn.'"
+        ],
+        "ActionExecution": [
+          "if action instanceof T(Spell):",
+          "  for #slot in subject.spellSlots:",
+          "    if #slot.spell == action:",
+          "      #slot.active = true",
+          "      #slot.reveal()"
+        ],
+        "TurnStart": [
+          "for #slot in subject.spellSlots:",
+          "  #slot.active = false"
+        ]
+      }
+    },
+    {
+      "name": "HidingSpots",
+      "handlers": {
+        "AssetVision": [
+          "if target.tags.contains(@HidingSpot) && subject.getDistance(target) > 1:",
+          "  return false"
+        ]
+      }
+    }
+  ],
+  "affinities": ["Positive", "Negative"],
+  "commanders": [
+    {
+      "$comment": "Real commanders will be more interesting than this.",
+      "name": "Alice",
+      "affinities": {"Offensive": "Positive", "Defensive": "Negative"},
+      "signatureSpells": ["MagicMissile"]
+    },
+    {
+      "name": "Bob",
+      "affinities": {"Defensive": "Positive", "Offensive": "Negative"},
+      "signatureSpells": ["QuickFix"],
+      "handlers": {
+        "Firepower": [
+          "// +10% counterattack damage on rough terrain.",
+          "if (subject.owner != game.activePlayer) && subject.tile?.cover > 0.2:",
+          "  return #value + 0.1",
+          "else:",
+          "  return #value"
+        ]
+      }
+    }
+  ],
+  "spells": [
+    {
+      "name": "MagicMissile",
+      "tags": ["Offensive"],
+      "targets": [{"Unit": true, "Enemy": true}],
+      "effect": "target.hp = (target.hp - 30)",
+      "focusCost": 4000
+    },
+    {
+      "name": "QuickFix",
+      "tags": ["Defensive"],
+      "targets": [{"Tile": true}],
+      "validation": "validate !target.getArea(1).?[unit?.isAlly(subject)].empty :: 'Nothing to repair.'",
+      "effect": [
+        "for #tile in target.getArea(1):",
+        "  #unit = #tile.unit",
+        "  if #unit?.isAlly(subject):",
+        "    #unit.hp = (#unit.hp + 20)"
+      ],
+      "focusCost": 2400
+    },
+    {
+      "name": "HammerForce",
+      "tags": ["Offensive"],
+      "handlers": {
+        "Firepower": "return subject.distance(target) <= 1 ? #value + 0.2 : #value"
+      },
+      "focusCost": 1600
+    },
+    {
+      "name": "ScopeIn",
+      "tags": ["Offensive"],
+      "handlers": {
+        "Firepower": "return subject.distance(target) > 1 ? #value + 0.2 : #value"
+      },
+      "focusCost": 1600
+    },
+    {
+      "name": "Stalwart",
+      "tags": ["Defensive"],
+      "handlers": {
+        "Defense": "return subject.distance(target) <= 1 ? #value + 0.2 : #value"
+      },
+      "focusCost": 1600
+    },
+    {
+      "name": "HunkerDown",
+      "tags": ["Defensive"],
+      "handlers": {
+        "Defense": "return subject.distance(target) > 1 ? #value + 0.2 : #value"
+      },
+      "focusCost": 1600
+    },
+    {
+      "name": "Tailwind",
+      "tags": ["Utility"],
+      "handlers": {
+        "Speed": "return #value + 1"
+      },
+      "focusCost": 1600
+    },
+    {
+      "name": "Farsight",
+      "tags": ["Utility"],
+      "handlers": {
+        "VisionRange": "return #value + 1"
+      },
+      "focusCost": 1600
+    }
+  ],
+  "structureTypes": [
+    {
+      "name": "Headquarters",
+      "tags": ["Building"],
+      "supplyCost": 1000,
+      "buildTime": 10000,
+      "vision": 2,
+      "movementTable": {
+        "Land": 1,
+        "Air": 1
+      },
+      "cover": 0.4,
+      "handlers": {
+        "StructureDeath": "subject.owner?.defeat()"
+      }
+    },
+    {
+      "name": "Depot",
+      "tags": ["Building"],
+      "precondition": "validate subject.tile.type == @EarthLeyline :: 'Can only build that on an Earth Leyline.'",
+      "supplyCost": 100,
+      "buildTime": 200,
+      "movementTable": {
+        "Land": 1,
+        "Air": 1
+      },
+      "cover": 0.3
+    },
+    {
+      "name": "Tower",
+      "tags": ["Building"],
+      "precondition": "validate subject.tile.type == @AetherLeyline :: 'Can only build that on an Aether Leyline.'",
+      "supplyCost": 200,
+      "buildTime": 200,
+      "movementTable": {
+        "Land": 1,
+        "Air": 1
+      },
+      "cover": 0.3
+    },
+    {
+      "name": "Fort",
+      "tags": ["Building"],
+      "precondition": "validate subject.tile.type == @FireLeyline :: 'Can only build that on a Fire Leyline.'",
+      "supplyCost": 300,
+      "buildTime": 200,
+      "movementTable": {
+        "Land": 1,
+        "Air": 1
+      },
+      "cover": 0.3,
+      "actions": [
+        "Engineer",
+        "RifleSquad",
+        "RepeaterSquad",
+        "HavocSquad",
+        "Vanguard",
+        "Scorpion",
+        "FieldGun",
+        "APC",
+        "RepairTruck",
+        "Devastator",
+        "Colossus"
+      ]
+    },
+    {
+      "name": "Port",
+      "tags": ["Building"],
+      "precondition": "validate subject.tile.type == @WaterLeyline :: 'Can only build that on a Water Leyline.'",
+      "supplyCost": 300,
+      "buildTime": 200,
+      "movementTable": {
+        "Land": 1,
+        "Air": 1,
+        "Naval": 1
+      },
+      "cover": 0.3,
+      "actions": [
+        "Skiff",
+        "Gunboat",
+        "Corvette",
+        "Aegis",
+        "Dreadnought"
+      ]
+    },
+    {
+      "name": "Airfield",
+      "tags": ["Building"],
+      "precondition": "validate subject.tile.type == @AirLeyline :: 'Can only build that on an Air Leyline.'",
+      "supplyCost": 300,
+      "aetherCost": 200,
+      "buildTime": 200,
+      "movementTable": {
+        "Land": 1,
+        "Air": 1
+      },
+      "cover": 0.3,
+      "actions": [
+        "Ornithopter",
+        "Biplane",
+        "Airship"
+      ]
+    }
+  ],
+  "tileTypes": [
+    {
+      "name": "Plains",
+      "movementTable": {
+        "Treaded": 1,
+        "Wheeled": 1.5,
+        "Soldier": 1,
+        "Air": 1
+      },
+      "cover": 0.1
+    },
+    {
+      "name": "Road",
+      "movementTable": {
+        "Treaded": 1,
+        "Wheeled": 1,
+        "Soldier": 0.75,
+        "Air": 1
+      }
+    },
+    {
+      "name": "Bridge",
+      "movementTable": {
+        "Treaded": 1,
+        "Wheeled": 1,
+        "Soldier": 0.75,
+        "Air": 1
+      }
+    },
+    {
+      "name": "River",
+      "movementTable": {
+        "Soldier": 2,
+        "Boat": 1,
+        "Air": 1
+      }
+    },
+    {
+      "name": "Ruins",
+      "tags": ["HidingSpot"],
+      "movementTable": {
+        "Treaded": 1,
+        "Wheeled": 1,
+        "Soldier": 1,
+        "Air": 1
+      },
+      "cover": 0.2,
+      "handlers": {
+        "TileTag": "return (subject.unit?.tags?.contains(@Air) ?: false) ? #value.drop(@HidingSpot).set : #value"
+      }
+    },
+    {
+      "name": "Forest",
+      "movementTable": {
+        "Treaded": 2,
+        "Wheeled": 3,
+        "Soldier": 1,
+        "Air": 1
+      },
+      "cover": 0.3
+    },
+    {
+      "name": "Hill",
+      "movementTable": {
+        "Treaded": 2,
+        "Wheeled": 2,
+        "Soldier": 2,
+        "Air": 1
+      },
+      "cover": 0.3,
+      "handlers": {
+        "VisionRange": "return #value + (subject.tags.contains(@Land) ? 1 : 0)"
+      }
+    },
+    {
+      "name": "Swamp",
+      "movementTable": {
+        "Soldier": 2,
+        "Treaded": 4,
+        "Air": 1
+      },
+      "cover": 0.3
+    },
+    {
+      "name": "Mountain",
+      "movementTable": {
+        "Soldier": 2,
+        "Air": 1
+      },
+      "cover": 0.4,
+      "handlers": {
+        "VisionRange": "return #value + (subject.tags.contains(@Land) ? 2 : 0)"
+      }
+    },
+    {
+      "name": "Ocean",
+      "tags": ["DeepWater"],
+      "movementTable": {
+        "Ship": 1,
+        "Boat": 1,
+        "Air": 1
+      }
+    },
+    {
+      "name": "Beach",
+      "movementTable": {
+        "Treaded": 1,
+        "Wheeled": 2,
+        "Soldier": 1,
+        "Boat": 1,
+        "Air": 1
+      }
+    },
+    {
+      "name": "SeaFog",
+      "tags": ["DeepWater", "HidingSpot"],
+      "movementTable": {
+        "Ship": 1,
+        "Boat": 1,
+        "Air": 1
+      },
+      "cover": 0.2,
+      "handlers": {
+        "AssetVision": "return T(Math).max(#value - 1, 1)"
+      }
+    },
+    {
+      "name": "EarthLeyline",
+      "tags": ["Leyline"],
+      "movementTable": {
+        "Treaded": 1,
+        "Wheeled": 1.5,
+        "Soldier": 1,
+        "Air": 1
+      },
+      "cover": 0.1
+    },
+    {
+      "name": "FireLeyline",
+      "tags": ["Leyline"],
+      "movementTable": {
+        "Treaded": 1,
+        "Wheeled": 1.5,
+        "Soldier": 1,
+        "Air": 1
+      },
+      "cover": 0.1
+    },
+    {
+      "name": "WaterLeyline",
+      "tags": ["Leyline"],
+      "movementTable": {
+        "Treaded": 1,
+        "Wheeled": 1.5,
+        "Soldier": 1,
+        "Air": 1
+      },
+      "cover": 0.1
+    },
+    {
+      "name": "AirLeyline",
+      "tags": ["Leyline"],
+      "movementTable": {
+        "Treaded": 1,
+        "Wheeled": 1.5,
+        "Soldier": 1,
+        "Air": 1
+      },
+      "cover": 0.1
+    },
+    {
+      "name": "AetherLeyline",
+      "tags": ["Leyline"],
+      "movementTable": {
+        "Treaded": 1,
+        "Wheeled": 1.5,
+        "Soldier": 1,
+        "Air": 1
+      },
+      "cover": 0.1
+    }
+  ],
+  "unitTypes": [
+    {
+      "name": "Engineer",
+      "tags": ["Soldier", "Land"],
+      "speed": 4,
+      "vision": 2,
+      "supplyCost": 100,
+      "weapons": [
+        {
+          "name": "Rifle",
+          "damage": {
+            "Engineer": 40,
+            "RifleSquad": 20,
+            "RepeaterSquad": 5,
+            "HavocSquad": 20
+          }
+        }
+      ],
+      "actions": [
+        "RepairStructure",
+        "Depot",
+        "Tower",
+        "Fort",
+        "Port",
+        "Airfield"
+      ]
+    },
+    {
+      "name": "RifleSquad",
+      "tags": ["Soldier", "Land"],
+      "speed": 4,
+      "vision": 2,
+      "supplyCost": 100,
+      "weapons": [
+        {
+          "name": "Rifle",
+          "damage": {
+            "Engineer": 60,
+            "RifleSquad": 50,
+            "RepeaterSquad": 20,
+            "HavocSquad": 60,
+            "Vanguard": 10,
+            "Scorpion": 10,
+            "FieldGun": 30,
+            "APC": 20,
+            "RepairTruck": 30,
+            "Devastator": 5,
+            "Colossus": 1
+          }
+        }
+      ]
+    },
+    {
+      "name": "RepeaterSquad",
+      "tags": ["Soldier", "Land"],
+      "speed": 3,
+      "vision": 1,
+      "supplyCost": 200,
+      "weapons": [
+        {
+          "name": "MachineGun",
+          "damage": {
+            "Engineer": 70,
+            "RifleSquad": 60,
+            "RepeaterSquad": 50,
+            "HavocSquad": 60,
+            "Vanguard": 30,
+            "Scorpion": 30,
+            "FieldGun": 50,
+            "APC": 50,
+            "RepairTruck": 60,
+            "Devastator": 30,
+            "Colossus": 5,
+            "Ornithopter": 60,
+            "Biplane": 30,
+            "Airship": 5,
+            "Skiff": 50,
+            "Gunboat": 25,
+            "Building": 30
+          }
+        }
+      ]
+    },
+    {
+      "name": "HavocSquad",
+      "tags": ["Soldier", "Land"],
+      "speed": 4,
+      "vision": 3,
+      "supplyCost": 300,
+      "aetherCost": 20,
+      "weapons": [
+        {
+          "name": "Rocket",
+          "damage": {
+            "Engineer": 70,
+            "RifleSquad": 60,
+            "RepeaterSquad": 70,
+            "HavocSquad": 70,
+            "Vanguard": 50,
+            "Scorpion": 60,
+            "FieldGun": 70,
+            "APC": 70,
+            "RepairTruck": 80,
+            "Devastator": 50,
+            "Colossus": 30,
+            "Ornithopter": 60,
+            "Biplane": 50,
+            "Airship": 40,
+            "Skiff": 60,
+            "Gunboat": 50,
+            "Building": 40
+          }
+        }
+      ]
+    },
+    {
+      "name": "Vanguard",
+      "tags": ["Treaded", "Vehicle", "Land"],
+      "speed": 6,
+      "vision": 2,
+      "supplyCost": 700,
+      "aetherCost": 75,
+      "weapons": [
+        {
+          "name": "MachineGun",
+          "damage": {
+            "Engineer": 70,
+            "RifleSquad": 70,
+            "RepeaterSquad": 50,
+            "HavocSquad": 70,
+            "Vanguard": 50,
+            "Scorpion": 60,
+            "FieldGun": 70,
+            "APC": 70,
+            "RepairTruck": 80,
+            "Devastator": 60,
+            "Colossus": 30,
+            "Ornithopter": 50,
+            "Biplane": 40,
+            "Airship": 30,
+            "Skiff": 50,
+            "Gunboat": 30,
+            "Building": 30
+          }
+        }
+      ]
+    },
+    {
+      "name": "Scorpion",
+      "tags": ["Treaded", "Vehicle", "Land"],
+      "speed": 6,
+      "vision": 1,
+      "supplyCost": 700,
+      "aetherCost": 80,
+      "weapons": [
+        {
+          "name": "Cannon",
+          "maxRange": 2,
+          "damage": {
+            "Engineer": 70,
+            "RifleSquad": 70,
+            "RepeaterSquad": 50,
+            "HavocSquad": 70,
+            "Vanguard": 60,
+            "Scorpion": 70,
+            "FieldGun": 75,
+            "APC": 70,
+            "RepairTruck": 75,
+            "Devastator": 40,
+            "Colossus": 20,
+            "Skiff": 60,
+            "Gunboat": 50,
+            "Corvette": 40,
+            "Aegis": 40,
+            "Dreadnought": 30,
+            "Building": 40
+          }
+        }
+      ]
+    },
+    {
+      "name": "FieldGun",
+      "tags": ["Wheeled", "Vehicle", "Land"],
+      "speed": 6,
+      "vision": 2,
+      "supplyCost": 600,
+      "aetherCost": 60,
+      "weapons": [
+        {
+          "name": "Cannon",
+          "minRange": 2,
+          "maxRange": 3,
+          "damage": {
+            "Engineer": 80,
+            "RifleSquad": 80,
+            "RepeaterSquad": 50,
+            "HavocSquad": 80,
+            "Vanguard": 60,
+            "Scorpion": 70,
+            "FieldGun": 70,
+            "APC": 70,
+            "RepairTruck": 80,
+            "Devastator": 50,
+            "Colossus": 30,
+            "Ornithopter": 50,
+            "Biplane": 40,
+            "Airship": 40,
+            "Skiff": 70,
+            "Gunboat": 60,
+            "Corvette": 60,
+            "Aegis": 60,
+            "Dreadnought": 40,
+            "Building": 40
+          }
+        }
+      ]
+    },
+    {
+      "name": "APC",
+      "tags": ["Treaded", "Vehicle", "Land"],
+      "speed": 6,
+      "vision": 1,
+      "supplyCost": 300,
+      "actions": ["LoadSoldier"]
+    },
+    {
+      "name": "RepairTruck",
+      "tags": ["Wheeled", "Vehicle", "Land"],
+      "speed": 6,
+      "vision": 1,
+      "supplyCost": 450,
+      "aetherCost": 10,
+      "actions": ["RepairVehicle"]
+    },
+    {
+      "name": "Devastator",
+      "tags": ["Wheeled", "Vehicle", "Land"],
+      "speed": 5,
+      "vision": 1,
+      "supplyCost": 1200,
+      "aetherCost": 150,
+      "weapons": [
+        {
+          "name": "Rocket",
+          "minRange": 3,
+          "maxRange": 5,
+          "damage": {
+            "Engineer": 130,
+            "RifleSquad": 120,
+            "RepeaterSquad": 100,
+            "HavocSquad": 120,
+            "Vanguard": 80,
+            "Scorpion": 90,
+            "FieldGun": 90,
+            "APC": 90,
+            "RepairTruck": 120,
+            "Devastator": 70,
+            "Colossus": 60,
+            "Skiff": 80,
+            "Gunboat": 80,
+            "Corvette": 70,
+            "Aegis": 70,
+            "Dreadnought": 60,
+            "Building": 50
+          }
+        }
+      ]
+    },
+    {
+      "name": "Colossus",
+      "tags": ["Treaded", "Vehicle", "Land"],
+      "speed": 5,
+      "vision": 1,
+      "supplyCost": 1600,
+      "aetherCost": 200,
+      "weapons": [
+        {
+          "name": "Cannon",
+          "maxRange": 2,
+          "damage": {
+            "Engineer": 110,
+            "RifleSquad": 110,
+            "RepeaterSquad": 90,
+            "HavocSquad": 110,
+            "Vanguard": 80,
+            "Scorpion": 90,
+            "FieldGun": 90,
+            "APC": 90,
+            "RepairTruck": 110,
+            "Devastator": 80,
+            "Colossus": 50,
+            "Skiff": 90,
+            "Gunboat": 90,
+            "Corvette": 70,
+            "Aegis": 70,
+            "Dreadnought": 50,
+            "Building": 50
+          }
+        }
+      ]
+    },
+    {
+      "name": "Ornithopter",
+      "tags": ["Air"],
+      "speed": 6,
+      "vision": 4,
+      "supplyCost": 300,
+      "aetherCost": 20,
+      "actions": ["LoadSoldier"]
+    },
+    {
+      "name": "Biplane",
+      "tags": ["Air"],
+      "speed": 6,
+      "vision": 2,
+      "supplyCost": 600,
+      "aetherCost": 120,
+      "weapons": [
+        {
+          "name": "MachineGun",
+          "damage": {
+            "Engineer": 110,
+            "RifleSquad": 110,
+            "RepeaterSquad": 90,
+            "HavocSquad": 110,
+            "Vanguard": 30,
+            "Scorpion": 40,
+            "FieldGun": 70,
+            "APC": 60,
+            "RepairTruck": 80,
+            "Devastator": 30,
+            "Colossus": 5,
+            "Ornithopter": 60,
+            "Biplane": 50,
+            "Airship": 70,
+            "Skiff": 80,
+            "Gunboat": 60,
+            "Corvette": 40,
+            "Aegis": 40,
+            "Dreadnought": 20
+          }
+        }
+      ]
+    },
+    {
+      "name": "Airship",
+      "tags": ["Air"],
+      "speed": 5,
+      "vision": 1,
+      "supplyCost": 800,
+      "aetherCost": 140,
+      "weapons": [
+        {
+          "name": "Rocket",
+          "damage": {
+            "Engineer": 50,
+            "RifleSquad": 50,
+            "RepeaterSquad": 40,
+            "HavocSquad": 50,
+            "Vanguard": 60,
+            "Scorpion": 70,
+            "FieldGun": 70,
+            "APC": 80,
+            "RepairTruck": 80,
+            "Devastator": 50,
+            "Colossus": 40,
+            "Ornithopter": 50,
+            "Biplane": 40,
+            "Airship": 40,
+            "Skiff": 110,
+            "Gunboat": 110,
+            "Corvette": 90,
+            "Aegis": 90,
+            "Dreadnought": 70,
+            "Building": 40
+          }
+        }
+      ]
+    },
+    {
+      "name": "Skiff",
+      "tags": ["Boat"],
+      "speed": 8,
+      "vision": 1,
+      "supplyCost": 300,
+      "actions": ["Load"]
+    },
+    {
+      "name": "Gunboat",
+      "tags": ["Boat"],
+      "speed": 7,
+      "vision": 3,
+      "supplyCost": 500,
+      "aetherCost": 50,
+      "weapons": [
+        {
+          "name": "MachineGun",
+          "damage": {
+            "Engineer": 70,
+            "RifleSquad": 70,
+            "RepeaterSquad": 50,
+            "HavocSquad": 70,
+            "Vanguard": 50,
+            "Scorpion": 60,
+            "FieldGun": 60,
+            "APC": 70,
+            "RepairTruck": 80,
+            "Devastator": 50,
+            "Colossus": 20,
+            "Skiff": 60,
+            "Gunboat": 50,
+            "Corvette": 40,
+            "Aegis": 30,
+            "Dreadnought": 20,
+            "Ornithopter": 40,
+            "Biplane": 40,
+            "Airship": 30,
+            "Building": 20
+          }
+        }
+      ]
+    },
+    {
+      "name": "Corvette",
+      "tags": ["Naval", "Ship"],
+      "speed": 6,
+      "vision": 2,
+      "supplyCost": 600,
+      "aetherCost": 60,
+      "precondition": "return !subject.tile.getArea(1).?[tags.contains(@DeepWater)].empty",
+      "weapons": [
+        {
+          "name": "Cannon",
+          "maxRange": 2,
+          "damage": {
+            "Engineer": 70,
+            "RifleSquad": 70,
+            "RepeaterSquad": 50,
+            "HavocSquad": 70,
+            "Vanguard": 60,
+            "Scorpion": 70,
+            "FieldGun": 70,
+            "APC": 80,
+            "RepairTruck": 90,
+            "Devastator": 60,
+            "Colossus": 30,
+            "Skiff": 70,
+            "Gunboat": 60,
+            "Corvette": 50,
+            "Aegis": 50,
+            "Dreadnought": 20,
+            "Building": 20
+          }
+        },
+        {
+          "name": "MachineGun",
+          "damage": {
+            "Ornithopter": 60,
+            "Biplane": 50,
+            "Airship": 40
+          }
+        }
+      ]
+    },
+    {
+      "name": "Aegis",
+      "tags": ["Naval", "Ship"],
+      "speed": 6,
+      "vision": 3,
+      "supplyCost": 800,
+      "aetherCost": 140,
+      "precondition": "return !subject.tile.getArea(1).?[tags.contains(@DeepWater)].empty",
+      "weapons": [
+        {
+          "name": "Rocket",
+          "minRange": 2,
+          "maxRange": 3,
+          "damage": {
+            "Engineer": 70,
+            "RifleSquad": 70,
+            "RepeaterSquad": 50,
+            "HavocSquad": 70,
+            "Vanguard": 50,
+            "Scorpion": 60,
+            "FieldGun": 60,
+            "APC": 70,
+            "RepairTruck": 80,
+            "Devastator": 50,
+            "Colossus": 20,
+            "Ornithopter": 70,
+            "Biplane": 70,
+            "Airship": 70,
+            "Skiff": 70,
+            "Gunboat": 60,
+            "Corvette": 50,
+            "Aegis": 50,
+            "Dreadnought": 20,
+            "Building": 20
+          }
+        }
+      ]
+    },
+    {
+      "name": "Dreadnought",
+      "tags": ["Naval", "Ship"],
+      "speed": 5,
+      "vision": 1,
+      "supplyCost": 900,
+      "aetherCost": 160,
+      "precondition": "return !subject.tile.getArea(1).?[tags.contains(@DeepWater)].empty",
+      "weapons": [
+        {
+          "name": "Cannon",
+          "minRange": 3,
+          "maxRange": 5,
+          "damage": {
+            "Engineer": 120,
+            "RifleSquad": 120,
+            "RepeaterSquad": 100,
+            "HavocSquad": 120,
+            "Vanguard": 80,
+            "Scorpion": 90,
+            "FieldGun": 90,
+            "APC": 90,
+            "RepairTruck": 120,
+            "Devastator": 70,
+            "Colossus": 60,
+            "Skiff": 80,
+            "Gunboat": 80,
+            "Corvette": 70,
+            "Aegis": 70,
+            "Dreadnought": 50,
+            "Building": 40
+          }
+        }
+      ]
+    }
+  ],
+  "actions": [
+    {
+      "name": "Move",
+      "targets": [{"path": true}],
+      "validation": [
+        "validate !target.empty :: 'Empty path.'",
+        "#cost = 0.0",
+        "#tile = subject.tile",
+        "#speed = subject.speed",
+        "#visited = new java.util.HashSet()",
+        "for #direction in target:",
+        "  #tile = #tile.step(#direction)",
+        "  validate #tile != null :: 'Path crosses edge of map.'",
+        "  validate #visited.add(tile) :: 'Path contains a loop.'",
+        "  #cost = #tile.getMovementCost(subject)",
+        "  if game.limitedCopy:",
+        "    validate #cost <= #speed :: 'Cannot pay movement cost.'",
+        "  #unit = #tile.unit",
+        "  if game.limitedCopy:",
+        "    validate (#unit == null) || #unit.isAlly(subject) :: 'Can only move through allied units.'",
+        "if game.limitedCopy:",
+        "  validate #unit == null :: 'Cannot end on another unit''s tile.'"
+      ],
+      "effect": [
+        "#cost = 0.0",
+        "#tile = subject.tile",
+        "#speed = subject.speed",
+        "for #direction in target:",
+        "  #tile = #tile.step(#direction)",
+        "  #cost = #tile.getMovementCost(subject)",
+        "  validate #cost <= #speed :: 'Cannot pay movement cost.'",
+        "  #unit = #tile.unit",
+        "  if #unit == null:",
+        "    game.moveUnit(subject, #tile)",
+        "  else:",
+        "    validate #unit.isAlly(subject) :: 'Ambushed by hidden unit.'",
+        "validate #unit == null :: 'Ambushed by hidden unit.'"
+      ]
+    },
+    {
+      "name": "Load",
+      "targets": [{"Unit": true, "Own": true, "minRange": 1, "maxRange": 1}],
+      "tags": ["FreeAction"],
+      "precondition": [
+        "validate subject.cargo == null :: 'Already carrying a unit.'",
+        "validate !subject.tile.tags.contains(@DeepWater) :: 'Cannot load from deep water; find a Beach or Port.'"
+      ],
+      "validation": "validate target.tags.contains(@Land) :: 'Can only load Land units.'",
+      "effect": "game.moveUnit(target, subject)"
+    },
+    {
+      "name": "LoadSoldier",
+      "targets": [{"Unit": true, "Own": true, "minRange": 1, "maxRange": 1}],
+      "tags": ["FreeAction"],
+      "precondition": [
+        "validate subject.cargo == null :: 'Already carrying a unit.'",
+        "validate !subject.tile.tags.contains(@DeepWater) :: 'Cannot load from deep water; find a Beach or Port.'"
+      ],
+      "validation": "validate target.tags.contains(@Soldier) :: 'Can only load Soldier units.'",
+      "effect": "game.moveUnit(target, subject)"
+    },
+    {
+      "name": "Drop",
+      "tags": ["FreeAction"],
+      "targets": [{"Tile": true}],
+      "precondition": "validate subject.cargo != null :: 'Not carrying a unit.'",
+      "validation": [
+        "validate !subject.tile.tags.contains(@DeepWater) :: 'Cannot drop from deep water; find a Beach or Port.'",
+        "validate !T(Double).isNaN(target.getMovementCost(subject.cargo)) :: 'Inappropriate drop zone.'",
+        "validate #target.unit == null :: 'Cannot drop onto another unit''s tile.'"
+      ],
+      "effect": "game.moveUnit(subject.cargo, target)"
+    },
+    {
+      "name": "RepairVehicle",
+      "targets": [{"Unit": true, "Ally": true}],
+      "validation": [
+        "validate target.hp < 100 :: 'Already at full HP.'",
+        "validate !target.tags.contains(@Soldier) :: 'Cannot repair Soldier units.'"
+      ],
+      "effect": "target.hp = target.hp + T(Math).min(30, subject.hp)",
+      "supplyCost": "return target.type.supplyCost * T(Math).min(30, subject.hp) / 100",
+      "aetherCost": "return target.type.aetherCost * T(Math).min(30, subject.hp) / 100"
+    },
+    {
+      "name": "RepairStructure",
+      "targets": [{"Structure": true, "Ally": true}],
+      "validation": "validate target.hp < 100 :: 'Already at full HP.'",
+      "effect": "target.hp = target.hp + T(Math).min(30, subject.hp)",
+      "supplyCost": "return target.type.supplyCost * T(Math).min(30, subject.hp) / 100",
+      "aetherCost": "return target.type.aetherCost * T(Math).min(30, subject.hp) / 100"
+    },
+    {
+      "name": "Wait"
+    },
+    {
+      "name": "Pass",
+      "effect": "game.passed = true"
+    },
+    {
+      "name": "Yield",
+      "effect": "subject.defeat()"
+    }
+  ],
+  "moveAction": "Move",
+  "dropAction": "Drop",
+  "waitAction": "Wait",
+  "passAction": "Pass",
+  "yieldAction": "Yield"
+}

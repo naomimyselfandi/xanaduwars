@@ -1,0 +1,146 @@
+{
+  "map": {
+    "players": [
+      {"team": 0},
+      {"team": 1}
+    ],
+    "tiles": [
+      [
+        {"type": 0, "unit": {"type": 1, "owner": 0}},
+        {"type": 0},
+        {"type": 0},
+        {"type": 0},
+        {"type": 0},
+        {"type": 0},
+        {"type": 0}
+      ],
+      [
+        {"type": 0},
+        {"type": 0},
+        {"type": 0},
+        {"type": 0},
+        {"type": 0},
+        {"type": 0},
+        {"type": 0}
+      ],
+      [
+        {"type": 0},
+        {"type": 0},
+        {"type": 0},
+        {"type": 0},
+        {"type": 0},
+        {"type": 0},
+        {"type": 0, "unit": {"type": 1, "owner": 1}}
+      ]
+    ]
+  },
+  "choices": [
+    {"commander": 0, "spells": [2, 6]},
+    {"commander": 1, "spells": [3, 4]}
+  ],
+  "steps": [
+    {
+      "actor": {"kind": "Unit", "x": 0, "y": 0},
+      "items": [
+        {"name": "Move", "targets": [{"path": ["E", "S", "E", "E"]}]}
+      ],
+      "postconditions": {
+        "unit(0).tile": "tile(3, 1)",
+        "tile(3, 1).unit": "unit(0)",
+        "player(0).canSee(unit(0))": "true",
+        "player(1).canSee(unit(0))": "false",
+        "player(0).canSee(unit(1))": "false",
+        "player(1).canSee(unit(1))": "true",
+        "unit(0).ready": "false",
+        "unit(1).ready": "false"
+      }
+    },
+    {
+      "actor": {"kind": "Unit", "x": 3, "y": 1},
+      "items": [
+        {"name": "Move", "targets": [{"path": ["W"]}]}
+      ],
+      "invalid": true,
+      "postconditions": {
+        "unit(0).tile": "tile(3, 1)",
+        "tile(3, 1).unit": "unit(0)",
+        "player(0).canSee(unit(0))": "true",
+        "player(1).canSee(unit(0))": "false",
+        "player(0).canSee(unit(1))": "false",
+        "player(1).canSee(unit(1))": "true",
+        "unit(0).ready": "false",
+        "unit(1).ready": "false"
+      }
+    },
+    {
+      "actor": {"player": 0},
+      "items": [{"name": "Pass", "targets": []}],
+      "postconditions": {
+        "passed": "false",
+        "activePlayer": "player(1)",
+        "player(0).supplies": "100",
+        "player(1).supplies": "100",
+        "unit(0).ready": "false",
+        "unit(1).ready": "true"
+      }
+    },
+    {
+      "actor": {"kind": "Unit", "x": 6, "y": 2},
+      "items": [
+        {"name": "Move", "targets": [{"path": ["W", "W", "W", "N"]}]}
+      ],
+      "postconditions": {
+        "unit(0).tile": "tile(3, 1)",
+        "unit(1).tile": "tile(3, 2)",
+        "player(0).canSee(unit(0))": "true",
+        "player(1).canSee(unit(0))": "true",
+        "player(0).canSee(unit(1))": "true",
+        "player(1).canSee(unit(1))": "true",
+        "unit(0).ready": "false",
+        "unit(1).ready": "false"
+      }
+    },
+    {
+      "actor": {"player": 1},
+      "items": [{"name": "Pass", "targets": []}]
+    },
+    {
+      "actor": {"kind": "Unit", "x": 3, "y": 1},
+      "items": [
+        {"name": "Move", "targets": [{"path": ["S", "E"]}]}
+      ],
+      "invalid": true,
+      "postconditions": {
+        "unit(0).tile": "tile(3, 1)",
+        "unit(1).tile": "tile(3, 2)",
+        "unit(0).ready": "true",
+        "unit(1).ready": "false"
+      }
+    },
+    {
+      "actor": {"kind": "Unit", "x": 3, "y": 1},
+      "items": [
+        {"name": "Move", "targets": [{"path": ["S", "E", "E", "E", "N"]}]}
+      ],
+      "invalid": true,
+      "postconditions": {
+        "unit(0).tile": "tile(3, 1)",
+        "unit(1).tile": "tile(3, 2)",
+        "unit(0).ready": "true",
+        "unit(1).ready": "false"
+      }
+    },
+    {
+      "actor": {"kind": "Unit", "x": 3, "y": 1},
+      "items": [
+        {"name": "Move", "targets": [{"path": ["E", "S"]}]}
+      ],
+      "postconditions": {
+        "unit(0).tile": "tile(4, 2)",
+        "unit(1).tile": "tile(3, 2)",
+        "unit(0).ready": "false",
+        "unit(1).ready": "false"
+      }
+    }
+  ]
+}

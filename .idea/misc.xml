@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="EntryPointsManager">
+    <list size="7">
+      <item index="0" class="java.lang.String" itemvalue="com.fasterxml.jackson.annotation.JsonValue" />
+      <item index="1" class="java.lang.String" itemvalue="io.github.naomimyselfandi.xanaduwars.core.scripting.ScriptParserTest.TestCase" />
+      <item index="2" class="java.lang.String" itemvalue="io.github.naomimyselfandi.xanaduwars.core.scripting.json.ScriptParserTest.TestCase" />
+      <item index="3" class="java.lang.String" itemvalue="io.github.naomimyselfandi.xanaduwars.core.scripting.parser.ScriptParserTest.TestCase" />
+      <item index="4" class="java.lang.String" itemvalue="jakarta.validation.constraints.AssertTrue" />
+      <item index="5" class="java.lang.String" itemvalue="org.springframework.context.annotation.Bean" />
+      <item index="6" class="java.lang.String" itemvalue="org.springframework.context.annotation.Configuration" />
+    </list>
+    <writeAnnotations>
+      <writeAnnotation name="org.springframework.beans.factory.annotation.Autowired" />
+    </writeAnnotations>
+  </component>
+  <component name="ExternalStorageConfigurationManager" enabled="true" />
+  <component name="MavenProjectsManager">
+    <option name="originalFiles">
+      <list>
+        <option value="$PROJECT_DIR$/pom.xml" />
+      </list>
+    </option>
+    <option name="ignoredFiles">
+      <set>
+        <option value="$PROJECT_DIR$/xanaduwars-naming/pom.xml" />
+      </set>
+    </option>
+  </component>
+  <component name="ProjectRootManager" version="2" languageLevel="JDK_23" default="true" project-jdk-name="openjdk-23" project-jdk-type="JavaSDK">
+    <output url="file://$PROJECT_DIR$/out" />
+  </component>
+</project>
