@@ -18,21 +18,21 @@ record OrdinalOverloader(OperatorOverloader delegate) implements OperatorOverloa
     public Object operate(Operation operation, @Nullable Object lhs, @Nullable Object rhs)
             throws EvaluationException {
         if (lhs instanceof Ordinal<?> l && isIntOrOrdinal(rhs)) {
-            return operate(operation, l.ordinal(), toInt(rhs), l);
+            return doOperate(operation, l.ordinal(), toInt(rhs));
         } else if (lhs instanceof Integer l && rhs instanceof Ordinal<?> r) {
-            return operate(operation, l, r.ordinal(), r);
+            return doOperate(operation, l, r.ordinal());
         } else {
             return delegate.operate(operation, lhs, rhs);
         }
     }
 
-    private Object operate(Operation operation, int lhs, int rhs, Ordinal<?> ordinal) {
+    private Object doOperate(Operation operation, int lhs, int rhs) {
         return switch (operation) {
-            case ADD -> ordinal.withOrdinal(lhs + rhs);
-            case SUBTRACT -> ordinal.withOrdinal(lhs - rhs);
-            case MULTIPLY -> ordinal.withOrdinal(lhs * rhs);
-            case DIVIDE -> ordinal.withOrdinal(lhs / rhs);
-            case MODULUS -> ordinal.withOrdinal(lhs % rhs);
+            case ADD -> lhs + rhs;
+            case SUBTRACT -> lhs - rhs;
+            case MULTIPLY -> lhs * rhs;
+            case DIVIDE -> lhs / rhs;
+            case MODULUS -> lhs % rhs;
             case POWER -> Math.pow(lhs, rhs);
         };
     }

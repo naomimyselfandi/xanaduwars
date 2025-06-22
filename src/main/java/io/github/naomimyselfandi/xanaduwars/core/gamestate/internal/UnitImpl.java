@@ -107,6 +107,13 @@ record UnitImpl(UnitData data, @Getter GameState gameState, @Getter UnitId id) i
     }
 
     @Override
+    public Asset setOwner(@Nullable Player owner) {
+        data.setPlayerId(owner == null ? null : owner.getId());
+        gameState.invalidateCache();
+        return this;
+    }
+
+    @Override
     public @Unmodifiable List<Action> getActions() {
         var ruleset = gameState.getRuleset();
         var result = Stream.<Action>builder();

@@ -85,6 +85,13 @@ record StructureImpl(StructureData data, @Getter GameState gameState, @Getter St
     }
 
     @Override
+    public Asset setOwner(@Nullable Player owner) {
+        data.setPlayerId(owner == null ? null : owner.getId());
+        gameState.invalidateCache();
+        return this;
+    }
+
+    @Override
     public @Unmodifiable List<Action> getActions() {
         return isIncomplete() ? List.of() : getType().getActions();
     }

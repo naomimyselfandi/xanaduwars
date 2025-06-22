@@ -175,9 +175,27 @@ class UnitImplTest {
     void getOwner(SeededRng random) {
         var players = List.of(alice, bob, charlie, dave);
         when(gameState.getPlayers()).thenReturn(players);
-        var index = random.nextInt(4);
+        var player = random.pick(players);
+        var index = players.indexOf(player);
         unitData.setPlayerId(new PlayerId(index));
-        assertThat(fixture.getOwner()).isEqualTo(players.get(index));
+        assertThat(fixture.getOwner()).isEqualTo(player);
+    }
+
+    @Test
+    void setOwner(SeededRng random) {
+        var playerId = random.<PlayerId>get();
+        when(alice.getId()).thenReturn(playerId);
+        assertThat(fixture.setOwner(alice)).isSameAs(fixture);
+        assertThat(unitData.getPlayerId()).isEqualTo(playerId);
+        verify(gameState).invalidateCache();
+    }
+
+    @Test
+    void setOwner_Null(SeededRng random) {
+        unitData.setPlayerId(random.get());
+        fixture.setOwner(null);
+        assertThat(unitData.getPlayerId()).isNull();
+        verify(gameState).invalidateCache();
     }
 
     @Test

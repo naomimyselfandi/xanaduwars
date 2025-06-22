@@ -77,23 +77,23 @@ class OrdinalOverloaderTest {
 
     @ParameterizedTest
     @CsvSource(textBlock = """
-            ADD,T(TestOrdinal).of(40),T(TestOrdinal).of(2),T(TestOrdinal).of(42)
-            SUBTRACT,T(TestOrdinal).of(50),T(TestOrdinal).of(8),T(TestOrdinal).of(42)
-            MULTIPLY,T(TestOrdinal).of(6),T(TestOrdinal).of(7),T(TestOrdinal).of(42)
-            DIVIDE,T(TestOrdinal).of(84),T(TestOrdinal).of(2),T(TestOrdinal).of(42)
-            MODULUS,T(TestOrdinal).of(42),T(TestOrdinal).of(10),T(TestOrdinal).of(2)
+            ADD,T(TestOrdinal).of(40),T(TestOrdinal).of(2),42
+            SUBTRACT,T(TestOrdinal).of(50),T(TestOrdinal).of(8),42
+            MULTIPLY,T(TestOrdinal).of(6),T(TestOrdinal).of(7),42
+            DIVIDE,T(TestOrdinal).of(84),T(TestOrdinal).of(2),42
+            MODULUS,T(TestOrdinal).of(42),T(TestOrdinal).of(10),2
             POWER,T(TestOrdinal).of(3),T(TestOrdinal).of(2),9.0
-            ADD,T(TestOrdinal).of(40),2,T(TestOrdinal).of(42)
-            SUBTRACT,T(TestOrdinal).of(50),8,T(TestOrdinal).of(42)
-            MULTIPLY,T(TestOrdinal).of(6),7,T(TestOrdinal).of(42)
-            DIVIDE,T(TestOrdinal).of(84),2,T(TestOrdinal).of(42)
-            MODULUS,T(TestOrdinal).of(42),10,T(TestOrdinal).of(2)
+            ADD,T(TestOrdinal).of(40),2,42
+            SUBTRACT,T(TestOrdinal).of(50),8,42
+            MULTIPLY,T(TestOrdinal).of(6),7,42
+            DIVIDE,T(TestOrdinal).of(84),2,42
+            MODULUS,T(TestOrdinal).of(42),10,2
             POWER,T(TestOrdinal).of(3),2,9.0
-            ADD,40,T(TestOrdinal).of(2),T(TestOrdinal).of(42)
-            SUBTRACT,50,T(TestOrdinal).of(8),T(TestOrdinal).of(42)
-            MULTIPLY,6,T(TestOrdinal).of(7),T(TestOrdinal).of(42)
-            DIVIDE,84,T(TestOrdinal).of(2),T(TestOrdinal).of(42)
-            MODULUS,42,T(TestOrdinal).of(10),T(TestOrdinal).of(2)
+            ADD,40,T(TestOrdinal).of(2),42
+            SUBTRACT,50,T(TestOrdinal).of(8),42
+            MULTIPLY,6,T(TestOrdinal).of(7),42
+            DIVIDE,84,T(TestOrdinal).of(2),42
+            MODULUS,42,T(TestOrdinal).of(10),2
             POWER,3,T(TestOrdinal).of(2),9.0
             ADD,'foo','bar',
             ADD,40,'bar',

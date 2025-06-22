@@ -20,6 +20,7 @@ import org.springframework.core.convert.TypeDescriptor;
 import org.springframework.expression.*;
 import org.springframework.expression.spel.standard.SpelExpressionParser;
 import org.springframework.expression.spel.support.StandardEvaluationContext;
+import org.springframework.expression.spel.support.StandardTypeLocator;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.transaction.TestTransaction;
@@ -34,6 +35,13 @@ public class GameplayIntegrationTest extends AbstractIntegrationTest {
 
     private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
     private static final ExpressionParser EXPRESSION_PARSER = new SpelExpressionParser();
+    private static final StandardTypeLocator TYPE_LOCATOR = new StandardTypeLocator();
+
+    static {
+        TYPE_LOCATOR.registerImport("io.github.naomimyselfandi.xanaduwars.core");
+        TYPE_LOCATOR.registerImport("io.github.naomimyselfandi.xanaduwars.core.common");
+        TYPE_LOCATOR.registerImport("io.github.naomimyselfandi.xanaduwars.core.gamestate");
+    }
 
     private EvaluationContext evaluationContext;
 
@@ -94,6 +102,7 @@ public class GameplayIntegrationTest extends AbstractIntegrationTest {
     private void createEvaluationContext(GameState root) {
         var context = new StandardEvaluationContext(root);
         context.addMethodResolver(GameplayIntegrationTest::getHelper);
+        context.setTypeLocator(TYPE_LOCATOR);
         evaluationContext = context;
     }
 

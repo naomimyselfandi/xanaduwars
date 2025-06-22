@@ -22,12 +22,70 @@
       }
     },
     {
+      "name": "Deployment",
+      "handlers": {
+        "ActionUsage": [
+          "if action instanceof T(UnitType):",
+          "  validate subject.tile.unit == null :: 'There is already a unit there.'"
+        ],
+        "ActionExecution": [
+          "if action instanceof T(UnitType):",
+          "  game.createUnit(subject.tile, action).owner = subject.owner"
+        ]
+      }
+    },
+    {
+      "name": "Construction",
+      "handlers": {
+        "ActionUsage": [
+          "if action instanceof T(StructureType):",
+          "  #structure = subject.tile.structure",
+          "  if #structure != null:",
+          "    validate #structure.incomplete :: 'There is already a structure there.'",
+          "    validate #structure.owner == subject.owner :: 'Cannot build another player''s structure.'",
+          "    validate #structure.type == action :: 'Cannot change structure type.'"
+        ],
+        "ActionExecution": [
+          "if action instanceof T(StructureType):",
+          "  #tile = subject.tile",
+          "  #structure = #tile.structure",
+          "  if #structure == null:",
+          "    #structure = game.createStructure(#tile, action)",
+          "    #structure.owner = subject.owner",
+          "    #structure.incomplete = true",
+          "    #hp = 0",
+          "  else:",
+          "    #hp = #structure.hp",
+          "  #structure.hp = #hp + (subject.hp * 100 / action.buildTime)",
+          "  #structure.incomplete = #structure.hp < 100"
+        ],
+        "SupplyCost": [
+          "if action instanceof T(StructureType):",
+          "  #oldProgress = (subject.tile?.structure?.hp ?: 0)",
+          "  #oldPayment = #value * #oldProgress / 100",
+          "  #newProgress = T(Math).min(100, #oldProgress + (subject.hp * 100 / action.buildTime))",
+          "  #newPayment = #value * #newProgress / 100",
+          "  return #newPayment - #oldPayment"
+        ],
+        "AetherCost": [
+          "if action instanceof T(StructureType):",
+          "  #oldProgress = (subject.tile?.structure?.hp ?: 0)",
+          "  #oldPayment = #value * #oldProgress / 100",
+          "  #newProgress = T(Math).min(100, #oldProgress + (subject.hp * 100 / action.buildTime))",
+          "  #newPayment = #value * #newProgress / 100",
+          "  return #newPayment - #oldPayment"
+        ]
+      }
+    },
+    {
       "name": "Income",
       "handlers": {
         "TurnStart": [
           "subject.supplies = subject.supplies + 100",
           "for #it in subject.structures:",
-          "  if #it.type == @Depot || #it.type == @Headquarters:",
+          "  if #it.incomplete:",
+          "    continue",
+          "  if #it.type == @Depot:",
           "    subject.supplies = subject.supplies + 100",
           "  if #it.type == @Tower:",
           "    subject.aether = subject.aether + 100"
@@ -918,7 +976,9 @@
       "vision": 2,
       "supplyCost": 600,
       "aetherCost": 60,
-      "precondition": "return !subject.tile.getArea(1).?[tags.contains(@DeepWater)].empty",
+      "precondition": [
+        "validate !subject.tile.getArea(1).?[tags.contains(@DeepWater)].empty :: 'Not adjacent to deep water.'"
+      ],
       "weapons": [
         {
           "name": "Cannon",
@@ -960,7 +1020,9 @@
       "vision": 3,
       "supplyCost": 800,
       "aetherCost": 140,
-      "precondition": "return !subject.tile.getArea(1).?[tags.contains(@DeepWater)].empty",
+      "precondition": [
+        "validate !subject.tile.getArea(1).?[tags.contains(@DeepWater)].empty :: 'Not adjacent to deep water.'"
+      ],
       "weapons": [
         {
           "name": "Rocket",
@@ -998,7 +1060,9 @@
       "vision": 1,
       "supplyCost": 900,
       "aetherCost": 160,
-      "precondition": "return !subject.tile.getArea(1).?[tags.contains(@DeepWater)].empty",
+      "precondition": [
+        "validate !subject.tile.getArea(1).?[tags.contains(@DeepWater)].empty :: 'Not adjacent to deep water.'"
+      ],
       "weapons": [
         {
           "name": "Cannon",

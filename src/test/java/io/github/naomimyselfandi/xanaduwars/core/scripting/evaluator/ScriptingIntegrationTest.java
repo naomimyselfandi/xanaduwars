@@ -1,7 +1,6 @@
 package io.github.naomimyselfandi.xanaduwars.core.scripting.evaluator;
 
 import io.github.naomimyselfandi.xanaduwars.core.scripting.*;
-import io.github.naomimyselfandi.xanaduwars.testing.LogicalSource;
 import lombok.SneakyThrows;
 import org.intellij.lang.annotations.Language;
 import org.jetbrains.annotations.Nullable;
@@ -32,8 +31,13 @@ class ScriptingIntegrationTest {
     }
 
     @ParameterizedTest
-    @LogicalSource(LogicalSource.Op.OR)
-    void ordinals(boolean fooIsOrdinal, boolean barIsOrdinal, boolean resultIsOrdinal) {
+    @CsvSource(textBlock = """
+            true,true
+            true,false
+            false,true
+            false,false
+            """)
+    void ordinals(boolean fooIsOrdinal, boolean barIsOrdinal) {
         @Language("json") var scriptJson = """
             [
               "#foo = (subject[0] ? T(TestOrdinal).of(40) : 40)",
@@ -42,8 +46,7 @@ class ScriptingIntegrationTest {
             ]
             """;
         scriptJson = scriptJson.replaceAll("TestOrdinal", TestOrdinal.class.getName());
-        var expected = resultIsOrdinal ? TestOrdinal.of(42) : 42;
-        assertThat(evaluate(scriptJson, fooIsOrdinal, barIsOrdinal)).isEqualTo(expected);
+        assertThat(evaluate(scriptJson, fooIsOrdinal, barIsOrdinal)).isEqualTo(42);
     }
 
     @ParameterizedTest

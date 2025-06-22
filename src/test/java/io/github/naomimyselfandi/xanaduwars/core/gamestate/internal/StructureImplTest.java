@@ -158,6 +158,23 @@ class StructureImplTest {
         assertThat(fixture.getOwner()).isNull();
     }
 
+    @Test
+    void setOwner(SeededRng random) {
+        var playerId = random.<PlayerId>get();
+        when(alice.getId()).thenReturn(playerId);
+        assertThat(fixture.setOwner(alice)).isSameAs(fixture);
+        assertThat(data.getPlayerId()).isEqualTo(playerId);
+        verify(gameState).invalidateCache();
+    }
+
+    @Test
+    void setOwner_Null(SeededRng random) {
+        data.setPlayerId(random.get());
+        fixture.setOwner(null);
+        assertThat(data.getPlayerId()).isNull();
+        verify(gameState).invalidateCache();
+    }
+
     @ParameterizedTest
     @ValueSource(booleans = {true, false})
     void getActions(boolean incomplete) {
