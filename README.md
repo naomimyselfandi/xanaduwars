@@ -8,7 +8,9 @@ evolve.
 
 > Note: This project is in *early* development and not yet playable. See the
 > [Goals](#goals) and [Architecture](#architecture) sections for more
-> information.
+> information. Also, on June 22, 2025, I reinitialized the repository to work
+> around a technical issue - don't be surprised by the lack of commit history
+> before then.
 
 ## Goals
 
