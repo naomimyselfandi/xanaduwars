@@ -4,9 +4,7 @@ import io.github.naomimyselfandi.seededrandom.SeededRandomExtension;
 import io.github.naomimyselfandi.xanaduwars.core.common.Kind;
 import io.github.naomimyselfandi.xanaduwars.core.common.TargetSpec;
 import io.github.naomimyselfandi.xanaduwars.core.gamestate.*;
-import io.github.naomimyselfandi.xanaduwars.core.gamestate.dto.PathRefDto;
-import io.github.naomimyselfandi.xanaduwars.core.gamestate.dto.PhysicalRefDto;
-import io.github.naomimyselfandi.xanaduwars.core.gamestate.dto.PlayerRefDto;
+import io.github.naomimyselfandi.xanaduwars.core.gamestate.dto.*;
 import io.github.naomimyselfandi.xanaduwars.testing.LogicalSource;
 import io.github.naomimyselfandi.xanaduwars.testing.SeededRng;
 import io.github.naomimyselfandi.xanaduwars.util.ConflictException;
@@ -80,7 +78,7 @@ class ResolverImplTest {
             boolean active,
             boolean ok
     ) throws ConflictException {
-        var reference = new PhysicalRefDto(PhysicalRefDto.Kind.STRUCTURE, random.nextInt(), random.nextInt());
+        var reference = new StructureReferenceDto(random.nextInt(), random.nextInt());
         if (inRange) createTile(reference);
         if (exists) createStructure();
         when(activePlayer.canSee(structure)).thenReturn(visible);
@@ -94,7 +92,7 @@ class ResolverImplTest {
 
     @Test
     void resolveActor_Tile() {
-        var reference = new PhysicalRefDto(PhysicalRefDto.Kind.TILE, random.nextInt(), random.nextInt());
+        var reference = new TileReferenceDto(random.nextInt(), random.nextInt());
         createTile(reference);
         assertThatThrownBy(() -> fixture.resolveActor(gameState, reference))
                 .isInstanceOf(ConflictException.class)
@@ -110,7 +108,7 @@ class ResolverImplTest {
             boolean active,
             boolean ok
     ) throws ConflictException {
-        var reference = new PhysicalRefDto(PhysicalRefDto.Kind.UNIT, random.nextInt(), random.nextInt());
+        var reference = new UnitReferenceDto(random.nextInt(), random.nextInt());
         if (inRange) createTile(reference);
         if (exists) createUnit();
         when(activePlayer.canSee(unit)).thenReturn(visible);
@@ -144,7 +142,7 @@ class ResolverImplTest {
             boolean correctType,
             boolean ok
     ) throws ConflictException {
-        var reference = new PhysicalRefDto(PhysicalRefDto.Kind.STRUCTURE, random.nextInt(), random.nextInt());
+        var reference = new StructureReferenceDto(random.nextInt(), random.nextInt());
         var spec = new TargetSpec(Map.of(Kind.STRUCTURE, correctType), random.get(), random.get(), random.get());
         if (inRange) createTile(reference);
         if (exists) createStructure();
@@ -160,7 +158,7 @@ class ResolverImplTest {
     @ParameterizedTest
     @LogicalSource(LogicalSource.Op.AND)
     void resolveTarget_Tile(boolean inRange, boolean correctType, boolean ok) throws ConflictException {
-        var reference = new PhysicalRefDto(PhysicalRefDto.Kind.TILE, random.nextInt(), random.nextInt());
+        var reference = new TileReferenceDto(random.nextInt(), random.nextInt());
         var spec = new TargetSpec(Map.of(Kind.TILE, correctType), random.get(), random.get(), random.get());
         if (inRange) createTile(reference);
         if (ok) {
@@ -180,7 +178,7 @@ class ResolverImplTest {
             boolean correctType,
             boolean ok
     ) throws ConflictException {
-        var reference = new PhysicalRefDto(PhysicalRefDto.Kind.UNIT, random.nextInt(), random.nextInt());
+        var reference = new UnitReferenceDto(random.nextInt(), random.nextInt());
         var spec = new TargetSpec(Map.of(Kind.UNIT, correctType), random.get(), random.get(), random.get());
         if (inRange) createTile(reference);
         if (exists) createUnit();

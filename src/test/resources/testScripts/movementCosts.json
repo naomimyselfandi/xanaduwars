@@ -49,7 +49,7 @@
   ],
   "steps": [
     {
-      "actor": {"kind": "Unit", "x": 0, "y": 0},
+      "actor": {"unitX": 0, "unitY": 0},
       "items": [
         {"name": "Move", "targets": [{"path": ["E", "E", "E", "E", "E", "E"]}]}
       ],
@@ -58,7 +58,7 @@
       }
     },
     {
-      "actor": {"kind": "Unit", "x": 1, "y": 0},
+      "actor": {"unitX": 1, "unitY": 0},
       "items": [
         {"name": "Move", "targets": [{"path": ["E", "E", "E", "E", "E", "E"]}]}
       ],
@@ -69,7 +69,7 @@
       }
     },
     {
-      "actor": {"kind": "Unit", "x": 1, "y": 0},
+      "actor": {"unitX": 1, "unitY": 0},
       "items": [
         {"name": "Move", "targets": [{"path": ["S"]}]}
       ],

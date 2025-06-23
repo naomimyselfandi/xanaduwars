@@ -47,7 +47,7 @@
   },
   "steps": [
     {
-      "actor": {"kind": "Unit", "x": 0, "y": 1},
+      "actor": {"unitX": 0, "unitY": 1},
       "items": [
         {"name": "Move", "targets": [{"path": ["E"]}]}
       ],
@@ -60,7 +60,7 @@
       }
     },
     {
-      "actor": {"kind": "Unit", "x": 0, "y": 2},
+      "actor": {"unitX": 0, "unitY": 2},
       "items": [
         {"name": "Move", "targets": [{"path": ["E"]}]}
       ],

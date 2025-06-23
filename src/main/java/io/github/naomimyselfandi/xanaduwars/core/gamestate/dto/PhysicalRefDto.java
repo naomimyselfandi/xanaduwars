@@ -1,22 +1,22 @@
 package io.github.naomimyselfandi.xanaduwars.core.gamestate.dto;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonSubTypes;
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
 
 /// A DTO representing a reference to a physical element.
-/// @param kind The kind of element being referred to.
-/// @param x The element's X-coordinate.
-/// @param y The element's Y-coordinate.
-public record PhysicalRefDto(Kind kind, int x, int y) implements ActorRefDto, TargetRefDto {
+@JsonTypeInfo(use = JsonTypeInfo.Id.DEDUCTION)
+@JsonSubTypes({
+        @JsonSubTypes.Type(StructureReferenceDto.class),
+        @JsonSubTypes.Type(TileReferenceDto.class),
+        @JsonSubTypes.Type(UnitReferenceDto.class),
+})
+public sealed interface PhysicalRefDto extends ActorRefDto, TargetRefDto
+        permits StructureReferenceDto, TileReferenceDto, UnitReferenceDto {
 
-    /// A kind of physical element.
-    public enum Kind {
+    /// Get the referent's X-coordinate.
+    int x();
 
-        @JsonProperty("Structure") STRUCTURE,
-
-        @JsonProperty("Tile") TILE,
-
-        @JsonProperty("Unit") UNIT
-
-    }
+    /// Get the referent's Y-coordinate.
+    int y();
 
 }

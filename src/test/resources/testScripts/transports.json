@@ -37,11 +37,11 @@
   ],
   "steps": [
     {
-      "actor": {"kind": "Unit", "x": 1, "y": 0},
+      "actor": {"unitX": 1, "unitY": 0},
       "items": [
-        {"name": "LoadSoldier", "targets": [{"kind": "Unit", "x": 0, "y": 0}]},
+        {"name": "LoadSoldier", "targets": [{"unitX": 0, "unitY": 0}]},
         {"name": "Move", "targets": [{"path": ["E", "E", "E", "E", "E", "E"]}]},
-        {"name": "Drop", "targets": [{"kind": "Tile", "x": 8, "y": 0}]}
+        {"name": "Drop", "targets": [{"tileX": 8, "tileY": 0}]}
       ],
       "postconditions": {
         "tile(8, 0).unit": "unit(0)",
@@ -49,9 +49,9 @@
       }
     },
     {
-      "actor": {"kind": "Unit", "x": 1, "y": 1},
+      "actor": {"unitX": 1, "unitY": 1},
       "items": [
-        {"name": "LoadSoldier", "targets": [{"kind": "Unit", "x": 0, "y": 1}]}
+        {"name": "LoadSoldier", "targets": [{"unitX": 0, "unitY": 1}]}
       ],
       "invalid": true,
       "postconditions": {

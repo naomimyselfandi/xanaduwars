@@ -4,39 +4,55 @@ import io.github.naomimyselfandi.seededrandom.SeededRandomExtension;
 import io.github.naomimyselfandi.xanaduwars.core.gamestate.Direction;
 import io.github.naomimyselfandi.xanaduwars.testing.SeededRng;
 import io.github.naomimyselfandi.xanaduwars.testing.TestUtils;
+import org.intellij.lang.annotations.Language;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.CsvSource;
 import org.junit.jupiter.params.provider.EnumSource;
+import org.junit.jupiter.params.provider.MethodSource;
 
 import java.util.List;
+import java.util.stream.Stream;
+
+import static org.junit.jupiter.params.provider.Arguments.arguments;
 
 @ExtendWith(SeededRandomExtension.class)
 class TargetRefDtoTest {
 
+    @MethodSource
     @ParameterizedTest
-    @CsvSource(textBlock = """
-            NORTH,EAST,NORTH,N,E,N
-            WEST,WEST,SOUTH,W,W,S
-            """)
-    void json_Path(Direction d1, Direction d2, Direction d3, String s1, String s2, String s3) {
-        TestUtils.assertJson(TargetRefDto.class, new PathRefDto(List.of(d1, d2, d3)), """
-            {"path": ["%s", "%s", "%s"]}
-            """.formatted(s1, s2, s3));
+    void json(TargetRefDto dto, @Language("json") String json) {
+        TestUtils.assertJson(TargetRefDto.class, dto, json);
     }
 
-    @EnumSource
-    @ParameterizedTest
-    void json_Physical(PhysicalRefDto.Kind kind, SeededRng random) {
-        var x = random.nextInt();
-        var y = random.nextInt();
-        TestUtils.assertJson(TargetRefDto.class, new PhysicalRefDto(kind, x, y), """
-            {"kind": "%s", "x": %d, "y": %d}
-            """.formatted(switch (kind) {
-            case STRUCTURE -> "Structure";
-            case TILE -> "Tile";
-            case UNIT -> "Unit";
-        }, x, y));
+    private static Stream<Arguments> json() {
+        return Stream.of(
+                arguments(
+                        new StructureReferenceDto(1, 2),
+                        """
+                        {"structureX": 1, "structureY": 2}
+                        """
+                ),
+                arguments(
+                        new TileReferenceDto(3, 4),
+                        """
+                        {"tileX": 3, "tileY": 4}
+                        """
+                ),
+                arguments(
+                        new UnitReferenceDto(5, 6),
+                        """
+                        {"unitX": 5, "unitY": 6}
+                        """
+                ),
+                arguments(
+                        new PathRefDto(List.of(Direction.EAST, Direction.NORTH, Direction.EAST)),
+                        """
+                        {"path": ["E", "N", "E"]}
+                        """
+                )
+        );
     }
 
 }

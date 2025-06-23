@@ -94,6 +94,7 @@ public class GameplayIntegrationTest extends AbstractIntegrationTest {
 
     @SneakyThrows
     private static GameplayTestScript createScripts(Resource resource) {
+        System.err.println(resource.getPath());
         return OBJECT_MAPPER
                 .readValue(resource.getContentAsString(), GameplayTestScript.class)
                 .setName(resource.getPath().replaceAll("^testScripts/|\\.json$", ""));

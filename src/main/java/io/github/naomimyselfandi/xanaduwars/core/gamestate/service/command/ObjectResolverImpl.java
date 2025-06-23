@@ -49,8 +49,8 @@ class ObjectResolverImpl implements ObjectResolver {
         var tile = gameState.getTiles().get(tileId);
         if (tile == null) {
             throw badReference("tile", tileId);
-        } else return switch (reference.kind()) {
-            case STRUCTURE -> {
+        } else return switch (reference) {
+            case StructureReferenceDto _ -> {
                 var candidate = tile.getStructure();
                 if (candidate != null && gameState.getActivePlayer().canSee(candidate)) {
                     yield candidate;
@@ -58,8 +58,8 @@ class ObjectResolverImpl implements ObjectResolver {
                     throw badReference("structure", tileId);
                 }
             }
-            case TILE -> tile;
-            case UNIT -> {
+            case TileReferenceDto _ -> tile;
+            case UnitReferenceDto _ -> {
                 var candidate = tile.getUnit();
                 if (candidate != null && gameState.getActivePlayer().canSee(candidate)) {
                     yield candidate;

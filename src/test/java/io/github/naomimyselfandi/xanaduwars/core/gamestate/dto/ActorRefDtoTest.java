@@ -1,36 +1,53 @@
 package io.github.naomimyselfandi.xanaduwars.core.gamestate.dto;
 
 import io.github.naomimyselfandi.seededrandom.SeededRandomExtension;
-import io.github.naomimyselfandi.xanaduwars.testing.SeededRng;
 import io.github.naomimyselfandi.xanaduwars.testing.TestUtils;
+import org.intellij.lang.annotations.Language;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.EnumSource;
-import org.junit.jupiter.params.provider.ValueSource;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
+
+import java.util.stream.Stream;
+
+import static org.junit.jupiter.params.provider.Arguments.arguments;
 
 @ExtendWith(SeededRandomExtension.class)
 class ActorRefDtoTest {
 
+    @MethodSource
     @ParameterizedTest
-    @ValueSource(ints = {0, 1, 2})
-    void json_Player(int playerId) {
-        TestUtils.assertJson(ActorRefDto.class, new PlayerRefDto(playerId), """
-           {"player": %d}
-           """.formatted(playerId));
+    void json(ActorRefDto dto, @Language("json") String json) {
+        TestUtils.assertJson(ActorRefDto.class, dto, json);
     }
 
-    @EnumSource
-    @ParameterizedTest
-    void json_Physical(PhysicalRefDto.Kind kind, SeededRng random) {
-        var x = random.nextInt();
-        var y = random.nextInt();
-        TestUtils.assertJson(ActorRefDto.class, new PhysicalRefDto(kind, x, y), """
-            {"kind": "%s", "x": %d, "y": %d}
-            """.formatted(switch (kind) {
-            case STRUCTURE -> "Structure";
-            case TILE -> "Tile";
-            case UNIT -> "Unit";
-        }, x, y));
+    private static Stream<Arguments> json() {
+        return Stream.of(
+                arguments(
+                        new StructureReferenceDto(1, 2),
+                        """
+                        {"structureX": 1, "structureY": 2}
+                        """
+                ),
+                arguments(
+                        new TileReferenceDto(3, 4),
+                        """
+                        {"tileX": 3, "tileY": 4}
+                        """
+                ),
+                arguments(
+                        new UnitReferenceDto(5, 6),
+                        """
+                        {"unitX": 5, "unitY": 6}
+                        """
+                ),
+                arguments(
+                        new PlayerRefDto(7),
+                        """
+                        {"player": 7}
+                        """
+                )
+        );
     }
 
 }

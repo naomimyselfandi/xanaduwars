@@ -45,7 +45,7 @@
       ],
       "actor": {"player": 0},
       "items": [
-        {"name": "MagicMissile", "targets": [{"kind": "Unit", "x": 2, "y": 1}]}
+        {"name": "MagicMissile", "targets": [{"unitX": 2, "unitY": 1}]}
       ],
       "invalid": true,
       "postconditions": {
@@ -57,7 +57,7 @@
     {
       "actor": {"player": 0},
       "items": [
-        {"name": "MagicMissile", "targets": [{"kind": "Unit", "x": 4, "y": 1}]}
+        {"name": "MagicMissile", "targets": [{"unitX": 4, "unitY": 1}]}
       ],
       "postconditions": {
         "player(0).spellSlots[0].active": "true",
@@ -68,7 +68,7 @@
     {
       "actor": {"player": 0},
       "items": [
-        {"name": "MagicMissile", "targets": [{"kind": "Unit", "x": 4, "y": 1}]}
+        {"name": "MagicMissile", "targets": [{"unitX": 4, "unitY": 1}]}
       ],
       "invalid": true,
       "postconditions": {
@@ -85,7 +85,7 @@
       "setup": ["player(1).focus = 3000"],
       "actor": {"player": 1},
       "items": [
-        {"name": "QuickFix", "targets": [{"kind": "Tile", "x": 4, "y": 1}]}
+        {"name": "QuickFix", "targets": [{"tileX": 4, "tileY": 1}]}
       ],
       "postconditions": {
         "player(0).spellSlots[0].active": "true",

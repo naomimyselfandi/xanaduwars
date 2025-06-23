@@ -40,7 +40,7 @@
   ],
   "steps": [
     {
-      "actor": {"kind": "Unit", "x": 0, "y": 0},
+      "actor": {"unitX": 0, "unitY": 0},
       "items": [
         {"name": "Move", "targets": [{"path": ["E", "S", "E", "E"]}]}
       ],
@@ -56,7 +56,7 @@
       }
     },
     {
-      "actor": {"kind": "Unit", "x": 3, "y": 1},
+      "actor": {"unitX": 3, "unitY": 1},
       "items": [
         {"name": "Move", "targets": [{"path": ["W"]}]}
       ],
@@ -85,7 +85,7 @@
       }
     },
     {
-      "actor": {"kind": "Unit", "x": 6, "y": 2},
+      "actor": {"unitX": 6, "unitY": 2},
       "items": [
         {"name": "Move", "targets": [{"path": ["W", "W", "W", "N"]}]}
       ],
@@ -105,7 +105,7 @@
       "items": [{"name": "Pass", "targets": []}]
     },
     {
-      "actor": {"kind": "Unit", "x": 3, "y": 1},
+      "actor": {"unitX": 3, "unitY": 1},
       "items": [
         {"name": "Move", "targets": [{"path": ["S", "E"]}]}
       ],
@@ -118,7 +118,7 @@
       }
     },
     {
-      "actor": {"kind": "Unit", "x": 3, "y": 1},
+      "actor": {"unitX": 3, "unitY": 1},
       "items": [
         {"name": "Move", "targets": [{"path": ["S", "E", "E", "E", "N"]}]}
       ],
@@ -131,7 +131,7 @@
       }
     },
     {
-      "actor": {"kind": "Unit", "x": 3, "y": 1},
+      "actor": {"unitX": 3, "unitY": 1},
       "items": [
         {"name": "Move", "targets": [{"path": ["E", "S"]}]}
       ],
