@@ -1,0 +1,96 @@
+{
+  "map": {
+    "players": [
+      {"team": 0},
+      {"team": 1}
+    ],
+    "tiles": [
+      [
+        {"type": 1, "unit": {"type": 4, "owner": 0}, "structure": {"type": 0, "owner": 0}},
+        {"type": 1},
+        {"type": 1, "unit": {"type": 4, "owner": 1}},
+        {"type": 1}
+      ],
+      [
+        {"type": 1, "unit": {"type": 5, "owner": 0}},
+        {"type": 1},
+        {"type": 1, "unit": {"type": 4, "owner": 1}},
+        {"type": 1, "unit": {"type": 6, "owner": 1}}
+      ],
+      [
+        {"type": 0, "unit": {"type": 4, "owner": 0}},
+        {"type": 0},
+        {"type": 0, "unit": {"type": 4, "owner": 1}},
+        {"type": 0, "structure": {"type": 0, "owner": 1}}
+      ]
+    ]
+  },
+  "choices": [
+    {"commander": 0, "spells": [2, 6]},
+    {"commander": 1, "spells": [3, 4]}
+  ],
+  "steps": [
+    {
+      "actor": {"kind": "Unit", "x": 0, "y": 0},
+      "items": [
+        {"name": "Move", "targets": [{"path": ["E"]}]},
+        {"name": "MachineGun", "targets": [{"kind": "Unit", "x": 2, "y": 0}]}
+      ],
+      "postconditions": {
+        "unit(2, 0).hp": "T(Hp).fromOrdinal(50)",
+        "unit(1, 0).hp": "T(Hp).fromOrdinal(75)",
+        "player(0).focus": "350",
+        "player(1).focus": "437"
+      }
+    },
+    {
+      "actor": {"kind": "Unit", "x": 0, "y": 1},
+      "items": [
+        {"name": "Cannon", "targets": [{"kind": "Unit", "x": 2, "y": 1}]}
+      ],
+      "postconditions": {
+        "unit(2, 1).hp": "T(Hp).fromOrdinal(40)",
+        "unit(0, 1).hp": "T(Hp).fromOrdinal(100)",
+        "player(0).focus": "560",
+        "player(1).focus": "857"
+      }
+    },
+    {
+      "actor": {"kind": "Unit", "x": 0, "y": 2},
+      "items": [
+        {"name": "Move", "targets": [{"path": ["E"]}]},
+        {"name": "MachineGun", "targets": [{"kind": "Unit", "x": 2, "y": 2}]}
+      ],
+      "postconditions": {
+        "unit(2, 2).hp": "T(Hp).fromOrdinal(55)",
+        "unit(1, 2).hp": "T(Hp).fromOrdinal(73)"
+      }
+    },
+    {
+      "actor": {"player": 0},
+      "items": [{"name": "Pass", "targets": []}]
+    },
+    {
+      "actor": {"kind": "Unit", "x": 3, "y": 1},
+      "items": [
+        {"name": "Cannon", "targets": [{"kind": "Unit", "x": 0, "y": 1}]}
+      ],
+      "postconditions": {
+        "unit(3, 1).hp": "T(Hp).fromOrdinal(100)",
+        "unit(0, 1).hp": "T(Hp).fromOrdinal(30)"
+      }
+    },
+    {
+      "setup": ["unit(2, 1).hp = T(Hp).fromOrdinal(100)"],
+      "actor": {"kind": "Unit", "x": 2, "y": 1},
+      "items": [
+        {"name": "Move", "targets": [{"path": ["W"]}]},
+        {"name": "MachineGun", "targets": [{"kind": "Unit", "x": 0, "y": 1}]}
+      ],
+      "postconditions": {
+        "unit(1, 1).hp": "T(Hp).fromOrdinal(100)",
+        "tile(0, 1).unit": "null"
+      }
+    }
+  ]
+}

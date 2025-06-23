@@ -72,7 +72,7 @@ class ContextFactoryImplTest {
 
     @Test
     void create_RegistersTheTypeConverter() {
-        var expected = new ResultCreator(new OrdinalCreator(new OrdinalConverter(BASE_CONVERTER)));
+        var expected = new ResultConverter(new OrdinalCreator(new OrdinalConverter(BASE_CONVERTER)));
         assertThat(context.getTypeConverter()).isEqualTo(expected);
         assertThat(BASE_CONVERTER).isInstanceOf(StandardTypeConverter.class);
     }

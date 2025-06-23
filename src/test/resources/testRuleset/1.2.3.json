@@ -105,7 +105,9 @@
         ],
         "ActionExecution": [
           "if subject instanceof T(Unit):",
-          "  subject.ready = false"
+          "  subject.ready = false",
+          "  if action instanceof T(Weapon):",
+          "    game.evaluate(new AttackEvent(subject, action, target, false))"
         ],
         "ActionGroup": [
           "#movement = false",
@@ -119,6 +121,30 @@
           "  else:",
           "    validate !(#standard) :: 'A unit can only act once per turn.'",
           "    #standard = true"
+        ]
+      }
+    },
+    {
+      "name": "Combat",
+      "handlers": {
+        "AttackDamage": [
+          "#firepower = game.evaluate(new FirepowerQuery(subject, weapon, target, counter))",
+          "#defense = game.evaluate(new DefenseQuery(target, weapon, subject, counter))",
+          "return #value * (#firepower - #defense) * subject.hp.ordinal / 100"
+        ],
+        "Defense": "return #value + (subject.tile?.cover ?: 0)",
+        "Attack": [
+          "#damage = game.evaluate(new AttackDamageQuery(subject, weapon, target, counter))",
+          "if #damage > subject.hp:",
+          "  #damage = subject.hp",
+          "#focus = #damage * target.type.supplyCost / 100",
+          "subject.owner.focus = subject.owner.focus + (#focus / 2)",
+          "target.owner.focus = target.owner.focus + #focus",
+          "target.hp = target.hp - #damage",
+          "if !counter && (target instanceof T(Unit)) && (target.hp > 0):",
+          "  for #countermeasure in target.type.weapons:",
+          "    if game.evaluate(new ActionTargetQuery(target, #countermeasure, T(List).of(subject))):",
+          "      game.evaluate(new AttackEvent(target, #countermeasure, subject, true))"
         ]
       }
     },
@@ -181,13 +207,7 @@
       "affinities": {"Defensive": "Positive", "Offensive": "Negative"},
       "signatureSpells": ["QuickFix"],
       "handlers": {
-        "Firepower": [
-          "// +10% counterattack damage on rough terrain.",
-          "if (subject.owner != game.activePlayer) && subject.tile?.cover > 0.2:",
-          "  return #value + 0.1",
-          "else:",
-          "  return #value"
-        ]
+        "Firepower": "return #value + (counter ? (subject.tile?.cover ?: 0.0) : 0.0)"
       }
     }
   ],
@@ -232,7 +252,7 @@
       "name": "Stalwart",
       "tags": ["Defensive"],
       "handlers": {
-        "Defense": "return subject.distance(target) <= 1 ? #value + 0.2 : #value"
+        "Defense": "return subject.distance(attacker) <= 1 ? #value + 0.2 : #value"
       },
       "focusCost": 1600
     },
@@ -240,7 +260,7 @@
       "name": "HunkerDown",
       "tags": ["Defensive"],
       "handlers": {
-        "Defense": "return subject.distance(target) > 1 ? #value + 0.2 : #value"
+        "Defense": "return subject.distance(attacker) > 1 ? #value + 0.2 : #value"
       },
       "focusCost": 1600
     },
@@ -1100,7 +1120,7 @@
         "#cost = 0.0",
         "#tile = subject.tile",
         "#speed = subject.speed",
-        "#visited = new java.util.HashSet()",
+        "#visited = new HashSet()",
         "for #direction in target:",
         "  #tile = #tile.step(#direction)",
         "  validate #tile != null :: 'Path crosses edge of map.'",

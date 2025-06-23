@@ -15,12 +15,15 @@ import lombok.Getter;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 @Data
 @JsonCommentable
 class WeaponImpl implements Weapon {
 
     private @NotNull @Valid Name name;
+
+    private @NotNull Set<@NotNull @Valid ActionTag> tags = Set.of();
 
     private @PositiveOrZero int minRange, maxRange = 1;
 

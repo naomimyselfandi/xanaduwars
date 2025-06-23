@@ -21,13 +21,13 @@ import static org.junit.jupiter.params.provider.Arguments.arguments;
 import static org.mockito.Mockito.*;
 
 @ExtendWith({MockitoExtension.class, SeededRandomExtension.class})
-class ResultCreatorTest {
+class ResultConverterTest {
 
     @Mock
     private TypeConverter delegate;
 
     @InjectMocks
-    private ResultCreator fixture;
+    private ResultConverter fixture;
 
     @MethodSource
     @ParameterizedTest
@@ -61,16 +61,16 @@ class ResultCreatorTest {
         TypeDescriptor string = TypeDescriptor.valueOf(String.class);
         TypeDescriptor integer = TypeDescriptor.valueOf(Integer.class);
         TypeDescriptor result = TypeDescriptor.valueOf(Result.class);
-        TypeDescriptor fail = TypeDescriptor.valueOf(Result.Fail.class);
         return Stream.of(
                 arguments(null, result, false),
-                arguments(null, fail, false),
                 arguments(string, result, false),
-                arguments(string, fail, false),
                 arguments(integer, result, false),
-                arguments(integer, fail, false),
                 arguments(integer, string, true),
-                arguments(integer, string, true)
+                arguments(integer, string, true),
+                arguments(result, TypeDescriptor.valueOf(Boolean.class), false),
+                arguments(result, TypeDescriptor.valueOf(boolean.class), false),
+                arguments(integer, TypeDescriptor.valueOf(Boolean.class), true),
+                arguments(integer, TypeDescriptor.valueOf(boolean.class), true)
         );
     }
 
@@ -78,14 +78,14 @@ class ResultCreatorTest {
         TypeDescriptor string = TypeDescriptor.valueOf(String.class);
         TypeDescriptor integer = TypeDescriptor.valueOf(Integer.class);
         TypeDescriptor result = TypeDescriptor.valueOf(Result.class);
-        TypeDescriptor fail = TypeDescriptor.valueOf(Result.Fail.class);
         return Stream.of(
                 arguments("foo", string, result, Result.fail("foo")),
-                arguments("bar", string, fail, Result.fail("bar")),
+                arguments(Result.okay(), result, TypeDescriptor.valueOf(Boolean.class), true),
+                arguments(Result.okay(), result, TypeDescriptor.valueOf(boolean.class), true),
+                arguments(Result.fail("bar"), result, TypeDescriptor.valueOf(Boolean.class), false),
+                arguments(Result.fail("bar"), result, TypeDescriptor.valueOf(boolean.class), false),
                 arguments(42, integer, string, null),
-                arguments(Result.okay(), result, result, null),
-                arguments(Result.fail("baz"), result, result, null),
-                arguments(Result.fail("baz"), result, fail, null)
+                arguments(Result.okay(), result, result, null)
         );
     }
 

@@ -41,7 +41,7 @@ class ContextFactoryImpl implements ContextFactory {
         java.util.function
         java.util.stream""".lines().forEach(typeLocator::registerImport);
         LOCATOR = typeLocator;
-        CONVERTER = new ResultCreator(new OrdinalCreator(new OrdinalConverter(BASE_CONVERTER)));
+        CONVERTER = new ResultConverter(new OrdinalCreator(new OrdinalConverter(BASE_CONVERTER)));
         COMPARATOR = new OrdinalComparator(BASE_COMPARATOR);
         OVERLOADER = new OrdinalOverloader(BASE_OVERLOADER);
         RESOLVER = new IterableMethodResolver(BASE_RESOLVER);
