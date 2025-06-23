@@ -1,0 +1,83 @@
+{
+  "map": {
+    "players": [
+      {"team": 0},
+      {"team": 1}
+    ],
+    "tiles": [
+      [
+        {"type": 0, "unit": {"type": 6, "owner": 0}, "structure": {"type": 0, "owner": 0}},
+        {"type": 1},
+        {"type": 1},
+        {"type": 1},
+        {"type": 1},
+        {"type": 1},
+        {"type": 1},
+        {"type": 1},
+        {"type": 1},
+        {"type": 0, "structure": {"type": 0, "owner": 1}}
+      ],
+      [
+        {"type": 0, "unit": {"type": 6, "owner": 0}},
+        {"type": 0},
+        {"type": 0},
+        {"type": 0},
+        {"type": 0},
+        {"type": 0},
+        {"type": 0},
+        {"type": 0},
+        {"type": 0},
+        {"type": 0}
+      ],
+      [
+        {"type": 9},
+        {"type": 9},
+        {"type": 9},
+        {"type": 9},
+        {"type": 9},
+        {"type": 9},
+        {"type": 9},
+        {"type": 9},
+        {"type": 9},
+        {"type": 9}
+      ]
+    ]
+  },
+  "choices": [
+    {"commander": 0, "spells": [2, 6]},
+    {"commander": 1, "spells": [3, 4]}
+  ],
+  "steps": [
+    {
+      "actor": {"kind": "Unit", "x": 0, "y": 0},
+      "items": [
+        {"name": "Move", "targets": [{"path": ["E", "E", "E", "E", "E", "E"]}]}
+      ],
+      "postconditions": {
+        "unit(0).tile": "tile(6, 0)"
+      }
+    },
+    {
+      "actor": {"kind": "Unit", "x": 1, "y": 0},
+      "items": [
+        {"name": "Move", "targets": [{"path": ["E", "E", "E", "E", "E", "E"]}]}
+      ],
+      "invalid": true,
+      "postconditions": {
+        "unit(1).tile": "tile(0, 1)",
+        "unit(1).ready": "true"
+      }
+    },
+    {
+      "actor": {"kind": "Unit", "x": 1, "y": 0},
+      "items": [
+        {"name": "Move", "targets": [{"path": ["S"]}]}
+      ],
+      "invalid": true,
+      "postconditions": {
+        "unit(1).tile": "tile(0, 1)",
+        "unit(1).ready": "true"
+      }
+    }
+  ]
+}

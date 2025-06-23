@@ -1,0 +1,64 @@
+{
+  "map": {
+    "players": [
+      {"team": 0},
+      {"team": 1}
+    ],
+    "tiles": [
+      [
+        {"type": 0, "unit": {"type": 1, "owner": 0}, "structure": {"type": 0, "owner": 0}},
+        {"type": 0, "unit": {"type": 11, "owner": 0}},
+        {"type": 0},
+        {"type": 0},
+        {"type": 0},
+        {"type": 0},
+        {"type": 0},
+        {"type": 0},
+        {"type": 0},
+        {"type": 0, "structure": {"type": 0, "owner": 1}}
+      ],
+      [
+        {"type": 0, "unit": {"type": 1, "owner": 0}},
+        {"type": 9, "unit": {"type": 11, "owner": 0}},
+        {"type": 0},
+        {"type": 0},
+        {"type": 0},
+        {"type": 0},
+        {"type": 0},
+        {"type": 0},
+        {"type": 0},
+        {"type": 0}
+      ]
+    ]
+  },
+  "choices": [
+    {"commander": 0, "spells": [2, 6]},
+    {"commander": 1, "spells": [3, 4]}
+  ],
+  "steps": [
+    {
+      "actor": {"kind": "Unit", "x": 1, "y": 0},
+      "items": [
+        {"name": "LoadSoldier", "targets": [{"kind": "Unit", "x": 0, "y": 0}]},
+        {"name": "Move", "targets": [{"path": ["E", "E", "E", "E", "E", "E"]}]},
+        {"name": "Drop", "targets": [{"kind": "Tile", "x": 8, "y": 0}]}
+      ],
+      "postconditions": {
+        "tile(8, 0).unit": "unit(0)",
+        "unit(0).ready": "true"
+      }
+    },
+    {
+      "actor": {"kind": "Unit", "x": 1, "y": 1},
+      "items": [
+        {"name": "LoadSoldier", "targets": [{"kind": "Unit", "x": 0, "y": 1}]}
+      ],
+      "invalid": true,
+      "postconditions": {
+        "tile(0, 1).unit": "unit(2)",
+        "tile(8, 1).unit": "null",
+        "unit(2).ready": "true"
+      }
+    }
+  ]
+}
