@@ -3,10 +3,7 @@ package io.github.naomimyselfandi.xanaduwars.core.gamestate.internal;
 import io.github.naomimyselfandi.xanaduwars.core.common.UnitTag;
 import io.github.naomimyselfandi.xanaduwars.core.gamestate.*;
 import io.github.naomimyselfandi.xanaduwars.core.gamestate.entity.UnitData;
-import io.github.naomimyselfandi.xanaduwars.core.gamestate.queries.SpeedQuery;
-import io.github.naomimyselfandi.xanaduwars.core.gamestate.queries.UnitDestructionEvent;
-import io.github.naomimyselfandi.xanaduwars.core.gamestate.queries.UnitTagQuery;
-import io.github.naomimyselfandi.xanaduwars.core.gamestate.queries.VisionRangeQuery;
+import io.github.naomimyselfandi.xanaduwars.core.gamestate.queries.*;
 import io.github.naomimyselfandi.xanaduwars.core.ruleset.Action;
 import io.github.naomimyselfandi.xanaduwars.core.ruleset.UnitType;
 import io.github.naomimyselfandi.xanaduwars.core.scripting.Rule;
@@ -29,7 +26,7 @@ record UnitImpl(UnitData data, @Getter GameState gameState, @Getter UnitId id) i
     @Override
     public Unit setType(UnitType type) {
         data.setTypeId(type.getId());
-        gameState.invalidateCache();
+        gameState.evaluate(new GenericEvent(this));
         return this;
     }
 
@@ -56,11 +53,7 @@ record UnitImpl(UnitData data, @Getter GameState gameState, @Getter UnitId id) i
     @Override
     public Asset setHp(Hp hp) {
         data.setHp(hp);
-        if (hp.equals(Hp.ZERO)) {
-            gameState.evaluate(new UnitDestructionEvent(this));
-        } else {
-            gameState.invalidateCache();
-        }
+        gameState.evaluate(hp.equals(Hp.ZERO) ? new UnitDestructionEvent(this) : new GenericEvent(this));
         return this;
     }
 
@@ -93,7 +86,7 @@ record UnitImpl(UnitData data, @Getter GameState gameState, @Getter UnitId id) i
     @Override
     public Unit setReady(boolean ready) {
         data.setReady(ready);
-        gameState.invalidateCache();
+        gameState.evaluate(new GenericEvent(this));
         return this;
     }
 
@@ -105,7 +98,7 @@ record UnitImpl(UnitData data, @Getter GameState gameState, @Getter UnitId id) i
     @Override
     public Asset setOwner(@Nullable Player owner) {
         data.setPlayerId(owner == null ? null : owner.getId());
-        gameState.invalidateCache();
+        gameState.evaluate(new GenericEvent(this));
         return this;
     }
 

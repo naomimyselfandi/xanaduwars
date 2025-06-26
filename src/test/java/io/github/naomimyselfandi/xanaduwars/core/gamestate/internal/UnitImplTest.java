@@ -4,10 +4,7 @@ import io.github.naomimyselfandi.seededrandom.SeededRandomExtension;
 import io.github.naomimyselfandi.xanaduwars.core.common.UnitTag;
 import io.github.naomimyselfandi.xanaduwars.core.gamestate.*;
 import io.github.naomimyselfandi.xanaduwars.core.gamestate.entity.UnitData;
-import io.github.naomimyselfandi.xanaduwars.core.gamestate.queries.SpeedQuery;
-import io.github.naomimyselfandi.xanaduwars.core.gamestate.queries.UnitDestructionEvent;
-import io.github.naomimyselfandi.xanaduwars.core.gamestate.queries.UnitTagQuery;
-import io.github.naomimyselfandi.xanaduwars.core.gamestate.queries.VisionRangeQuery;
+import io.github.naomimyselfandi.xanaduwars.core.gamestate.queries.*;
 import io.github.naomimyselfandi.xanaduwars.core.ruleset.NormalAction;
 import io.github.naomimyselfandi.xanaduwars.core.ruleset.Ruleset;
 import io.github.naomimyselfandi.xanaduwars.core.ruleset.UnitType;
@@ -84,7 +81,7 @@ class UnitImplTest {
         when(anotherType.getId()).thenReturn(random.get());
         assertThat(fixture.setType(anotherType)).isEqualTo(fixture);
         assertThat(unitData.getTypeId()).isEqualTo(anotherType.getId());
-        verify(gameState).invalidateCache();
+        verify(gameState).evaluate(new GenericEvent(fixture));
     }
 
     @Test
@@ -119,7 +116,7 @@ class UnitImplTest {
         assertThat(fixture.setHp(hp)).isSameAs(fixture);
         assertThat(fixture.getHp()).isEqualTo(hp);
         assertThat(unitData.getHp()).isEqualTo(hp);
-        verify(gameState).invalidateCache();
+        verify(gameState).evaluate(new GenericEvent(fixture));
         verify(gameState, never()).evaluate(new UnitDestructionEvent(fixture));
     }
 
@@ -169,7 +166,7 @@ class UnitImplTest {
         assertThat(fixture.setReady(ready)).isSameAs(fixture);
         assertThat(fixture.isReady()).isEqualTo(ready);
         assertThat(unitData.isReady()).isEqualTo(ready);
-        verify(gameState).invalidateCache();
+        verify(gameState).evaluate(new GenericEvent(fixture));
     }
 
     @Test
@@ -188,7 +185,7 @@ class UnitImplTest {
         when(alice.getId()).thenReturn(playerId);
         assertThat(fixture.setOwner(alice)).isSameAs(fixture);
         assertThat(unitData.getPlayerId()).isEqualTo(playerId);
-        verify(gameState).invalidateCache();
+        verify(gameState).evaluate(new GenericEvent(fixture));
     }
 
     @Test
@@ -196,7 +193,7 @@ class UnitImplTest {
         unitData.setPlayerId(random.get());
         fixture.setOwner(null);
         assertThat(unitData.getPlayerId()).isNull();
-        verify(gameState).invalidateCache();
+        verify(gameState).evaluate(new GenericEvent(fixture));
     }
 
     @Test

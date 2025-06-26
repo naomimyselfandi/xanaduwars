@@ -4,6 +4,7 @@ import io.github.naomimyselfandi.seededrandom.SeededRandomExtension;
 import io.github.naomimyselfandi.xanaduwars.core.common.TileTypeId;
 import io.github.naomimyselfandi.xanaduwars.core.gamestate.*;
 import io.github.naomimyselfandi.xanaduwars.core.gamestate.entity.*;
+import io.github.naomimyselfandi.xanaduwars.core.gamestate.queries.GenericEvent;
 import io.github.naomimyselfandi.xanaduwars.core.gamestate.queries.TurnStartEvent;
 import io.github.naomimyselfandi.xanaduwars.core.gamestate.service.CopyMachine;
 import io.github.naomimyselfandi.xanaduwars.core.ruleset.*;
@@ -137,17 +138,6 @@ class GameStateImplTest {
     }
 
     @Test
-    void invalidateCache(SeededRng random) {
-        var value0 = random.nextInt();
-        var value1 = random.nextInt();
-        var query = random.<FooQuery>get();
-        when(queryEvaluator.evaluate(fixture, query)).thenReturn(value0).thenReturn(value1);
-        assertThat(fixture.evaluate(query)).isEqualTo(value0);
-        fixture.invalidateCache();
-        assertThat(fixture.evaluate(query)).isEqualTo(value1);
-    }
-
-    @Test
     void limitedTo(SeededRng random) {
         var copyState = random.<GameStateData>get();
         when(copyMachine.copy(gameStateData)).thenReturn(copyState);
@@ -259,6 +249,7 @@ class GameStateImplTest {
     @ValueSource(booleans = {true, false})
     void pass(boolean passed) {
         assertThat(fixture.setPassed(passed)).isSameAs(fixture);
+        verify(queryEvaluator).evaluate(fixture, new GenericEvent(null));
         assertThat(fixture.isPassed()).isEqualTo(passed);
         assertThat(gameStateData.isPassed()).isEqualTo(passed);
     }

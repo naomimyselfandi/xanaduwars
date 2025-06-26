@@ -4,6 +4,7 @@ import io.github.naomimyselfandi.seededrandom.SeededRandomExtension;
 import io.github.naomimyselfandi.xanaduwars.core.common.*;
 import io.github.naomimyselfandi.xanaduwars.core.gamestate.*;
 import io.github.naomimyselfandi.xanaduwars.core.gamestate.entity.TileData;
+import io.github.naomimyselfandi.xanaduwars.core.gamestate.queries.GenericEvent;
 import io.github.naomimyselfandi.xanaduwars.core.gamestate.queries.TileTagQuery;
 import io.github.naomimyselfandi.xanaduwars.core.ruleset.Ruleset;
 import io.github.naomimyselfandi.xanaduwars.core.ruleset.StructureType;
@@ -84,7 +85,7 @@ class TileImplTest {
         when(anotherType.getId()).thenReturn(anotherTypeId);
         assertThat(fixture.setType(anotherType)).isSameAs(fixture);
         assertThat(tileData.getTypeId()).isEqualTo(anotherTypeId);
-        verify(gameState).invalidateCache();
+        verify(gameState).evaluate(new GenericEvent(fixture));
     }
 
     @Test
@@ -243,10 +244,10 @@ class TileImplTest {
         when(structureType.getId()).thenReturn(structureTypeId);
         assertThat(fixture.setMemory(player, structureType)).isSameAs(fixture);
         assertThat(tileData.getMemory(playerId)).contains(structureTypeId);
-        verify(gameState).invalidateCache();
+        verify(gameState).evaluate(new GenericEvent(fixture));
         fixture.setMemory(player, null);
         assertThat(fixture.getMemory(player)).isEmpty();
-        verify(gameState, times(2)).invalidateCache();
+        verify(gameState, times(2)).evaluate(new GenericEvent(fixture));
     }
 
     @Test

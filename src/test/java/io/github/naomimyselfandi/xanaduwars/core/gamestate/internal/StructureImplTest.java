@@ -5,6 +5,7 @@ import io.github.naomimyselfandi.xanaduwars.core.common.StructureTag;
 import io.github.naomimyselfandi.xanaduwars.core.common.StructureTypeId;
 import io.github.naomimyselfandi.xanaduwars.core.gamestate.*;
 import io.github.naomimyselfandi.xanaduwars.core.gamestate.entity.StructureData;
+import io.github.naomimyselfandi.xanaduwars.core.gamestate.queries.GenericEvent;
 import io.github.naomimyselfandi.xanaduwars.core.gamestate.queries.StructureDestructionEvent;
 import io.github.naomimyselfandi.xanaduwars.core.gamestate.queries.StructureTagQuery;
 import io.github.naomimyselfandi.xanaduwars.core.gamestate.queries.VisionRangeQuery;
@@ -82,7 +83,7 @@ class StructureImplTest {
         when(anotherType.getId()).thenReturn(anotherTypeId);
         assertThat(fixture.setType(anotherType)).isSameAs(fixture);
         assertThat(data.getTypeId()).isEqualTo(anotherTypeId);
-        verify(gameState).invalidateCache();
+        verify(gameState).evaluate(new GenericEvent(fixture));
     }
 
     @Test
@@ -110,7 +111,7 @@ class StructureImplTest {
         assertThat(fixture.setHp(hp)).isSameAs(fixture);
         assertThat(fixture.getHp()).isEqualTo(hp);
         assertThat(data.getHp()).isEqualTo(hp);
-        verify(gameState).invalidateCache();
+        verify(gameState).evaluate(new GenericEvent(fixture));
     }
 
     @Test
@@ -140,7 +141,7 @@ class StructureImplTest {
         assertThat(fixture.setIncomplete(incomplete)).isSameAs(fixture);
         assertThat(fixture.isIncomplete()).isEqualTo(incomplete);
         assertThat(data.isIncomplete()).isEqualTo(incomplete);
-        verify(gameState).invalidateCache();
+        verify(gameState).evaluate(new GenericEvent(fixture));
     }
 
     @Test
@@ -164,7 +165,7 @@ class StructureImplTest {
         when(alice.getId()).thenReturn(playerId);
         assertThat(fixture.setOwner(alice)).isSameAs(fixture);
         assertThat(data.getPlayerId()).isEqualTo(playerId);
-        verify(gameState).invalidateCache();
+        verify(gameState).evaluate(new GenericEvent(fixture));
     }
 
     @Test
@@ -172,7 +173,7 @@ class StructureImplTest {
         data.setPlayerId(random.get());
         fixture.setOwner(null);
         assertThat(data.getPlayerId()).isNull();
-        verify(gameState).invalidateCache();
+        verify(gameState).evaluate(new GenericEvent(fixture));
     }
 
     @ParameterizedTest

@@ -114,11 +114,6 @@ final class GameStateImpl implements GameState {
     }
 
     @Override
-    public void invalidateCache() {
-        queryCache.clear();
-    }
-
-    @Override
     public GameState attachObserver(EventObserver eventObserver) {
         eventObservers.add(eventObserver);
         return this;
@@ -152,7 +147,7 @@ final class GameStateImpl implements GameState {
     @Override
     public GameState setPassed(boolean passed) {
         gameStateData.setPassed(passed);
-        invalidateCache();
+        evaluate(new GenericEvent(null));
         return this;
     }
 

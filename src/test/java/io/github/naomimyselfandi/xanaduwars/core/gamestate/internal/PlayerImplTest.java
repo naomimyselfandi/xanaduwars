@@ -5,6 +5,8 @@ import io.github.naomimyselfandi.xanaduwars.core.common.CommanderId;
 import io.github.naomimyselfandi.xanaduwars.core.common.SpellId;
 import io.github.naomimyselfandi.xanaduwars.core.gamestate.*;
 import io.github.naomimyselfandi.xanaduwars.core.gamestate.entity.PlayerData;
+import io.github.naomimyselfandi.xanaduwars.core.gamestate.queries.GenericEvent;
+import io.github.naomimyselfandi.xanaduwars.core.gamestate.queries.ResourceEvent;
 import io.github.naomimyselfandi.xanaduwars.core.gamestate.queries.VisionCheckQuery;
 import io.github.naomimyselfandi.xanaduwars.core.ruleset.Commander;
 import io.github.naomimyselfandi.xanaduwars.core.ruleset.NormalAction;
@@ -88,7 +90,7 @@ class PlayerImplTest {
         when(commander.getId()).thenReturn(commanderId);
         assertThat(fixture.setCommander(commander)).isSameAs(fixture);
         assertThat(playerData.getCommanderId()).isEqualTo(commanderId);
-        verify(gameState).invalidateCache();
+        verify(gameState).evaluate(new GenericEvent(fixture));
     }
 
     @Test
@@ -130,7 +132,7 @@ class PlayerImplTest {
         when(spell.getId()).thenReturn(spellId);
         assertThat(fixture.setChosenSpells(List.of(spell))).isSameAs(fixture);
         assertThat(playerData.getChosenSpells().getSpellIds()).containsExactly(spellId);
-        verify(gameState).invalidateCache();
+        verify(gameState).evaluate(new GenericEvent(fixture));
     }
 
     @Test
@@ -144,7 +146,7 @@ class PlayerImplTest {
         assertThat(fixture.setSupplies(value)).isEqualTo(fixture);
         assertThat(fixture.getSupplies()).isEqualTo(value);
         assertThat(playerData.getSupplies()).isEqualTo(value);
-        verify(gameState).invalidateCache();
+        verify(gameState).evaluate(new ResourceEvent(fixture));
     }
 
     @Test
@@ -158,7 +160,7 @@ class PlayerImplTest {
         assertThat(fixture.setAether(value)).isEqualTo(fixture);
         assertThat(fixture.getAether()).isEqualTo(value);
         assertThat(playerData.getAether()).isEqualTo(value);
-        verify(gameState).invalidateCache();
+        verify(gameState).evaluate(new ResourceEvent(fixture));
     }
 
     @Test
@@ -172,7 +174,7 @@ class PlayerImplTest {
         assertThat(fixture.setFocus(value)).isEqualTo(fixture);
         assertThat(fixture.getFocus()).isEqualTo(value);
         assertThat(playerData.getFocus()).isEqualTo(value);
-        verify(gameState).invalidateCache();
+        verify(gameState).evaluate(new ResourceEvent(fixture));
     }
 
     @ParameterizedTest
@@ -188,7 +190,7 @@ class PlayerImplTest {
         assertThat(fixture.defeat()).isSameAs(fixture);
         assertThat(fixture.isDefeated()).isTrue();
         assertThat(playerData.isDefeated()).isTrue();
-        verify(gameState).invalidateCache();
+        verify(gameState).evaluate(new GenericEvent(fixture));
     }
 
     @Test

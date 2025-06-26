@@ -1,7 +1,6 @@
 package io.github.naomimyselfandi.xanaduwars.core.gamestate;
 
 import io.github.naomimyselfandi.xanaduwars.core.ruleset.*;
-import io.github.naomimyselfandi.xanaduwars.core.scripting.Event;
 import io.github.naomimyselfandi.xanaduwars.core.scripting.Query;
 import org.jetbrains.annotations.UnmodifiableView;
 
@@ -17,11 +16,6 @@ public interface GameState {
 
     /// Evaluate a query against this game state.
     <T> T evaluate(Query<T> query);
-
-    /// Invalidate any cached queries. The query cache is automatically
-    /// invalidated before evaluating an [Event], so it is only necessary to
-    /// call this when the game changes without creating an event.
-    void invalidateCache();
 
     /// Attach an event observer to this game state. Whenever this game state
     /// finishes evaluates an event, the observer is notified of it.

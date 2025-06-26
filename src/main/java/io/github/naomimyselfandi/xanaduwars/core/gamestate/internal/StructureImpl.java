@@ -3,6 +3,7 @@ package io.github.naomimyselfandi.xanaduwars.core.gamestate.internal;
 import io.github.naomimyselfandi.xanaduwars.core.common.StructureTag;
 import io.github.naomimyselfandi.xanaduwars.core.gamestate.*;
 import io.github.naomimyselfandi.xanaduwars.core.gamestate.entity.StructureData;
+import io.github.naomimyselfandi.xanaduwars.core.gamestate.queries.GenericEvent;
 import io.github.naomimyselfandi.xanaduwars.core.gamestate.queries.StructureDestructionEvent;
 import io.github.naomimyselfandi.xanaduwars.core.gamestate.queries.StructureTagQuery;
 import io.github.naomimyselfandi.xanaduwars.core.gamestate.queries.VisionRangeQuery;
@@ -28,7 +29,7 @@ record StructureImpl(StructureData data, @Getter GameState gameState, @Getter St
     @Override
     public Structure setType(StructureType type) {
         data.setTypeId(type.getId());
-        gameState.invalidateCache();
+        gameState.evaluate(new GenericEvent(this));
         return this;
     }
 
@@ -53,7 +54,7 @@ record StructureImpl(StructureData data, @Getter GameState gameState, @Getter St
         if (hp.equals(Hp.ZERO)) {
             gameState.evaluate(new StructureDestructionEvent(this));
         } else {
-            gameState.invalidateCache();
+            gameState.evaluate(new GenericEvent(this));
         }
         return this;
     }
@@ -71,7 +72,7 @@ record StructureImpl(StructureData data, @Getter GameState gameState, @Getter St
     @Override
     public Structure setIncomplete(boolean incomplete) {
         data.setIncomplete(incomplete);
-        gameState.invalidateCache();
+        gameState.evaluate(new GenericEvent(this));
         return this;
     }
 
@@ -83,7 +84,7 @@ record StructureImpl(StructureData data, @Getter GameState gameState, @Getter St
     @Override
     public Asset setOwner(@Nullable Player owner) {
         data.setPlayerId(owner == null ? null : owner.getId());
-        gameState.invalidateCache();
+        gameState.evaluate(new GenericEvent(this));
         return this;
     }
 

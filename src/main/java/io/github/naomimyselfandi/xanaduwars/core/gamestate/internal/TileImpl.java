@@ -3,6 +3,7 @@ package io.github.naomimyselfandi.xanaduwars.core.gamestate.internal;
 import io.github.naomimyselfandi.xanaduwars.core.common.TileTag;
 import io.github.naomimyselfandi.xanaduwars.core.gamestate.*;
 import io.github.naomimyselfandi.xanaduwars.core.gamestate.entity.TileData;
+import io.github.naomimyselfandi.xanaduwars.core.gamestate.queries.GenericEvent;
 import io.github.naomimyselfandi.xanaduwars.core.gamestate.queries.TileTagQuery;
 import io.github.naomimyselfandi.xanaduwars.core.ruleset.Action;
 import io.github.naomimyselfandi.xanaduwars.core.ruleset.StructureType;
@@ -27,7 +28,7 @@ record TileImpl(TileData data, @Getter GameState gameState, @Getter TileId id) i
     @Override
     public Tile setType(TileType type) {
         data.setTypeId(type.getId());
-        gameState.invalidateCache();
+        gameState.evaluate(new GenericEvent(this));
         return this;
     }
 
@@ -102,7 +103,7 @@ record TileImpl(TileData data, @Getter GameState gameState, @Getter TileId id) i
     @Override
     public Tile setMemory(Player player, @Nullable StructureType structureType) {
         data.setMemory(player.getId(), structureType == null ? null : structureType.getId());
-        gameState.invalidateCache();
+        gameState.evaluate(new GenericEvent(this));
         return this;
     }
 

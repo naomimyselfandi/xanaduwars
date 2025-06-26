@@ -2,6 +2,8 @@ package io.github.naomimyselfandi.xanaduwars.core.gamestate.internal;
 
 import io.github.naomimyselfandi.xanaduwars.core.gamestate.*;
 import io.github.naomimyselfandi.xanaduwars.core.gamestate.entity.PlayerData;
+import io.github.naomimyselfandi.xanaduwars.core.gamestate.queries.GenericEvent;
+import io.github.naomimyselfandi.xanaduwars.core.gamestate.queries.ResourceEvent;
 import io.github.naomimyselfandi.xanaduwars.core.gamestate.queries.VisionCheckQuery;
 import io.github.naomimyselfandi.xanaduwars.core.ruleset.Action;
 import io.github.naomimyselfandi.xanaduwars.core.ruleset.Commander;
@@ -26,7 +28,7 @@ record PlayerImpl(PlayerData data, @Getter GameState gameState, @Getter PlayerId
     @Override
     public Player setCommander(Commander commander) {
         data.setCommanderId(commander.getId());
-        gameState.invalidateCache();
+        gameState.evaluate(new GenericEvent(this));
         return this;
     }
 
@@ -53,7 +55,7 @@ record PlayerImpl(PlayerData data, @Getter GameState gameState, @Getter PlayerId
     @Override
     public Player setChosenSpells(List<Spell> chosenSpells) {
         data.getChosenSpells().setSpellIds(chosenSpells.stream().map(Spell::getId).toList());
-        gameState.invalidateCache();
+        gameState.evaluate(new GenericEvent(this));
         return this;
     }
 
@@ -65,7 +67,7 @@ record PlayerImpl(PlayerData data, @Getter GameState gameState, @Getter PlayerId
     @Override
     public Player setSupplies(int supplies) {
         data.setSupplies(supplies);
-        gameState.invalidateCache();
+        gameState.evaluate(new ResourceEvent(this));
         return this;
     }
 
@@ -77,7 +79,7 @@ record PlayerImpl(PlayerData data, @Getter GameState gameState, @Getter PlayerId
     @Override
     public Player setAether(int aether) {
         data.setAether(aether);
-        gameState.invalidateCache();
+        gameState.evaluate(new ResourceEvent(this));
         return this;
     }
 
@@ -89,7 +91,7 @@ record PlayerImpl(PlayerData data, @Getter GameState gameState, @Getter PlayerId
     @Override
     public Player setFocus(int focus) {
         data.setFocus(focus);
-        gameState.invalidateCache();
+        gameState.evaluate(new ResourceEvent(this));
         return this;
     }
 
@@ -101,7 +103,7 @@ record PlayerImpl(PlayerData data, @Getter GameState gameState, @Getter PlayerId
     @Override
     public Player defeat() {
         data.setDefeated(true);
-        gameState.invalidateCache();
+        gameState.evaluate(new GenericEvent(this));
         return this;
     }
 
