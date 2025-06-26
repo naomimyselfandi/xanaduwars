@@ -3,6 +3,7 @@ package io.github.naomimyselfandi.xanaduwars.core.scripting.evaluator;
 import io.github.naomimyselfandi.seededrandom.SeededRandomExtension;
 import io.github.naomimyselfandi.xanaduwars.core.scripting.*;
 import io.github.naomimyselfandi.xanaduwars.testing.SeededRng;
+import lombok.Data;
 import lombok.SneakyThrows;
 import org.intellij.lang.annotations.Language;
 import org.jetbrains.annotations.Nullable;
@@ -34,6 +35,12 @@ class ScriptingIntegrationTest {
             """)).isEqualTo(15);
     }
 
+    @Data
+    private static class TestOrdinalHolder {
+        private TestOrdinal result;
+        private Object foo, bar;
+    }
+
     @ParameterizedTest
     @CsvSource(textBlock = """
             true,true
@@ -44,13 +51,36 @@ class ScriptingIntegrationTest {
     void ordinals(boolean fooIsOrdinal, boolean barIsOrdinal) {
         @Language("json") var scriptJson = """
             [
-              "#foo = (subject[0] ? T(TestOrdinal).of(40) : 40)",
-              "#bar = (subject[1] ? T(TestOrdinal).of(2) : 2)",
-              "return #foo + #bar"
+              "subject[0].result = subject[0].foo + subject[0].bar",
+              "return subject[0]"
             ]
             """;
-        scriptJson = scriptJson.replaceAll("TestOrdinal", TestOrdinal.class.getName());
-        assertThat(evaluate(scriptJson, fooIsOrdinal, barIsOrdinal)).isEqualTo(42);
+        var holder = new TestOrdinalHolder()
+                .setFoo(fooIsOrdinal ? new TestOrdinal(40) : 40)
+                .setBar(barIsOrdinal ? new TestOrdinal(2) : 2);
+        assertThat(evaluate(scriptJson, holder)).isEqualTo(holder);
+        assertThat(holder.result).isEqualTo(new TestOrdinal(42));
+    }
+
+    @ParameterizedTest
+    @CsvSource(textBlock = """
+            true,true
+            true,false
+            false,true
+            false,false
+            """)
+    void ordinalsAsArguments(boolean fooIsOrdinal, boolean barIsOrdinal) {
+        @Language("json") var scriptJson = """
+            [
+              "subject[0].setResult(subject[0].foo + subject[0].bar)",
+              "return subject[0]"
+            ]
+            """;
+        var holder = new TestOrdinalHolder()
+                .setFoo(fooIsOrdinal ? new TestOrdinal(40) : 40)
+                .setBar(barIsOrdinal ? new TestOrdinal(2) : 2);
+        assertThat(evaluate(scriptJson, holder)).isEqualTo(holder);
+        assertThat(holder.result).isEqualTo(new TestOrdinal(42));
     }
 
     @Test
@@ -103,9 +133,6 @@ class ScriptingIntegrationTest {
     void lambdas() {
         @Language("json") var scriptJson = """
             [
-              "lambda #default:Supplier():",
-              "  return 'unknown'",
-            
               "lambda #trim:Function(#s):",
               "  return #s.trim()",
             
@@ -124,7 +151,7 @@ class ScriptingIntegrationTest {
               "  .filter(#notEmpty) _",
               "  .sorted(#reverseOrder) _",
               "  .reduce(#concat) _",
-              "  .orElseGet(#default)"
+              "  ?: 'unknown'"
             ]
             """;
         assertThat(evaluate(scriptJson, "foo", "bar")).isEqualTo("foobar");

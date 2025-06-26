@@ -2,7 +2,6 @@ package io.github.naomimyselfandi.xanaduwars.core.scripting.evaluator;
 
 import io.github.naomimyselfandi.xanaduwars.core.scripting.GlobalRuleSource;
 import io.github.naomimyselfandi.xanaduwars.core.scripting.Query;
-import org.jetbrains.annotations.VisibleForTesting;
 import org.springframework.expression.*;
 import org.springframework.expression.spel.support.*;
 import org.springframework.stereotype.Service;
@@ -10,24 +9,8 @@ import org.springframework.stereotype.Service;
 @Service
 class ContextFactoryImpl implements ContextFactory {
 
-    @VisibleForTesting
-    static final TypeConverter BASE_CONVERTER = new StandardTypeConverter();
-
-    @VisibleForTesting
-    static final TypeComparator BASE_COMPARATOR = new StandardTypeComparator();
-
-    @VisibleForTesting
-    static final OperatorOverloader BASE_OVERLOADER = new StandardOperatorOverloader();
-
-    @VisibleForTesting
-    static final MethodResolver BASE_RESOLVER = new ReflectiveMethodResolver();
-
     private static final TypeLocator LOCATOR;
     private static final TypeConverter CONVERTER;
-    private static final TypeComparator COMPARATOR;
-    private static final OperatorOverloader OVERLOADER;
-    private static final MethodResolver RESOLVER;
-    private static final PropertyAccessor ACCESSOR;
 
     static {
         var typeLocator = new StandardTypeLocator();
@@ -41,11 +24,7 @@ class ContextFactoryImpl implements ContextFactory {
         java.util.function
         java.util.stream""".lines().forEach(typeLocator::registerImport);
         LOCATOR = typeLocator;
-        CONVERTER = new ResultConverter(new OrdinalCreator(new OrdinalConverter(BASE_CONVERTER)));
-        COMPARATOR = new OrdinalComparator(BASE_COMPARATOR);
-        OVERLOADER = new OrdinalOverloader(BASE_OVERLOADER);
-        RESOLVER = new IterableMethodResolver(BASE_RESOLVER);
-        ACCESSOR = new NullMethodPropertyAccessor(RESOLVER);
+        CONVERTER = new ResultConverter(new OrdinalCreator(new StandardTypeConverter()));
     }
 
     @Override
@@ -60,11 +39,13 @@ class ContextFactoryImpl implements ContextFactory {
         var result = new AuditableContext();
         result.setRootObject(query);
         result.setTypeConverter(CONVERTER);
-        result.setTypeComparator(COMPARATOR);
-        result.setOperatorOverloader(OVERLOADER);
         result.setTypeLocator(LOCATOR);
-        result.getMethodResolvers().add(RESOLVER);   // addMethodResolver() puts it at the beginning
-        result.getPropertyAccessors().add(ACCESSOR); // ditto addPropertyAccessor()
+        result.getMethodResolvers().replaceAll(CustomMethodResolver::new);
+        result.getPropertyAccessors().replaceAll(CustomPropertyAccessor::new);
+        for (var resolver : result.getMethodResolvers()) {
+            // addPropertyAccessor() adds it at the front, but it should be a fallback.
+            result.getPropertyAccessors().add(new NullMethodPropertyAccessor(resolver));
+        }
         return result;
     }
 

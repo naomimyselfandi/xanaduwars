@@ -130,7 +130,7 @@
         "AttackDamage": [
           "#firepower = game.evaluate(new FirepowerQuery(subject, weapon, target, counter))",
           "#defense = game.evaluate(new DefenseQuery(target, weapon, subject, counter))",
-          "return #value * (#firepower - #defense) * subject.hp.ordinal / 100"
+          "return #value * (#firepower - #defense) * subject.hp / 100"
         ],
         "Defense": "return #value + (subject.tile?.cover ?: 0)",
         "Attack": [

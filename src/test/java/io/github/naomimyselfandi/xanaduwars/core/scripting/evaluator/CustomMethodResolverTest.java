@@ -4,8 +4,6 @@ import io.github.naomimyselfandi.seededrandom.SeededRandomExtension;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.MethodSource;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.core.convert.TypeDescriptor;
 import org.springframework.expression.AccessException;
@@ -23,16 +21,16 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.InstanceOfAssertFactories.*;
 
 @ExtendWith({MockitoExtension.class, SeededRandomExtension.class})
-class IterableMethodResolverTest {
+class CustomMethodResolverTest {
 
     private EvaluationContext context;
 
-    private IterableMethodResolver fixture;
+    private CustomMethodResolver fixture;
 
     @BeforeEach
     void setup() {
         context = new StandardEvaluationContext();
-        fixture = new IterableMethodResolver(new ReflectiveMethodResolver());
+        fixture = new CustomMethodResolver(new ReflectiveMethodResolver());
     }
 
     @Test
@@ -137,16 +135,6 @@ class IterableMethodResolverTest {
     @Test
     void resolve_WhenTheMethodDoesNotExist_ThenNull() throws AccessException {
         assertThat(fixture.resolve(context, List.of(), "xyzzy", List.of())).isNull();
-    }
-
-    @MethodSource
-    @ParameterizedTest
-    void resolve_WhenTheTargetIsNotIterableLike_ThenNull(Object target) throws AccessException {
-        assertThat(fixture.resolve(context, target, "sorted", List.of())).isNull();
-    }
-
-    private static Stream<Object> resolve_WhenTheTargetIsNotIterableLike_ThenNull() {
-        return Stream.of("foo", Optional.of("bar"), Optional.empty());
     }
 
 }
