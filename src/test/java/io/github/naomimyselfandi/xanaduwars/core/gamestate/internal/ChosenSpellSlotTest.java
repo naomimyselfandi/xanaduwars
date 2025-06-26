@@ -34,6 +34,11 @@ class ChosenSpellSlotTest {
         fixture = new ChosenSpellSlot(spell, activation, revelation, index);
     }
 
+    @Test
+    void getSpell() {
+        assertThat(fixture.getSpell()).contains(spell);
+    }
+
     @ParameterizedTest
     @ValueSource(booleans = {true, false})
     void isRevealed(boolean value) {

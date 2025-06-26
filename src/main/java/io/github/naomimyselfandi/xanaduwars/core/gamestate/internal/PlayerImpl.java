@@ -1,6 +1,5 @@
 package io.github.naomimyselfandi.xanaduwars.core.gamestate.internal;
 
-import io.github.naomimyselfandi.xanaduwars.core.common.CommanderId;
 import io.github.naomimyselfandi.xanaduwars.core.gamestate.*;
 import io.github.naomimyselfandi.xanaduwars.core.gamestate.entity.PlayerData;
 import io.github.naomimyselfandi.xanaduwars.core.gamestate.queries.VisionCheckQuery;
@@ -9,19 +8,19 @@ import io.github.naomimyselfandi.xanaduwars.core.ruleset.Commander;
 import io.github.naomimyselfandi.xanaduwars.core.ruleset.Spell;
 import io.github.naomimyselfandi.xanaduwars.core.scripting.Rule;
 import lombok.Getter;
-import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.Unmodifiable;
 
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.stream.Stream;
 
 record PlayerImpl(PlayerData data, @Getter GameState gameState, @Getter PlayerId id, SpellSlotHelper spellSlotHelper)
         implements Player {
 
     @Override
-    public @Nullable Commander getCommander() {
-        return data.getCommanderId() instanceof CommanderId index ? gameState.getRuleset().getCommander(index) : null;
+    public Optional<Commander> getCommander() {
+        return Optional.ofNullable(data.getCommanderId()).map(gameState.getRuleset()::getCommander);
     }
 
     @Override
@@ -108,24 +107,24 @@ record PlayerImpl(PlayerData data, @Getter GameState gameState, @Getter PlayerId
 
     @Override
     public Stream<Structure> getStructures() {
-        return gameState.getStructures().values().stream().filter(it -> equals(it.getOwner()));
+        return gameState.getStructures().values().stream().filter(it -> equals(it.getOwner().orElse(null)));
     }
 
     @Override
     public Stream<Unit> getUnits() {
-        return gameState.getUnits().values().stream().filter(it -> equals(it.getOwner()));
+        return gameState.getUnits().values().stream().filter(it -> equals(it.getOwner().orElse(null)));
     }
 
     @Override
-    public Player getOwner() {
-        return this;
+    public Optional<Player> getOwner() {
+        return Optional.of(this);
     }
 
     @Override
     public @Unmodifiable List<Action> getActions() {
         var ruleset = gameState.getRuleset();
         return Stream.concat(
-                getSpellSlots().stream().map(SpellSlot::getSpell),
+                getSpellSlots().stream().map(SpellSlot::getSpell).flatMap(Optional::stream),
                 Stream.of(ruleset.getPassAction(), ruleset.getYieldAction())
         ).filter(Objects::nonNull).toList();
     }
@@ -133,8 +132,8 @@ record PlayerImpl(PlayerData data, @Getter GameState gameState, @Getter PlayerId
     @Override
     public List<Rule> getRules() {
         return Stream.<Rule>concat(
-                Stream.ofNullable(getCommander()),
-                getSpellSlots().stream().filter(SpellSlot::isActive).map(SpellSlot::getSpell)
+                getCommander().stream(),
+                getSpellSlots().stream().filter(SpellSlot::isActive).map(SpellSlot::getSpell).flatMap(Optional::stream)
         ).filter(Objects::nonNull).toList();
     }
 

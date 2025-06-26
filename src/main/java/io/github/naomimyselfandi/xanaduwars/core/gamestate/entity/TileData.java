@@ -14,6 +14,7 @@ import org.hibernate.type.SqlTypes;
 import org.jetbrains.annotations.Nullable;
 
 import java.io.Serializable;
+import java.util.Optional;
 
 /// A low-level description of a tile.
 @Data
@@ -29,8 +30,8 @@ public class TileData implements Serializable {
     private @Nullable @Valid Memory memory;
 
     /// Get the ID of the structure type the given player remembers being here.
-    public @Nullable StructureTypeId getMemory(PlayerId playerId) {
-        return memory == null ? null : memory.getMemory().get(playerId);
+    public Optional<StructureTypeId> getMemory(PlayerId playerId) {
+        return Optional.ofNullable(memory).map(Memory::getMemory).map(it -> it.get(playerId));
     }
 
     /// Get the ID of the structure type the given player remembers being here.

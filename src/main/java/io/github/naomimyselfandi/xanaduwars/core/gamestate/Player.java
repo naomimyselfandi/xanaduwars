@@ -2,11 +2,10 @@ package io.github.naomimyselfandi.xanaduwars.core.gamestate;
 
 import io.github.naomimyselfandi.xanaduwars.core.ruleset.Commander;
 import io.github.naomimyselfandi.xanaduwars.core.ruleset.Spell;
-import org.jetbrains.annotations.Contract;
-import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.Unmodifiable;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Stream;
 
 /// A player in a game.
@@ -19,7 +18,7 @@ public non-sealed interface Player extends Element {
     PlayerId getId();
 
     /// Get the commander this player is playing as.
-    @Nullable Commander getCommander();
+    Optional<Commander> getCommander();
 
     /// Set the commander this player is playing as.
     Player setCommander(Commander commander);
@@ -77,7 +76,6 @@ public non-sealed interface Player extends Element {
     Stream<Unit> getUnits();
 
     @Override
-    @Contract("-> this")
-    Player getOwner();
+    Optional<Player> getOwner();
 
 }

@@ -124,7 +124,7 @@ class StructureImplTest {
     @Test
     void getTile() {
         when(gameState.getTiles()).thenReturn(new TreeMap<>(Map.of(id.tileId(), tile)));
-        assertThat(fixture.getTile()).isEqualTo(tile);
+        assertThat(fixture.getTile()).contains(tile);
     }
 
     @ParameterizedTest
@@ -149,13 +149,13 @@ class StructureImplTest {
         when(gameState.getPlayers()).thenReturn(players);
         var index = random.nextInt(4);
         data.setPlayerId(new PlayerId(index));
-        assertThat(fixture.getOwner()).isEqualTo(players.get(index));
+        assertThat(fixture.getOwner()).contains(players.get(index));
     }
 
     @Test
     void getOwner_WhenThePlayerIdIsNull_ThenNull() {
         data.setPlayerId(null);
-        assertThat(fixture.getOwner()).isNull();
+        assertThat(fixture.getOwner()).isEmpty();
     }
 
     @Test

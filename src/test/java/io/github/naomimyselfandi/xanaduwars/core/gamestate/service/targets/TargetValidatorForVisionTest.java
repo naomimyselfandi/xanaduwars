@@ -16,6 +16,8 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.util.Optional;
+
 import static org.assertj.core.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
@@ -44,7 +46,7 @@ class TargetValidatorForVisionTest {
     @ValueSource(booleans = {true, false})
     void test(@Nullable Boolean canSee, SeededRng random) {
         if (canSee != null) {
-            when(actor.getOwner()).thenReturn(player);
+            when(actor.getOwner()).thenReturn(Optional.of(player));
             when(player.canSee(target)).thenReturn(canSee);
         }
         assertThat(fixture.test(actor, action, target, random.get())).isEqualTo(Boolean.TRUE.equals(canSee));

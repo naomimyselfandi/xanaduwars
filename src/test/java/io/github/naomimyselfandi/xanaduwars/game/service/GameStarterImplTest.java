@@ -26,6 +26,7 @@ import org.mockito.quality.Strictness;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.TreeMap;
 
 import static org.assertj.core.api.Assertions.*;
@@ -110,9 +111,9 @@ class GameStarterImplTest {
             when(player2.getTeam()).thenReturn(new Team(team2));
         }
         game.setPlayerSlots(slots);
-        when(player0.getCommander()).thenReturn(player0HasCommander ? commander0 : null);
-        when(player1.getCommander()).thenReturn(player1HasCommander ? commander1 : null);
-        when(player2.getCommander()).thenReturn(player2HasCommander ? commander2 : null);
+        when(player0.getCommander()).thenReturn(Optional.ofNullable(player0HasCommander ? commander0 : null));
+        when(player1.getCommander()).thenReturn(Optional.ofNullable(player1HasCommander ? commander1 : null));
+        when(player2.getCommander()).thenReturn(Optional.ofNullable(player2HasCommander ? commander2 : null));
         if (problem == null) {
             assertThatCode(() -> fixture.start(game)).doesNotThrowAnyException();
             assertThat(game.getStatus()).isEqualTo(Game.Status.ONGOING);
@@ -132,7 +133,7 @@ class GameStarterImplTest {
     void start_InitializesMemory(SeededRng random) throws ConflictException {
         when(gameState.getStructures()).thenReturn(new TreeMap<>(Map.of(random.get(), structure)));
         when(structure.getType()).thenReturn(structureType);
-        when(structure.getTile()).thenReturn(tile);
+        when(structure.getTile()).thenReturn(Optional.of(tile));
         var slots = new TreeMap<PlayerId, PlayerSlot>();
         slots.put(new PlayerId(0), random.get());
         when(player0.getTeam()).thenReturn(new Team(0));
@@ -141,9 +142,9 @@ class GameStarterImplTest {
         slots.put(new PlayerId(2), random.get());
         when(player2.getTeam()).thenReturn(new Team(2));
         game.setPlayerSlots(slots);
-        when(player0.getCommander()).thenReturn(commander0);
-        when(player1.getCommander()).thenReturn(commander1);
-        when(player2.getCommander()).thenReturn(commander2);
+        when(player0.getCommander()).thenReturn(Optional.of(commander0));
+        when(player1.getCommander()).thenReturn(Optional.of(commander1));
+        when(player2.getCommander()).thenReturn(Optional.of(commander2));
         fixture.start(game);
         verify(tile).setMemory(player0, structureType);
         verify(tile).setMemory(player1, structureType);
@@ -156,17 +157,17 @@ class GameStarterImplTest {
         var slots = new TreeMap<PlayerId, PlayerSlot>();
         if (index != 0) {
             slots.put(new PlayerId(0), random.get());
-            when(player0.getCommander()).thenReturn(commander0);
+            when(player0.getCommander()).thenReturn(Optional.of(commander0));
             when(player0.getTeam()).thenReturn(new Team(0));
         }
         if (index != 1) {
             slots.put(new PlayerId(1), random.get());
-            when(player1.getCommander()).thenReturn(commander1);
+            when(player1.getCommander()).thenReturn(Optional.of(commander1));
             when(player1.getTeam()).thenReturn(new Team(1));
         }
         if (index != 2) {
             slots.put(new PlayerId(2), random.get());
-            when(player2.getCommander()).thenReturn(commander2);
+            when(player2.getCommander()).thenReturn(Optional.of(commander2));
             when(player2.getTeam()).thenReturn(new Team(2));
         }
         game.setPlayerSlots(slots);

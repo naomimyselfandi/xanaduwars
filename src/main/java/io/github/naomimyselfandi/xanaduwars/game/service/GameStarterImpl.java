@@ -38,7 +38,7 @@ class GameStarterImpl implements GameStarter {
         var slots = game.getPlayerSlots();
         for (var player : gameState.getPlayers()) {
             if (slots.containsKey(player.getId())) {
-                if (player.getCommander() == null) {
+                if (player.getCommander().isEmpty()) {
                     throw new ConflictException("Cannot start a game before all players have chosen a commander.");
                 }
                 teams.add(player.getTeam());
@@ -60,7 +60,7 @@ class GameStarterImpl implements GameStarter {
     private static void initializeMemory(GameState gameState) {
         for (var player : gameState.getPlayers()) {
             for (var structure : gameState.getStructures().values()) {
-                structure.getTile().setMemory(player, structure.getType());
+                structure.getTile().orElseThrow().setMemory(player, structure.getType());
             }
         }
     }

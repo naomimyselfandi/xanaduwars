@@ -132,9 +132,9 @@ class GameStateDataTest {
         var tileId2 = random.not(tileId0, tileId1);
         var entry0 = fixture.createUnit(tileId0, typeId);
         var entry1 = fixture.createUnit(tileId1, typeId);
-        assertThat(fixture.findUnitId(tileId0)).isEqualTo(entry0.getKey());
-        assertThat(fixture.findUnitId(tileId1)).isEqualTo(entry1.getKey());
-        assertThat(fixture.findUnitId(tileId2)).isNull();
+        assertThat(fixture.findUnitId(tileId0)).contains(entry0.getKey());
+        assertThat(fixture.findUnitId(tileId1)).contains(entry1.getKey());
+        assertThat(fixture.findUnitId(tileId2)).isEmpty();
     }
 
     @Test
@@ -142,7 +142,7 @@ class GameStateDataTest {
         var unitId = random.<UnitId>get();
         var unitData = random.<UnitData>get();
         fixture.getUnits().put(unitId, unitData);
-        assertThat(fixture.findUnitId(unitData.getLocationId())).isEqualTo(unitId);
+        assertThat(fixture.findUnitId(unitData.getLocationId())).contains(unitId);
     }
 
     @Test
@@ -152,8 +152,8 @@ class GameStateDataTest {
         var tileId1 = random.not(tileId0);
         var entry = fixture.createUnit(tileId0, typeId);
         fixture.moveUnit(entry.getKey(), tileId1);
-        assertThat(fixture.findUnitId(tileId0)).isNull();
-        assertThat(fixture.findUnitId(tileId1)).isEqualTo(entry.getKey());
+        assertThat(fixture.findUnitId(tileId0)).isEmpty();
+        assertThat(fixture.findUnitId(tileId1)).contains(entry.getKey());
     }
 
     @Test
@@ -166,8 +166,8 @@ class GameStateDataTest {
         assertThatThrownBy(() -> fixture.moveUnit(entry0.getKey(), tileId1))
                 .isInstanceOf(IllegalStateException.class)
                 .hasMessage("%s already contains a unit.", tileId1);
-        assertThat(fixture.findUnitId(tileId0)).isEqualTo(entry0.getKey());
-        assertThat(fixture.findUnitId(tileId1)).isEqualTo(entry1.getKey());
+        assertThat(fixture.findUnitId(tileId0)).contains(entry0.getKey());
+        assertThat(fixture.findUnitId(tileId1)).contains(entry1.getKey());
     }
 
     @ParameterizedTest

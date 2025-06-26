@@ -137,7 +137,7 @@ class UnitImplTest {
         unitData.setLocationId(nodeId);
         when(gameState.getTiles()).thenReturn(new TreeMap<>(Map.of(nodeId, tile)));
         assertThat(fixture.getLocation()).isEqualTo(tile);
-        assertThat(fixture.getTile()).isEqualTo(tile);
+        assertThat(fixture.getTile()).contains(tile);
     }
 
     @Test
@@ -146,13 +146,14 @@ class UnitImplTest {
         unitData.setLocationId(nodeId);
         when(gameState.getUnits()).thenReturn(new TreeMap<>(Map.of(nodeId, unit)));
         assertThat(fixture.getLocation()).isEqualTo(unit);
-        assertThat(fixture.getTile()).isNull();
+        assertThat(fixture.getTile()).isEmpty();
     }
 
     @Test
     void getCargo() {
-        when(gameState.getUnit(fixture)).thenReturn(unit);
-        assertThat(fixture.getCargo()).isEqualTo(unit);
+        assertThat(fixture.getCargo()).isEmpty();
+        when(gameState.getUnit(fixture)).thenReturn(Optional.of(unit));
+        assertThat(fixture.getCargo()).contains(unit);
     }
 
     @ParameterizedTest
@@ -178,7 +179,7 @@ class UnitImplTest {
         var player = random.pick(players);
         var index = players.indexOf(player);
         unitData.setPlayerId(new PlayerId(index));
-        assertThat(fixture.getOwner()).isEqualTo(player);
+        assertThat(fixture.getOwner()).contains(player);
     }
 
     @Test
@@ -201,7 +202,7 @@ class UnitImplTest {
     @Test
     void getOwner_WhenThePlayerIdIsNull_ThenNull() {
         unitData.setPlayerId(null);
-        assertThat(fixture.getOwner()).isNull();
+        assertThat(fixture.getOwner()).isEmpty();
     }
 
     @Test

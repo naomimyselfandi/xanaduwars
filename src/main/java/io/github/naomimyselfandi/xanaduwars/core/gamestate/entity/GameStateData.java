@@ -13,7 +13,6 @@ import jakarta.validation.constraints.NotNull;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
 import java.util.function.Function;
@@ -111,13 +110,13 @@ public class GameStateData extends AbstractEntity<GameStateData> {
     }
 
     /// Find a unit by its location.
-    public @Nullable UnitId findUnitId(NodeId nodeId) {
+    public Optional<UnitId> findUnitId(NodeId nodeId) {
         if (unitsByLocation.isEmpty()) {
             for (var entry : units.entrySet()) {
                 unitsByLocation.put(entry.getValue().getLocationId(), entry.getKey());
             }
         }
-        return unitsByLocation.get(nodeId);
+        return Optional.ofNullable(unitsByLocation.get(nodeId));
     }
 
     /// Move a unit.

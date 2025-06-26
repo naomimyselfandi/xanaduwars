@@ -2,7 +2,6 @@ package io.github.naomimyselfandi.xanaduwars.core.gamestate.queries;
 
 import io.github.naomimyselfandi.xanaduwars.core.gamestate.Tile;
 import io.github.naomimyselfandi.xanaduwars.core.gamestate.Unit;
-import org.jetbrains.annotations.Nullable;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -20,7 +19,7 @@ class AssetVisionQueryTest {
     private Unit subject;
 
     @Mock
-    private Tile tile, target;
+    private Tile target;
 
     private AssetVisionQuery fixture;
 
@@ -34,15 +33,14 @@ class AssetVisionQueryTest {
             3,2,true
             3,3,true
             3,4,false
-            3,,false
+            3,NaN,false
             """)
-    void defaultValue(int vision, @Nullable Integer distance, boolean expected) {
-        if (distance == null) {
-            when(subject.getTile()).thenReturn(null);
+    void defaultValue(int vision, double distance, boolean expected) {
+        if (Double.isNaN(distance)) {
+            when(subject.getDistance(target)).thenReturn(Double.NaN);
         } else {
             when(subject.getVision()).thenReturn(vision);
-            when(subject.getTile()).thenReturn(tile);
-            when(tile.getDistance(target)).thenReturn(distance);
+            when(subject.getDistance(target)).thenReturn(distance);
         }
         assertThat(fixture.defaultValue()).isEqualTo(expected);
     }

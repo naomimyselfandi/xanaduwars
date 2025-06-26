@@ -3,9 +3,15 @@ package io.github.naomimyselfandi.xanaduwars.core.gamestate.internal;
 import io.github.naomimyselfandi.xanaduwars.core.gamestate.SpellSlot;
 import io.github.naomimyselfandi.xanaduwars.core.gamestate.entity.Bitset;
 import io.github.naomimyselfandi.xanaduwars.core.ruleset.Spell;
-import lombok.Getter;
 
-record SignatureSpellSlot(@Getter Spell spell, Bitset activation, int index) implements SpellSlot {
+import java.util.Optional;
+
+record SignatureSpellSlot(Spell spell, Bitset activation, int index) implements SpellSlot {
+
+    @Override
+    public Optional<Spell> getSpell() {
+        return Optional.of(spell);
+    }
 
     @Override
     public boolean isRevealed() {

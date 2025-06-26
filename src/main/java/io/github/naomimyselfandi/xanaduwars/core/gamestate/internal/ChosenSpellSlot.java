@@ -3,11 +3,17 @@ package io.github.naomimyselfandi.xanaduwars.core.gamestate.internal;
 import io.github.naomimyselfandi.xanaduwars.core.gamestate.SpellSlot;
 import io.github.naomimyselfandi.xanaduwars.core.gamestate.entity.Bitset;
 import io.github.naomimyselfandi.xanaduwars.core.ruleset.Spell;
-import lombok.Getter;
 import org.jetbrains.annotations.Nullable;
 
-record ChosenSpellSlot(@Getter @Nullable Spell spell, Bitset activation, Bitset revelation, int index)
+import java.util.Optional;
+
+record ChosenSpellSlot(@Nullable Spell spell, Bitset activation, Bitset revelation, int index)
         implements SpellSlot {
+
+    @Override
+    public Optional<Spell> getSpell() {
+        return Optional.ofNullable(spell);
+    }
 
     @Override
     public boolean isRevealed() {

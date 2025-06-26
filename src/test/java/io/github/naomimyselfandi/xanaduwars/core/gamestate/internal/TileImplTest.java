@@ -22,6 +22,7 @@ import org.mockito.junit.jupiter.MockitoSettings;
 import org.mockito.quality.Strictness;
 
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 import java.util.TreeMap;
 import java.util.stream.IntStream;
@@ -95,16 +96,16 @@ class TileImplTest {
 
     @Test
     void getStructure() {
-        assertThat(fixture.getStructure()).isNull();
+        assertThat(fixture.getStructure()).isEmpty();
         when(gameState.getStructures()).thenReturn(new TreeMap<>(Map.of(id.structureId(), structure)));
-        assertThat(fixture.getStructure()).isEqualTo(structure);
+        assertThat(fixture.getStructure()).contains(structure);
     }
 
     @Test
     void getUnit() {
-        assertThat(fixture.getUnit()).isNull();
-        when(gameState.getUnit(fixture)).thenReturn(unit);
-        assertThat(fixture.getUnit()).isEqualTo(unit);
+        assertThat(fixture.getUnit()).isEmpty();
+        when(gameState.getUnit(fixture)).thenReturn(Optional.of(unit));
+        assertThat(fixture.getUnit()).contains(unit);
     }
 
     private enum MovementCostTestCase {ONE_MATCH, MULTIPLE_MATCHES, NO_MATCH}
@@ -176,7 +177,7 @@ class TileImplTest {
             case WEST -> new TileId(id.x() - 1, id.y());
         };
         when(gameState.getTiles()).thenReturn(new TreeMap<>(Map.of(id, fixture, anotherId, anotherTile)));
-        assertThat(fixture.step(direction)).isEqualTo(anotherTile);
+        assertThat(fixture.step(direction)).contains(anotherTile);
     }
 
     @Test
@@ -231,7 +232,7 @@ class TileImplTest {
         var structureTypeId = random.<StructureTypeId>get();
         when(ruleset.getStructureType(structureTypeId)).thenReturn(structureType);
         tileData.setMemory(playerId, structureTypeId);
-        assertThat(fixture.getMemory(player)).isEqualTo(structureType);
+        assertThat(fixture.getMemory(player)).contains(structureType);
     }
 
     @Test
@@ -241,10 +242,10 @@ class TileImplTest {
         var structureTypeId = random.<StructureTypeId>get();
         when(structureType.getId()).thenReturn(structureTypeId);
         assertThat(fixture.setMemory(player, structureType)).isSameAs(fixture);
-        assertThat(tileData.getMemory(playerId)).isEqualTo(structureTypeId);
+        assertThat(tileData.getMemory(playerId)).contains(structureTypeId);
         verify(gameState).invalidateCache();
         fixture.setMemory(player, null);
-        assertThat(fixture.getMemory(player)).isNull();
+        assertThat(fixture.getMemory(player)).isEmpty();
         verify(gameState, times(2)).invalidateCache();
     }
 
@@ -262,7 +263,7 @@ class TileImplTest {
 
     @Test
     void getOwner() {
-        assertThat(fixture.getOwner()).isNull();
+        assertThat(fixture.getOwner()).isEmpty();
     }
 
     @Test
@@ -272,7 +273,7 @@ class TileImplTest {
 
     @Test
     void getTile() {
-        assertThat(fixture.getTile()).isSameAs(fixture);
+        assertThat(fixture.getTile()).contains(fixture);
     }
 
 }

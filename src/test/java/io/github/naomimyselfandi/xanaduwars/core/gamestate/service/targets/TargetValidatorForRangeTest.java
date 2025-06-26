@@ -6,7 +6,6 @@ import io.github.naomimyselfandi.xanaduwars.core.gamestate.Unit;
 import io.github.naomimyselfandi.xanaduwars.core.ruleset.NormalAction;
 import io.github.naomimyselfandi.xanaduwars.core.scripting.Result;
 import io.github.naomimyselfandi.xanaduwars.testing.SeededRng;
-import org.jetbrains.annotations.Nullable;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -42,9 +41,9 @@ class TargetValidatorForRangeTest {
             2,1,2,true
             1,2,3,false
             4,2,3,false
-            ,1,3,false
+            NaN,1,3,false
             """)
-    void test(@Nullable Integer distance, int min, int max, boolean ok, SeededRng random) {
+    void test(double distance, int min, int max, boolean ok, SeededRng random) {
         when(actor.getDistance(target)).thenReturn(distance);
         var spec = random.<TargetSpec>get().withMinRange(min).withMaxRange(max);
         assertThat(fixture.test(actor, action, target, spec)).isEqualTo(ok);

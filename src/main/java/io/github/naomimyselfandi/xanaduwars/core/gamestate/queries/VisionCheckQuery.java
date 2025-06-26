@@ -15,7 +15,7 @@ public record VisionCheckQuery(Player subject, Physical target) implements Query
     @Override
     public Boolean defaultValue() {
         return switch (target) {
-            case Asset asset -> subject.isAlly(asset) || (target.getTile() instanceof Tile tile && defaultValue(tile));
+            case Asset asset -> subject.isAlly(asset) || target.getTile().filter(this::defaultValue).isPresent();
             case Tile tile -> defaultValue(tile);
         };
     }
@@ -32,7 +32,7 @@ public record VisionCheckQuery(Player subject, Physical target) implements Query
 
     private static Comparator<Asset> closestFirst(Tile target) {
         return Comparator
-                .comparing(Asset::getTile, Comparator.nullsLast(Comparator.comparing(target::getDistance)))
+                .<Asset, Double>comparing(target::getDistance)
                 .thenComparing(Comparator.comparing(Asset::getVision).reversed());
     }
 

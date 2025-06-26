@@ -2,9 +2,9 @@ package io.github.naomimyselfandi.xanaduwars.core.gamestate;
 
 import io.github.naomimyselfandi.xanaduwars.core.common.UnitTag;
 import io.github.naomimyselfandi.xanaduwars.core.ruleset.UnitType;
-import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.Unmodifiable;
 
+import java.util.Optional;
 import java.util.Set;
 
 /// An asset in a game.
@@ -35,10 +35,10 @@ public non-sealed interface Unit extends Asset, Node {
     /// Get the tile this unit is on. This is `null` if and only if this unit is
     /// being carried by another unit.
     @Override
-    @Nullable Tile getTile();
+    Optional<Tile> getTile();
 
     /// Get the unit this unit is carrying, if any.
-    @Nullable Unit getCargo();
+    Optional<Unit> getCargo();
 
     /// Check if this unit is ready to act.
     boolean isReady();

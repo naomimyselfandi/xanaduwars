@@ -26,23 +26,23 @@ class TileDataTest {
         var playerId1 = random.<PlayerId>get();
         var structureTypeId0 = random.<StructureTypeId>get();
         var structureTypeId1 = random.<StructureTypeId>get();
-        assertThat(fixture.getMemory(playerId0)).isNull();
-        assertThat(fixture.getMemory(playerId1)).isNull();
+        assertThat(fixture.getMemory(playerId0)).isEmpty();
+        assertThat(fixture.getMemory(playerId1)).isEmpty();
         assertThat(fixture.setMemory(playerId0, structureTypeId0)).isSameAs(fixture);
-        assertThat(fixture.getMemory(playerId0)).isEqualTo(structureTypeId0);
-        assertThat(fixture.getMemory(playerId1)).isNull();
+        assertThat(fixture.getMemory(playerId0)).contains(structureTypeId0);
+        assertThat(fixture.getMemory(playerId1)).isEmpty();
         assertThat(fixture.setMemory(playerId1, structureTypeId1)).isSameAs(fixture);
-        assertThat(fixture.getMemory(playerId0)).isEqualTo(structureTypeId0);
-        assertThat(fixture.getMemory(playerId1)).isEqualTo(structureTypeId1);
+        assertThat(fixture.getMemory(playerId0)).contains(structureTypeId0);
+        assertThat(fixture.getMemory(playerId1)).contains(structureTypeId1);
         assertThat(fixture.setMemory(playerId0, structureTypeId1)).isSameAs(fixture);
-        assertThat(fixture.getMemory(playerId0)).isEqualTo(structureTypeId1);
-        assertThat(fixture.getMemory(playerId1)).isEqualTo(structureTypeId1);
+        assertThat(fixture.getMemory(playerId0)).contains(structureTypeId1);
+        assertThat(fixture.getMemory(playerId1)).contains(structureTypeId1);
         assertThat(fixture.setMemory(playerId1, null)).isSameAs(fixture);
-        assertThat(fixture.getMemory(playerId0)).isEqualTo(structureTypeId1);
-        assertThat(fixture.getMemory(playerId1)).isNull();
+        assertThat(fixture.getMemory(playerId0)).contains(structureTypeId1);
+        assertThat(fixture.getMemory(playerId1)).isEmpty();
         assertThat(fixture.setMemory(playerId0, null)).isSameAs(fixture);
-        assertThat(fixture.getMemory(playerId0)).isNull();
-        assertThat(fixture.getMemory(playerId1)).isNull();
+        assertThat(fixture.getMemory(playerId0)).isEmpty();
+        assertThat(fixture.getMemory(playerId1)).isEmpty();
     }
 
 }

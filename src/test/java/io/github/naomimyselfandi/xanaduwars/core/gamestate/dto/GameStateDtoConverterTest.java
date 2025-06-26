@@ -1,20 +1,26 @@
 package io.github.naomimyselfandi.xanaduwars.core.gamestate.dto;
 
+import io.github.naomimyselfandi.seededrandom.SeededRandomExtension;
 import io.github.naomimyselfandi.xanaduwars.core.gamestate.*;
+import io.github.naomimyselfandi.xanaduwars.testing.SeededRng;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.junit.jupiter.MockitoSettings;
+import org.mockito.quality.Strictness;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.TreeMap;
 
 import static org.assertj.core.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
-@ExtendWith(MockitoExtension.class)
+@MockitoSettings(strictness = Strictness.LENIENT)
+@ExtendWith({MockitoExtension.class, SeededRandomExtension.class})
 class GameStateDtoConverterTest {
 
     @Mock
@@ -22,10 +28,20 @@ class GameStateDtoConverterTest {
 
     private TileDto dto00, dto10, dto01, dto11;
 
+    @Mock
+    private Structure structure;
+
+    private StructureDto structureDto;
+
+    @Mock
+    private Unit unit;
+
+    private UnitDto unitDto;
+
     private GameStateDtoConverter fixture;
 
     @BeforeEach
-    void setup() {
+    void setup(SeededRng random) {
         when(tile00.getId()).thenReturn(new TileId(0, 0));
         when(tile01.getId()).thenReturn(new TileId(0, 1));
         when(tile10.getId()).thenReturn(new TileId(1, 0));
@@ -35,6 +51,8 @@ class GameStateDtoConverterTest {
         dto10 = new TileDto().setId(new TileId(1, 0));
         dto11 = new TileDto().setId(new TileId(1, 1));
         var map = Map.of(tile00, dto00, tile01, dto01, tile10, dto10, tile11, dto11);
+        structureDto = random.get();
+        unitDto = random.get();
         fixture = new GameStateDtoConverter() {
 
             @Override
@@ -54,7 +72,8 @@ class GameStateDtoConverterTest {
 
             @Override
             public StructureDto convert(Structure source) {
-                throw new UnsupportedOperationException();
+                assertThat(source).isEqualTo(structure);
+                return structureDto;
             }
 
             @Override
@@ -64,7 +83,8 @@ class GameStateDtoConverterTest {
 
             @Override
             public UnitDto convert(Unit source) {
-                throw new UnsupportedOperationException();
+                assertThat(source).isEqualTo(unit);
+                return unitDto;
             }
 
         };
@@ -82,6 +102,18 @@ class GameStateDtoConverterTest {
                 List.of(dto00, dto10),
                 List.of(dto01, dto11)
         );
+    }
+
+    @Test
+    void convertOptionalUnit() {
+        assertThat(fixture.convertOptionalUnit(Optional.empty())).isNull();
+        assertThat(fixture.convertOptionalUnit(Optional.of(unit))).isEqualTo(unitDto);
+    }
+
+    @Test
+    void convertOptionalStructure() {
+        assertThat(fixture.convertOptionalStructure(Optional.empty())).isNull();
+        assertThat(fixture.convertOptionalStructure(Optional.of(structure))).isEqualTo(structureDto);
     }
 
 }

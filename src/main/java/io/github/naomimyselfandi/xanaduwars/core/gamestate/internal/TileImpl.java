@@ -37,12 +37,12 @@ record TileImpl(TileData data, @Getter GameState gameState, @Getter TileId id) i
     }
 
     @Override
-    public @Nullable Structure getStructure() {
-        return gameState.getStructures().get(id.structureId());
+    public Optional<Structure> getStructure() {
+        return Optional.ofNullable(gameState.getStructures().get(id.structureId()));
     }
 
     @Override
-    public @Nullable Unit getUnit() {
+    public Optional<Unit> getUnit() {
         return gameState.getUnit(this);
     }
 
@@ -71,13 +71,13 @@ record TileImpl(TileData data, @Getter GameState gameState, @Getter TileId id) i
     }
 
     @Override
-    public @Nullable Tile step(Direction direction) {
-        return gameState.getTiles().get(switch (direction) {
+    public Optional<Tile> step(Direction direction) {
+        return Optional.ofNullable(gameState.getTiles().get(switch (direction) {
             case NORTH -> new TileId(id.x(), id.y() - 1);
             case EAST -> new TileId(id.x() + 1, id.y());
             case SOUTH -> new TileId(id.x(), id.y() + 1);
             case WEST -> new TileId(id.x() - 1, id.y());
-        });
+        }));
     }
 
     @Override
@@ -95,11 +95,8 @@ record TileImpl(TileData data, @Getter GameState gameState, @Getter TileId id) i
     }
 
     @Override
-    public @Nullable StructureType getMemory(Player player) {
-        return Optional
-                .ofNullable(data.getMemory(player.getId()))
-                .map(gameState.getRuleset()::getStructureType)
-                .orElse(null);
+    public Optional<StructureType> getMemory(Player player) {
+        return data.getMemory(player.getId()).map(gameState.getRuleset()::getStructureType);
     }
 
     @Override
@@ -115,8 +112,8 @@ record TileImpl(TileData data, @Getter GameState gameState, @Getter TileId id) i
     }
 
     @Override
-    public @Nullable Player getOwner() {
-        return null;
+    public Optional<Player> getOwner() {
+        return Optional.empty();
     }
 
     @Override
@@ -125,12 +122,12 @@ record TileImpl(TileData data, @Getter GameState gameState, @Getter TileId id) i
     }
 
     @Override
-    public Tile getTile() {
-        return this;
+    public Optional<Tile> getTile() {
+        return Optional.of(this);
     }
 
     private TerrainType getEffectiveType() {
-        return Optional.ofNullable(getStructure()).<TerrainType>map(Structure::getType).orElse(getType());
+        return getStructure().<TerrainType>map(Structure::getType).orElse(getType());
     }
 
 }

@@ -14,6 +14,7 @@ import org.mockito.junit.jupiter.MockitoSettings;
 import org.mockito.quality.Strictness;
 
 import java.util.Map;
+import java.util.Optional;
 import java.util.TreeMap;
 
 import static org.assertj.core.api.Assertions.*;
@@ -105,7 +106,7 @@ class VisionCheckQueryTest {
             boolean structure1CanSee,
             boolean expected
     ) {
-        when(target.getTile()).thenReturn(tile);
+        when(target.getTile()).thenReturn(Optional.of(tile));
         when(tile.getGameState()).thenReturn(gameState);
         when(subject.isAlly(unit0)).thenReturn(true);
         when(subject.isAlly(unit1)).thenReturn(true);

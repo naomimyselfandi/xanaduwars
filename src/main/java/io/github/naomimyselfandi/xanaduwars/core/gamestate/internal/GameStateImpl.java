@@ -9,7 +9,6 @@ import io.github.naomimyselfandi.xanaduwars.core.scripting.Event;
 import io.github.naomimyselfandi.xanaduwars.core.scripting.Query;
 import io.github.naomimyselfandi.xanaduwars.core.scripting.QueryEvaluator;
 import lombok.Getter;
-import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.Unmodifiable;
 import org.jetbrains.annotations.UnmodifiableView;
 import org.jetbrains.annotations.VisibleForTesting;
@@ -192,8 +191,8 @@ final class GameStateImpl implements GameState {
     }
 
     @Override
-    public @Nullable Unit getUnit(Node location) {
-        return gameStateData.findUnitId(location.getId()) instanceof UnitId id ? units.get(id) : null;
+    public Optional<Unit> getUnit(Node location) {
+        return gameStateData.findUnitId(location.getId()).map(units::get);
     }
 
     @Override

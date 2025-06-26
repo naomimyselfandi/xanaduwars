@@ -6,8 +6,6 @@ import io.github.naomimyselfandi.xanaduwars.core.scripting.Result;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.util.Objects;
-
 @Service
 @RequiredArgsConstructor
 class ItemProcessorImpl implements ItemProcessor {
@@ -23,7 +21,7 @@ class ItemProcessorImpl implements ItemProcessor {
         if (game.evaluate(new ActionTargetQuery(actor, action, targets)) instanceof Result.Fail fail) {
             return fail;
         }
-        var player = Objects.requireNonNull(actor.getOwner());
+        var player = actor.getOwner().orElseThrow();
         var supplies = player.getSupplies() - game.evaluate(new SupplyCostQuery(actor, action, targets));
         if (supplies < 0) return Result.fail("Insufficient supplies.");
         var aether = player.getAether() - game.evaluate(new AetherCostQuery(actor, action, targets));

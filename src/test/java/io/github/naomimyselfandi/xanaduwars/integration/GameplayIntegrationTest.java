@@ -26,6 +26,7 @@ import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.transaction.TestTransaction;
 
 import java.util.List;
+import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.*;
 
@@ -109,7 +110,9 @@ public class GameplayIntegrationTest extends AbstractIntegrationTest {
 
     private void verify(String lhs, String rhs) {
         var actual = evaluate(lhs);
+        if (actual instanceof Optional<?> o) actual = o.orElse(null);
         var expected = evaluate(rhs);
+        if (expected instanceof Optional<?> o) expected = o.orElse(null);
         assertThat(actual).describedAs("Condition `%s == %s` failed.", lhs, rhs).isEqualTo(expected);
     }
 
@@ -133,6 +136,11 @@ public class GameplayIntegrationTest extends AbstractIntegrationTest {
                 var player = gameState.getPlayers().get((Integer) a[0]);
                 return new TypedValue(player);
             };
+            case "structure" -> (_, _, a) -> {
+                var tileId = new TileId((Integer) a[0], (Integer) a[1]);
+                var tile = gameState.getTiles().get(tileId);
+                return new TypedValue(tile.getStructure().orElse(null));
+            };
             case "tile" -> (_, _, a) -> {
                 var tileId = new TileId((Integer) a[0], (Integer) a[1]);
                 var tile = gameState.getTiles().get(tileId);
@@ -142,8 +150,7 @@ public class GameplayIntegrationTest extends AbstractIntegrationTest {
                 if (a.length == 2) {
                     var tileId = new TileId((Integer) a[0], (Integer) a[1]);
                     var tile = gameState.getTiles().get(tileId);
-                    return new TypedValue(tile.getUnit());
-
+                    return new TypedValue(tile.getUnit().orElse(null));
                 } else {
                     var unitId = new UnitId((Integer) a[0]);
                     var unit = gameState.getUnits().get(unitId);

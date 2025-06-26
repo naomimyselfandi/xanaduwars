@@ -187,24 +187,24 @@ class GameStateImplTest {
                 .hasSize(2)
                 .containsEntry(new UnitId(0), oldUnit)
                 .containsEntry(new UnitId(1), newUnit);
-        assertThat(oldUnitTile.getUnit()).isEqualTo(oldUnit);
-        assertThat(oldUnit.getTile()).isEqualTo(oldUnitTile);
-        assertThat(newUnitTile.getUnit()).isEqualTo(newUnit);
-        assertThat(newUnit.getTile()).isEqualTo(newUnitTile);
+        assertThat(oldUnitTile.getUnit()).contains(oldUnit);
+        assertThat(oldUnit.getTile()).contains(oldUnitTile);
+        assertThat(newUnitTile.getUnit()).contains(newUnit);
+        assertThat(newUnit.getTile()).contains(newUnitTile);
         var destination = tiles.get(new TileId(1, 0));
         fixture.moveUnit(newUnit, destination);
-        assertThat(oldUnitTile.getUnit()).isEqualTo(oldUnit);
-        assertThat(oldUnit.getTile()).isEqualTo(oldUnitTile);
-        assertThat(destination.getUnit()).isEqualTo(newUnit);
-        assertThat(newUnit.getTile()).isEqualTo(destination);
-        assertThat(newUnitTile.getUnit()).isNull();
+        assertThat(oldUnitTile.getUnit()).contains(oldUnit);
+        assertThat(oldUnit.getTile()).contains(oldUnitTile);
+        assertThat(destination.getUnit()).contains(newUnit);
+        assertThat(newUnit.getTile()).contains(destination);
+        assertThat(newUnitTile.getUnit()).isEmpty();
         oldUnit.setHp(Hp.ZERO);
         newUnit.setHp(random.not(Hp.ZERO));
         assertThat(fixture.getUnits()).hasSize(1).containsEntry(new UnitId(1), newUnit);
-        assertThat(oldUnitTile.getUnit()).isNull();
-        assertThat(destination.getUnit()).isEqualTo(newUnit);
-        assertThat(newUnit.getTile()).isEqualTo(destination);
-        assertThat(newUnitTile.getUnit()).isNull();
+        assertThat(oldUnitTile.getUnit()).isEmpty();
+        assertThat(destination.getUnit()).contains(newUnit);
+        assertThat(newUnit.getTile()).contains(destination);
+        assertThat(newUnitTile.getUnit()).isEmpty();
     }
 
     @Test
@@ -218,16 +218,16 @@ class GameStateImplTest {
                 .hasSize(2)
                 .containsEntry(new StructureId(0, 0), oldStructure)
                 .containsEntry(new StructureId(1, 0), newStructure);
-        assertThat(oldStructureTile.getStructure()).isEqualTo(oldStructure);
-        assertThat(oldStructure.getTile()).isEqualTo(oldStructureTile);
-        assertThat(newStructureTile.getStructure()).isEqualTo(newStructure);
-        assertThat(newStructure.getTile()).isEqualTo(newStructureTile);
+        assertThat(oldStructureTile.getStructure()).contains(oldStructure);
+        assertThat(oldStructure.getTile()).contains(oldStructureTile);
+        assertThat(newStructureTile.getStructure()).contains(newStructure);
+        assertThat(newStructure.getTile()).contains(newStructureTile);
         oldStructure.setHp(Hp.ZERO);
         newStructure.setHp(random.not(Hp.ZERO));
         assertThat(fixture.getStructures()).hasSize(1).containsEntry(new StructureId(1, 0), newStructure);
-        assertThat(oldStructureTile.getStructure()).isNull();
-        assertThat(newStructureTile.getStructure()).isEqualTo(newStructure);
-        assertThat(newStructure.getTile()).isEqualTo(newStructureTile);
+        assertThat(oldStructureTile.getStructure()).isEmpty();
+        assertThat(newStructureTile.getStructure()).contains(newStructure);
+        assertThat(newStructure.getTile()).contains(newStructureTile);
     }
 
     @ParameterizedTest

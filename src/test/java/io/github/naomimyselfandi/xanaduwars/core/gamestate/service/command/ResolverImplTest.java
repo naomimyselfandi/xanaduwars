@@ -20,6 +20,7 @@ import org.mockito.quality.Strictness;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.TreeMap;
 
 import static org.assertj.core.api.Assertions.*;
@@ -60,8 +61,8 @@ class ResolverImplTest {
     void resolveActor_Player(boolean active) throws ConflictException {
         var reference = new PlayerRefDto(active ? 0 : 1);
         when(gameState.getPlayers()).thenReturn(List.of(activePlayer, inactivePlayer));
-        when(activePlayer.getOwner()).thenReturn(activePlayer);
-        when(inactivePlayer.getOwner()).thenReturn(inactivePlayer);
+        when(activePlayer.getOwner()).thenReturn(Optional.of(activePlayer));
+        when(inactivePlayer.getOwner()).thenReturn(Optional.of(inactivePlayer));
         if (active) {
             assertThat(fixture.resolveActor(gameState, reference)).isEqualTo(activePlayer);
         } else {
@@ -82,7 +83,7 @@ class ResolverImplTest {
         if (inRange) createTile(reference);
         if (exists) createStructure();
         when(activePlayer.canSee(structure)).thenReturn(visible);
-        when(structure.getOwner()).thenReturn(active ? activePlayer : inactivePlayer);
+        when(structure.getOwner()).thenReturn(Optional.of(active ? activePlayer : inactivePlayer));
         if (ok) {
             assertThat(fixture.resolveActor(gameState, reference)).isEqualTo(structure);
         } else {
@@ -112,7 +113,7 @@ class ResolverImplTest {
         if (inRange) createTile(reference);
         if (exists) createUnit();
         when(activePlayer.canSee(unit)).thenReturn(visible);
-        when(unit.getOwner()).thenReturn(active ? activePlayer : inactivePlayer);
+        when(unit.getOwner()).thenReturn(Optional.of(active ? activePlayer : inactivePlayer));
         if (ok) {
             assertThat(fixture.resolveActor(gameState, reference)).isEqualTo(unit);
         } else {
@@ -192,7 +193,7 @@ class ResolverImplTest {
     }
 
     private void createStructure() {
-        when(tile.getStructure()).thenReturn(structure);
+        when(tile.getStructure()).thenReturn(Optional.of(structure));
     }
 
     private void createTile(PhysicalRefDto reference) {
@@ -200,7 +201,7 @@ class ResolverImplTest {
     }
 
     private void createUnit() {
-        when(tile.getUnit()).thenReturn(unit);
+        when(tile.getUnit()).thenReturn(Optional.of(unit));
     }
 
 }

@@ -34,6 +34,11 @@ class SignatureSpellSlotTest {
     }
 
     @Test
+    void getSpell() {
+        assertThat(fixture.getSpell()).contains(spell);
+    }
+
+    @Test
     void isRevealed() {
         assertThat(fixture.isRevealed()).isTrue();
     }

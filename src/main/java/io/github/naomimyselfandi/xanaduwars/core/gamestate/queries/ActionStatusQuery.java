@@ -9,7 +9,7 @@ public record ActionStatusQuery(Element subject) implements Query<Result> {
 
     @Override
     public Result defaultValue() {
-        if (subject.getGameState().getActivePlayer().equals(subject.getOwner())) {
+        if (subject.getGameState().getActivePlayer().equals(subject.getOwner().orElse(null))) {
             return Result.okay();
         } else {
             return Result.fail("Cannot issue commands to that.");

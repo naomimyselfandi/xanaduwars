@@ -1,10 +1,8 @@
 package io.github.naomimyselfandi.xanaduwars.core.gamestate.internal;
 
 import io.github.naomimyselfandi.xanaduwars.core.gamestate.*;
-import io.github.naomimyselfandi.xanaduwars.core.gamestate.entity.ChosenSpells;
 import io.github.naomimyselfandi.xanaduwars.core.gamestate.entity.GameStateData;
 import io.github.naomimyselfandi.xanaduwars.core.gamestate.entity.StructureData;
-import io.github.naomimyselfandi.xanaduwars.core.ruleset.StructureType;
 import org.springframework.stereotype.Service;
 
 import java.util.function.Predicate;
@@ -49,13 +47,11 @@ class RedactorImpl implements Redactor {
                 .values()
                 .stream()
                 .filter(Predicate.not(player::canSee))
-                .forEach(tile -> {
-                    if (tile.getMemory(player) instanceof StructureType structureType) {
-                        var structureId = tile.getId().structureId();
-                        var structure = new StructureData().setTypeId(structureType.getId());
-                        gameStateData.getStructures().put(structureId, structure);
-                    }
-                });
+                .forEach(tile -> tile.getMemory(player).ifPresent(structureType -> {
+                    var structureId = tile.getId().structureId();
+                    var structure = new StructureData().setTypeId(structureType.getId());
+                    gameStateData.getStructures().put(structureId, structure);
+                }));
     }
 
     private void redactUnits(GameState gameState, GameStateData gameStateData, Player player) {

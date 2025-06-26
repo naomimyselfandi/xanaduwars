@@ -23,6 +23,7 @@ import org.mockito.quality.Strictness;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.TreeMap;
 
 import static org.assertj.core.api.Assertions.*;
@@ -78,7 +79,7 @@ class PlayerImplTest {
         playerData.setCommanderId(commanderId);
         when(gameState.getRuleset()).thenReturn(ruleset);
         when(ruleset.getCommander(commanderId)).thenReturn(commander);
-        assertThat(fixture.getCommander()).isEqualTo(commander);
+        assertThat(fixture.getCommander()).contains(commander);
     }
 
     @Test
@@ -91,9 +92,10 @@ class PlayerImplTest {
     }
 
     @Test
-    void getCommander_WhenTheCommanderIdIsNull_ThenNull() {
+    void getCommander_WhenTheCommanderIdIsNull_ThenEmpty() {
         playerData.setCommanderId(null);
-        assertThat(fixture.getCommander()).isNull();
+        when(gameState.getRuleset()).thenReturn(ruleset);
+        assertThat(fixture.getCommander()).isEmpty();
     }
 
     @Test
@@ -193,22 +195,22 @@ class PlayerImplTest {
     void getStructures(SeededRng random) {
         when(gameState.getStructures())
                 .thenReturn(new TreeMap<>(Map.of(random.get(), structure0, random.get(), structure1)));
-        when(structure0.getOwner()).thenReturn(fixture);
-        when(structure1.getOwner()).thenReturn(player);
+        when(structure0.getOwner()).thenReturn(Optional.ofNullable(fixture));
+        when(structure1.getOwner()).thenReturn(Optional.of(player));
         assertThat(fixture.getStructures()).containsOnly(structure0);
     }
 
     @Test
     void getUnits(SeededRng random) {
         when(gameState.getUnits()).thenReturn(new TreeMap<>(Map.of(random.get(), unit0, random.get(), unit1)));
-        when(unit0.getOwner()).thenReturn(fixture);
-        when(unit1.getOwner()).thenReturn(player);
+        when(unit0.getOwner()).thenReturn(Optional.ofNullable(fixture));
+        when(unit1.getOwner()).thenReturn(Optional.of(player));
         assertThat(fixture.getUnits()).containsOnly(unit0);
     }
 
     @Test
     void getOwner() {
-        assertThat(fixture.getOwner()).isSameAs(fixture);
+        assertThat(fixture.getOwner()).contains(fixture);
     }
 
     @Test
@@ -217,7 +219,7 @@ class PlayerImplTest {
         when(ruleset.getPassAction()).thenReturn(pass);
         when(ruleset.getYieldAction()).thenReturn(yield);
         when(spellSlotHelper.getSpellSlots(ruleset, playerData)).thenReturn(List.of(spellSlot));
-        when(spellSlot.getSpell()).thenReturn(spell);
+        when(spellSlot.getSpell()).thenReturn(Optional.of(spell));
         assertThat(fixture.getActions()).containsExactly(spell, pass, yield);
     }
 
@@ -229,7 +231,7 @@ class PlayerImplTest {
         when(gameState.getRuleset()).thenReturn(ruleset);
         when(ruleset.getCommander(commanderId)).thenReturn(commander);
         when(spellSlotHelper.getSpellSlots(ruleset, playerData)).thenReturn(List.of(spellSlot));
-        when(spellSlot.getSpell()).thenReturn(spell);
+        when(spellSlot.getSpell()).thenReturn(Optional.of(spell));
         when(spellSlot.isActive()).thenReturn(spellIsActive);
         if (spellIsActive) {
             assertThat(fixture.getRules()).containsExactly(commander, spell);

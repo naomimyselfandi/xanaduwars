@@ -15,6 +15,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.TreeMap;
 
 import static org.mockito.Mockito.*;
@@ -45,7 +46,7 @@ class CleanerForMemoryTest {
         when(structure.getType()).thenReturn(structureType);
         when(gameState.getPlayers()).thenReturn(List.of(player0, player1));
         when(gameState.getTiles()).thenReturn(new TreeMap<>(Map.of(random.get(), tile0, random.get(), tile1)));
-        when(tile0.getStructure()).thenReturn(structure);
+        when(tile0.getStructure()).thenReturn(Optional.of(structure));
         when(player0.canSee(tile0)).thenReturn(true);
         when(player0.canSee(tile1)).thenReturn(true);
         when(player1.canSee(tile0)).thenReturn(false);

@@ -78,8 +78,8 @@
       ],
       "postconditions": {
         "player(0).supplies": "50",
-        "tile(1, 0).structure.hp.ordinal": "50",
-        "tile(1, 0).structure.incomplete": "true"
+        "structure(1, 0).hp.ordinal": "50",
+        "structure(1, 0).incomplete": "true"
       }
     },
     {
@@ -97,8 +97,8 @@
       ],
       "postconditions": {
         "player(0).supplies": "100",
-        "tile(1, 0).structure.hp.ordinal": "100",
-        "tile(1, 0).structure.incomplete": "false"
+        "structure(1, 0).hp.ordinal": "100",
+        "structure(1, 0).incomplete": "false"
       }
     },
     {
@@ -123,8 +123,8 @@
       ],
       "postconditions": {
         "player(0).supplies": "267",
-        "tile(2, 0).structure.hp.ordinal": "33",
-        "tile(2, 0).structure.incomplete": "true"
+        "structure(2, 0).hp.ordinal": "33",
+        "structure(2, 0).incomplete": "true"
       }
     },
     {
@@ -143,8 +143,8 @@
       ],
       "postconditions": {
         "player(0).supplies": "434",
-        "tile(2, 0).structure.hp.ordinal": "66",
-        "tile(2, 0).structure.incomplete": "true"
+        "structure(2, 0).hp.ordinal": "66",
+        "structure(2, 0).incomplete": "true"
       }
     },
     {
@@ -163,8 +163,8 @@
       ],
       "postconditions": {
         "player(0).supplies": "601",
-        "tile(2, 0).structure.hp.ordinal": "99",
-        "tile(2, 0).structure.incomplete": "true"
+        "structure(2, 0).hp.ordinal": "99",
+        "structure(2, 0).incomplete": "true"
       }
     },
     {
@@ -182,8 +182,8 @@
       ],
       "postconditions": {
         "player(0).supplies": "800",
-        "tile(2, 0).structure.hp.ordinal": "100",
-        "tile(2, 0).structure.incomplete": "false"
+        "structure(2, 0).hp.ordinal": "100",
+        "structure(2, 0).incomplete": "false"
       }
     }
   ]

@@ -4,6 +4,7 @@ import io.github.naomimyselfandi.xanaduwars.core.common.StructureTag;
 import io.github.naomimyselfandi.xanaduwars.core.ruleset.StructureType;
 import org.jetbrains.annotations.Unmodifiable;
 
+import java.util.Optional;
 import java.util.Set;
 
 /// A structure in a game.
@@ -26,7 +27,7 @@ public non-sealed interface Structure extends Asset {
 
     /// Get the tile this structure is on.
     @Override
-    Tile getTile();
+    Optional<Tile> getTile();
 
     /// Check if this structure is incomplete. An incomplete structure cannot
     /// take actions and does not influence the terrain.

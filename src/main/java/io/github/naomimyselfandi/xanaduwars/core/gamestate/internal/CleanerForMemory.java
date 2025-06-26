@@ -10,11 +10,8 @@ record CleanerForMemory() implements Cleaner {
         for (var player : gameState.getPlayers()) {
             for (var tile : gameState.getTiles().values()) {
                 if (player.canSee(tile)) {
-                    if (tile.getStructure() instanceof Structure structure) {
-                        tile.setMemory(player, structure.getType());
-                    } else {
-                        tile.setMemory(player, null);
-                    }
+                    var type = tile.getStructure().map(Structure::getType).orElse(null);
+                    tile.setMemory(player, type);
                 }
             }
         }

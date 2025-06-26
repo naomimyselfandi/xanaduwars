@@ -59,8 +59,8 @@ record StructureImpl(StructureData data, @Getter GameState gameState, @Getter St
     }
 
     @Override
-    public Tile getTile() {
-        return gameState.getTiles().get(id.tileId());
+    public Optional<Tile> getTile() {
+        return Optional.ofNullable(gameState.getTiles().get(id.tileId()));
     }
 
     @Override
@@ -76,12 +76,8 @@ record StructureImpl(StructureData data, @Getter GameState gameState, @Getter St
     }
 
     @Override
-    public @Nullable Player getOwner() {
-        return Optional
-                .ofNullable(data.getPlayerId())
-                .map(PlayerId::playerId)
-                .map(gameState.getPlayers()::get)
-                .orElse(null);
+    public Optional<Player> getOwner() {
+        return Optional.ofNullable(data.getPlayerId()).map(PlayerId::playerId).map(gameState.getPlayers()::get);
     }
 
     @Override
@@ -100,7 +96,7 @@ record StructureImpl(StructureData data, @Getter GameState gameState, @Getter St
     public List<Rule> getRules() {
         return Stream.concat(
                 Stream.of(getType()),
-                Stream.ofNullable(getOwner()).map(Player::getRules).flatMap(List::stream)
+                getOwner().stream().map(Player::getRules).flatMap(List::stream)
         ).toList();
     }
 

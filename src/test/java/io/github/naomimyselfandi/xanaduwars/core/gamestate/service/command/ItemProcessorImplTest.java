@@ -18,6 +18,7 @@ import org.mockito.junit.jupiter.MockitoSettings;
 import org.mockito.quality.Strictness;
 
 import java.util.List;
+import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.*;
@@ -46,7 +47,7 @@ class ItemProcessorImplTest {
     @BeforeEach
     void setup() {
         when(actor.getGameState()).thenReturn(gameState);
-        when(actor.getOwner()).thenReturn(player);
+        when(actor.getOwner()).thenReturn(Optional.of(player));
         targets = List.of(new Object(), new Object());
     }
 

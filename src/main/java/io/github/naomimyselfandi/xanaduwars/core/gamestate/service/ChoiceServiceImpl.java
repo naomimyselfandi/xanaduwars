@@ -15,7 +15,6 @@ import org.jetbrains.annotations.Nullable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
 class ChoiceServiceImpl implements ChoiceService {
@@ -23,7 +22,7 @@ class ChoiceServiceImpl implements ChoiceService {
     @Override
     public ChoiceDto getChoices(GameState gameState, PlayerId playerId) {
         var player = gameState.getPlayers().get(playerId.playerId());
-        var commanderId = Optional.ofNullable(player.getCommander()).map(Commander::getId).orElse(null);
+        var commanderId = player.getCommander().map(Commander::getId).orElse(null);
         var spellIds = player.getChosenSpells().stream().map(Spell::getId).toList();
         return new ChoiceDto().setCommander(commanderId).setSpells(spellIds);
     }

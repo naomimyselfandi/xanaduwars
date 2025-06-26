@@ -12,6 +12,8 @@ import org.junit.jupiter.params.provider.ValueSource;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.util.Optional;
+
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.*;
 
@@ -39,7 +41,7 @@ class ActionStatusQueryTest {
     @ParameterizedTest
     @ValueSource(booleans = {true, false})
     void defaultValue(boolean ownerIsActive) {
-        when(subject.getOwner()).thenReturn(ownerIsActive ? activePlayer : inactivePlayer);
+        when(subject.getOwner()).thenReturn(Optional.of(ownerIsActive ? activePlayer : inactivePlayer));
         assertThat(fixture.defaultValue() instanceof Result.Okay).isEqualTo(ownerIsActive);
     }
 

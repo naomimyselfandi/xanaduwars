@@ -45,6 +45,6 @@ public interface Ordinal<Self extends Ordinal<Self>> extends Comparable<Self> {
     @Override
     default int compareTo(Self that) {
         return Integer.compare(this.ordinal(), that.ordinal());
-    };
+    }
 
 }

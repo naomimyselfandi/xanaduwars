@@ -11,6 +11,8 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.mockito.junit.jupiter.MockitoSettings;
 import org.mockito.quality.Strictness;
 
+import java.util.Optional;
+
 import static org.assertj.core.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
@@ -35,11 +37,11 @@ class PhysicalTest {
     @LogicalSource(LogicalSource.Op.AND)
     void getDistance_WhenBothElementsHaveTiles_ThenDelegates(boolean thisHasTile, boolean thatHasTile, boolean ok) {
         var distance = random.nextInt();
-        when(unit0.getTile()).thenReturn(thisHasTile ? tile0 : null);
-        when(unit1.getTile()).thenReturn(thatHasTile ? tile1 : null);
+        when(unit0.getTile()).thenReturn(Optional.ofNullable(thisHasTile ? tile0 : null));
+        when(unit1.getTile()).thenReturn(Optional.ofNullable(thatHasTile ? tile1 : null));
         when(tile0.getDistance(tile1)).thenReturn(distance);
         when(unit0.getDistance(unit1)).thenCallRealMethod();
-        assertThat(unit0.getDistance(unit1)).isEqualTo(ok ? distance : null);
+        assertThat(unit0.getDistance(unit1)).isEqualTo(ok ? (double) distance : (Object) Double.NaN);
     }
 
 }

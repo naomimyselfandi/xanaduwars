@@ -16,7 +16,7 @@ class ObjectResolverImpl implements ObjectResolver {
             case PlayerRefDto it -> gameState.getPlayers().get(it.player());
             case PhysicalRefDto it -> resolve(gameState, it);
         };
-        if (gameState.getActivePlayer().equals(candidate.getOwner())) {
+        if (gameState.getActivePlayer().equals(candidate.getOwner().orElse(null))) {
             return candidate;
         } else {
             throw new ConflictException("Cannot issue commands to that object.");
@@ -50,23 +50,15 @@ class ObjectResolverImpl implements ObjectResolver {
         if (tile == null) {
             throw badReference("tile", tileId);
         } else return switch (reference) {
-            case StructureReferenceDto _ -> {
-                var candidate = tile.getStructure();
-                if (candidate != null && gameState.getActivePlayer().canSee(candidate)) {
-                    yield candidate;
-                } else {
-                    throw badReference("structure", tileId);
-                }
-            }
+            case StructureReferenceDto _ -> tile
+                    .getStructure()
+                    .filter(gameState.getActivePlayer()::canSee)
+                    .orElseThrow(() -> badReference("structure", tileId));
             case TileReferenceDto _ -> tile;
-            case UnitReferenceDto _ -> {
-                var candidate = tile.getUnit();
-                if (candidate != null && gameState.getActivePlayer().canSee(candidate)) {
-                    yield candidate;
-                } else {
-                    throw badReference("unit", tileId);
-                }
-            }
+            case UnitReferenceDto _ -> tile
+                    .getUnit()
+                    .filter(gameState.getActivePlayer()::canSee)
+                    .orElseThrow(() -> badReference("unit", tileId));
         };
     }
 

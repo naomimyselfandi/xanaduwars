@@ -2,7 +2,8 @@ package io.github.naomimyselfandi.xanaduwars.testing;
 
 import com.github.javafaker.Faker;
 import io.github.naomimyselfandi.seededrandom.SeededRandom;
-import io.github.naomimyselfandi.xanaduwars.core.gamestate.dto.GameStateDto;
+import io.github.naomimyselfandi.xanaduwars.core.gamestate.dto.StructureDto;
+import io.github.naomimyselfandi.xanaduwars.core.gamestate.dto.UnitDto;
 import jakarta.validation.constraints.*;
 import lombok.SneakyThrows;
 import org.hibernate.validator.constraints.Range;
@@ -71,12 +72,31 @@ public class SeededRng extends SeededRandom {
         return nextUUID().toString().replaceAll("-", "");
     }
 
+    @SuppressWarnings("unused") // reflection
     public Instant nextInstant() {
         return Instant.ofEpochMilli(nextLong());
     }
 
-    public GameStateDto nextGameStateDto() {
-        return new GameStateDto().setVersion(get()).setTurn(get());
+    @SuppressWarnings("unused") // reflection
+    public StructureDto nextStructureDto() {
+        return new StructureDto()
+                .setType(get())
+                .setTags(Set.of(get(), get(), get()))
+                .setHp(get())
+                .setOwner(get())
+                .setVision(get());
+    }
+
+    @SuppressWarnings("unused") // reflection
+    public UnitDto nextUnitDto() {
+        return new UnitDto()
+                .setType(get())
+                .setTags(Set.of(get(), get(), get()))
+                .setHp(get())
+                .setOwner(get())
+                .setVision(get())
+                .setSpeed(get())
+                .setReady(get());
     }
 
     @SneakyThrows

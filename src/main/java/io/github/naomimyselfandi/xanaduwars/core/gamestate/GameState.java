@@ -3,10 +3,10 @@ package io.github.naomimyselfandi.xanaduwars.core.gamestate;
 import io.github.naomimyselfandi.xanaduwars.core.ruleset.*;
 import io.github.naomimyselfandi.xanaduwars.core.scripting.Event;
 import io.github.naomimyselfandi.xanaduwars.core.scripting.Query;
-import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.UnmodifiableView;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.SortedMap;
 
 /// A game state.
@@ -78,7 +78,7 @@ public interface GameState {
     Unit createUnit(Tile tile, UnitType type);
 
     /// Get the unit at a location, if any.
-    @Nullable Unit getUnit(Node location);
+    Optional<Unit> getUnit(Node location);
 
     /// Move a unit to a new location.
     void moveUnit(Unit unit, Node destination);

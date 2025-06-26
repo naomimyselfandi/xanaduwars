@@ -3,10 +3,11 @@ package io.github.naomimyselfandi.xanaduwars.core.gamestate;
 import io.github.naomimyselfandi.xanaduwars.core.ruleset.Action;
 import io.github.naomimyselfandi.xanaduwars.core.scripting.RuleSource;
 import io.github.naomimyselfandi.xanaduwars.util.ExcludeFromCoverageReport;
-import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.Unmodifiable;
 
 import java.util.List;
+import java.util.Optional;
+import java.util.function.Predicate;
 
 /// An element of a game state. Players, structures, tiles, and units are all
 /// elements.
@@ -20,25 +21,27 @@ public sealed interface Element extends RuleSource permits Physical, Player {
     ElementId getId();
 
     /// Get this element's owner. Players are considered to own themselves.
-    @Nullable Player getOwner();
+    Optional<Player> getOwner();
 
     /// Check if two elements have the same owner.
     default boolean hasSameOwner(Element that) {
-        return getOwner() instanceof Player player && player.equals(that.getOwner());
+        return getOwner().flatMap(owner -> that.getOwner().filter(owner::equals)).isPresent();
     }
 
     /// Check if two elements are on the same team.
     default boolean isAlly(Element that) {
-        return this.getOwner() instanceof Player thisOwner
-                && that.getOwner() instanceof Player thatOwner
-                && thisOwner.getTeam().equals(thatOwner.getTeam());
+        return getOwner()
+                .map(Player::getTeam)
+                .flatMap(team -> that.getOwner().map(Player::getTeam).filter(team::equals))
+                .isPresent();
     }
 
     /// Check if two elements are on different teams.
     default boolean isEnemy(Element that) {
-        return this.getOwner() instanceof Player thisOwner
-                && that.getOwner() instanceof Player thatOwner
-                && !thisOwner.getTeam().equals(thatOwner.getTeam());
+        return getOwner()
+                .map(Player::getTeam)
+                .flatMap(team -> that.getOwner().map(Player::getTeam).filter(Predicate.not(team::equals)))
+                .isPresent();
     }
 
     /// Get the actions this element can use.

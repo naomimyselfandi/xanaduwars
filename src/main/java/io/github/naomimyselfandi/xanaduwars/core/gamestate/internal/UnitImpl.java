@@ -73,15 +73,15 @@ record UnitImpl(UnitData data, @Getter GameState gameState, @Getter UnitId id) i
     }
 
     @Override
-    public @Nullable Tile getTile() {
+    public Optional<Tile> getTile() {
         return switch (data.getLocationId()) {
-            case TileId t -> gameState.getTiles().get(t);
-            case UnitId _ -> null;
+            case TileId t -> Optional.of(gameState.getTiles().get(t));
+            case UnitId _ -> Optional.empty();
         };
     }
 
     @Override
-    public @Nullable Unit getCargo() {
+    public Optional<Unit> getCargo() {
         return gameState.getUnit(this);
     }
 
@@ -98,12 +98,8 @@ record UnitImpl(UnitData data, @Getter GameState gameState, @Getter UnitId id) i
     }
 
     @Override
-    public @Nullable Player getOwner() {
-        return Optional
-                .ofNullable(data.getPlayerId())
-                .map(PlayerId::playerId)
-                .map(gameState.getPlayers()::get)
-                .orElse(null);
+    public Optional<Player> getOwner() {
+        return Optional.ofNullable(data.getPlayerId()).map(PlayerId::playerId).map(gameState.getPlayers()::get);
     }
 
     @Override
@@ -129,8 +125,8 @@ record UnitImpl(UnitData data, @Getter GameState gameState, @Getter UnitId id) i
     public List<Rule> getRules() {
         var result = Stream.<Rule>builder();
         result.add(getType());
-        Stream.ofNullable(getOwner()).map(Player::getRules).flatMap(List::stream).forEach(result);
-        Stream.ofNullable(getTile()).map(Tile::getRules).flatMap(List::stream).forEach(result);
+        getOwner().stream().map(Player::getRules).flatMap(List::stream).forEach(result);
+        getTile().stream().map(Tile::getRules).flatMap(List::stream).forEach(result);
         return result.build().toList();
     }
 

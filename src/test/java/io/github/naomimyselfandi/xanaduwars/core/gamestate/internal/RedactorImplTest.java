@@ -15,10 +15,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.mockito.junit.jupiter.MockitoSettings;
 import org.mockito.quality.Strictness;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.TreeMap;
+import java.util.*;
 
 import static org.assertj.core.api.Assertions.*;
 import static org.mockito.Mockito.*;
@@ -113,8 +110,8 @@ class RedactorImplTest {
         when(tile1.getId()).thenReturn(id1);
         var id2 = random.<StructureTypeId>get();
         when(structureType.getId()).thenReturn(id2);
-        when(tile0.getMemory(player)).thenReturn(structureType);
-        when(tile1.getMemory(player)).thenReturn(null);
+        when(tile0.getMemory(player)).thenReturn(Optional.of(structureType));
+        when(tile1.getMemory(player)).thenReturn(Optional.empty());
         when(gameState.getTiles()).thenReturn(new TreeMap<>(Map.of(id0, tile0, id1, tile1)));
         fixture.redact(gameState, gameStateData, player);
         var structure = new StructureData().setTypeId(id2);

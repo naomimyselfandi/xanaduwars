@@ -22,6 +22,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.List;
+import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.*;
 import static org.mockito.Mockito.*;
@@ -65,7 +66,7 @@ class ChoiceServiceImplTest {
 
     @Test
     void getChoices() {
-        when(player.getCommander()).thenReturn(commander);
+        when(player.getCommander()).thenReturn(Optional.of(commander));
         when(commander.getId()).thenReturn(commanderId);
         when(player.getChosenSpells()).thenReturn(List.of(abracadabra, alakazam));
         when(abracadabra.getId()).thenReturn(abracadabraId);
