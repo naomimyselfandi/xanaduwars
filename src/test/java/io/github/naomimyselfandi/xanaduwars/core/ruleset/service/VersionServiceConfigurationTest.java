@@ -15,6 +15,7 @@ class VersionServiceConfigurationTest {
         var service = new VersionServiceConfiguration().versionService("testRuleset");
         assertThat(service.all()).containsExactly(v123, v000foo, v000bar, v000);
         assertThat(service.published()).containsExactly(v123, v000);
+        assertThat(service.current()).isEqualTo(v123);
     }
 
 }

@@ -16,6 +16,11 @@ class VersionServiceImpl implements VersionService {
     }
 
     @Override
+    public Version current() {
+        return published.getFirst();
+    }
+
+    @Override
     public SequencedCollection<Version> all() {
         return all;
     }

@@ -19,4 +19,8 @@ public interface CommandProcessor {
     /// unit.
     Result process(GameState gameState, CommandDto command) throws ConflictException;
 
+    /// Evaluate a command without validation. This is intended for use in
+    /// replays, where the command has already been validated.
+    void replay(GameState gameState, CommandDto command);
+
 }

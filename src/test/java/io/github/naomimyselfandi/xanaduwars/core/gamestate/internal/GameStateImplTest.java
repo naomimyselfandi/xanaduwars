@@ -5,6 +5,7 @@ import io.github.naomimyselfandi.xanaduwars.core.common.TileTypeId;
 import io.github.naomimyselfandi.xanaduwars.core.gamestate.*;
 import io.github.naomimyselfandi.xanaduwars.core.gamestate.entity.*;
 import io.github.naomimyselfandi.xanaduwars.core.gamestate.queries.TurnStartEvent;
+import io.github.naomimyselfandi.xanaduwars.core.gamestate.service.CopyMachine;
 import io.github.naomimyselfandi.xanaduwars.core.ruleset.*;
 import io.github.naomimyselfandi.xanaduwars.core.scripting.*;
 import io.github.naomimyselfandi.xanaduwars.testing.SeededRng;
@@ -59,12 +60,6 @@ class GameStateImplTest {
 
     @Mock
     private QueryEvaluator queryEvaluator;
-
-    @Mock
-    private Commander commander;
-
-    @Mock
-    private Spell abracadabra, alakazam;
 
     @Mock
     private SpellSlotHelper spellSlotHelper;

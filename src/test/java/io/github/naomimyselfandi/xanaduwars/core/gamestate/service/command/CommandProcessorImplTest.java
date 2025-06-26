@@ -97,4 +97,21 @@ class CommandProcessorImplTest {
         verify(commandProcessorHelper, never()).process(gameState, commandDto);
     }
 
+    @Test
+    void replay() throws ConflictException {
+        fixture.replay(gameState, commandDto);
+        verify(commandProcessorHelper).process(gameState, commandDto);
+        verify(gameState, never()).limitedTo(any());
+    }
+
+    @Test
+    void replay_WhenTheReplayFails_ThenThrows() throws ConflictException {
+        var e = new ConflictException();
+        when(commandProcessorHelper.process(gameState, commandDto)).thenThrow(e);
+        assertThatThrownBy(() -> fixture.replay(gameState, commandDto))
+                .isInstanceOf(RuntimeException.class)
+                .hasMessage("Replaying %s failed!", commandDto)
+                .hasCause(e);
+    }
+
 }

@@ -2,6 +2,7 @@ package io.github.naomimyselfandi.xanaduwars.testing;
 
 import com.github.javafaker.Faker;
 import io.github.naomimyselfandi.seededrandom.SeededRandom;
+import io.github.naomimyselfandi.xanaduwars.core.gamestate.dto.GameStateDto;
 import jakarta.validation.constraints.*;
 import lombok.SneakyThrows;
 import org.hibernate.validator.constraints.Range;
@@ -72,6 +73,10 @@ public class SeededRng extends SeededRandom {
 
     public Instant nextInstant() {
         return Instant.ofEpochMilli(nextLong());
+    }
+
+    public GameStateDto nextGameStateDto() {
+        return new GameStateDto().setVersion(get()).setTurn(get());
     }
 
     @SneakyThrows

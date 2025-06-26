@@ -22,7 +22,7 @@ class GameStateDtoConverterTest {
 
     private TileDto dto00, dto10, dto01, dto11;
 
-    private GameDtoConverter fixture;
+    private GameStateDtoConverter fixture;
 
     @BeforeEach
     void setup() {
@@ -35,7 +35,7 @@ class GameStateDtoConverterTest {
         dto10 = new TileDto().setId(new TileId(1, 0));
         dto11 = new TileDto().setId(new TileId(1, 1));
         var map = Map.of(tile00, dto00, tile01, dto01, tile10, dto10, tile11, dto11);
-        fixture = new GameDtoConverter() {
+        fixture = new GameStateDtoConverter() {
 
             @Override
             public GameStateDto convert(GameState source) {

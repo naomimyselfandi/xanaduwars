@@ -2,6 +2,7 @@ package io.github.naomimyselfandi.xanaduwars.core.gamestate.internal;
 
 import io.github.naomimyselfandi.seededrandom.SeededRandomExtension;
 import io.github.naomimyselfandi.xanaduwars.core.gamestate.entity.GameStateData;
+import io.github.naomimyselfandi.xanaduwars.core.gamestate.service.CopyMachine;
 import io.github.naomimyselfandi.xanaduwars.core.ruleset.Ruleset;
 import io.github.naomimyselfandi.xanaduwars.core.ruleset.service.RulesetService;
 import io.github.naomimyselfandi.xanaduwars.core.scripting.QueryEvaluator;

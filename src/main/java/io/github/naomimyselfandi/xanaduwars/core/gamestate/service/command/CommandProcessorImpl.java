@@ -33,4 +33,13 @@ class CommandProcessorImpl implements CommandProcessor {
         }
     }
 
+    @Override
+    public void replay(GameState gameState, CommandDto command) {
+        try {
+            commandProcessorHelper.process(gameState, command);
+        } catch (ConflictException e) {
+            throw new RuntimeException("Replaying %s failed!".formatted(command), e);
+        }
+    }
+
 }

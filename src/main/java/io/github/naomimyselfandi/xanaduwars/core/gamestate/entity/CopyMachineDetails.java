@@ -1,6 +1,6 @@
-package io.github.naomimyselfandi.xanaduwars.core.gamestate.internal;
+package io.github.naomimyselfandi.xanaduwars.core.gamestate.entity;
 
-import io.github.naomimyselfandi.xanaduwars.core.gamestate.entity.*;
+import io.github.naomimyselfandi.xanaduwars.core.gamestate.service.CopyMachine;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.control.DeepClone;
@@ -10,12 +10,13 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 
 @Mapper(mappingControl = DeepClone.class)
-interface CopyMachine {
+interface CopyMachineDetails extends CopyMachine {
 
     @Retention(RetentionPolicy.CLASS)
     @MappingControl(MappingControl.Use.DIRECT)
     @interface Direct {}
 
+    @Override
     @Mapping(target = "id", mappingControl = Direct.class)
     @Mapping(target = "turn", mappingControl = Direct.class)
     @Mapping(target = "version", mappingControl = Direct.class)

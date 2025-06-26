@@ -3,6 +3,7 @@ package io.github.naomimyselfandi.xanaduwars.core.gamestate.internal;
 import io.github.naomimyselfandi.xanaduwars.core.gamestate.*;
 import io.github.naomimyselfandi.xanaduwars.core.gamestate.entity.*;
 import io.github.naomimyselfandi.xanaduwars.core.gamestate.queries.*;
+import io.github.naomimyselfandi.xanaduwars.core.gamestate.service.CopyMachine;
 import io.github.naomimyselfandi.xanaduwars.core.ruleset.*;
 import io.github.naomimyselfandi.xanaduwars.core.scripting.Event;
 import io.github.naomimyselfandi.xanaduwars.core.scripting.Query;

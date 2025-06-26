@@ -5,10 +5,13 @@ import java.util.SequencedCollection;
 /// A service that helps work with different versions of the game.
 public interface VersionService {
 
-    /// All published versions, beginning with the most recent.
+    /// Get the most recent published version.
+    Version current();
+
+    /// Get all published versions, beginning with the most recent.
     SequencedCollection<Version> published();
 
-    /// All available versions, beginning with the most recent.
+    /// Get all available versions, beginning with the most recent.
     SequencedCollection<Version> all();
 
 }

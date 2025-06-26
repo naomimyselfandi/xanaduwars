@@ -3,6 +3,7 @@ package io.github.naomimyselfandi.xanaduwars.core.gamestate.dto;
 import io.github.naomimyselfandi.xanaduwars.core.gamestate.*;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
+import org.springframework.core.convert.converter.Converter;
 
 import java.util.List;
 import java.util.Map;
@@ -10,7 +11,7 @@ import java.util.SortedMap;
 import java.util.stream.Collectors;
 
 @Mapper
-interface GameDtoConverter {
+interface GameStateDtoConverter extends Converter<GameState, GameStateDto> {
 
     @Mapping(target = "version", source = "ruleset.version")
     @Mapping(target = "activePlayer", source = "activePlayer.id")
