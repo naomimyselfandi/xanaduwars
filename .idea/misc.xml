@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="EntryPointsManager">
+    <list size="9">
+      <item index="0" class="java.lang.String" itemvalue="com.fasterxml.jackson.annotation.JsonCreator" />
+      <item index="1" class="java.lang.String" itemvalue="com.fasterxml.jackson.annotation.JsonValue" />
+      <item index="2" class="java.lang.String" itemvalue="io.github.naomimyselfandi.xanaduwars.integration.CoreIntegrationTest.TestScript" />
+      <item index="3" class="java.lang.String" itemvalue="io.github.naomimyselfandi.xanaduwars.util.FakeVarargs" />
+      <item index="4" class="java.lang.String" itemvalue="io.github.naomimyselfandi.xanaduwars.util.UsedReflectively" />
+      <item index="5" class="java.lang.String" itemvalue="jakarta.persistence.PersistenceContext" />
+      <item index="6" class="java.lang.String" itemvalue="lombok.experimental.Delegate" />
+      <item index="7" class="java.lang.String" itemvalue="org.mockito.Mock" />
+      <item index="8" class="java.lang.String" itemvalue="org.springframework.test.context.DynamicPropertySource" />
+    </list>
+    <writeAnnotations>
+      <writeAnnotation name="io.github.naomimyselfandi.xanaduwars.e2e.AutoUser" />
+      <writeAnnotation name="org.springframework.beans.factory.annotation.Autowired" />
+      <writeAnnotation name="org.springframework.beans.factory.annotation.Value" />
+      <writeAnnotation name="org.springframework.test.context.bean.override.mockito.MockitoBean" />
+    </writeAnnotations>
+  </component>
+  <component name="ExternalStorageConfigurationManager" enabled="true" />
+  <component name="MavenProjectsManager">
+    <option name="originalFiles">
+      <list>
+        <option value="$PROJECT_DIR$/pom.xml" />
+      </list>
+    </option>
+  </component>
+  <component name="ProjectRootManager" version="2" languageLevel="JDK_24" default="true" project-jdk-name="openjdk-24" project-jdk-type="JavaSDK">
+    <output url="file://$PROJECT_DIR$/out" />
+  </component>
+</project>

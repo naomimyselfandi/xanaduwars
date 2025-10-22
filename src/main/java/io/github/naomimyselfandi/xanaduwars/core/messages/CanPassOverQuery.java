@@ -1,0 +1,14 @@
+package io.github.naomimyselfandi.xanaduwars.core.messages;
+
+import io.github.naomimyselfandi.xanaduwars.core.model.Unit;
+import io.github.naomimyselfandi.xanaduwars.core.script.ScriptRuntime;
+
+/// A query that checks if one unit can pass over another.
+public record CanPassOverQuery(Unit traveller, Unit obstacle) implements SimpleQuery<Boolean> {
+
+    @Override
+    public Boolean defaultValue(ScriptRuntime runtime) {
+        return true;
+    }
+
+}
