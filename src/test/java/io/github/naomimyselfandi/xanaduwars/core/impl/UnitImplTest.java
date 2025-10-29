@@ -249,8 +249,7 @@ class UnitImplTest extends GameStateAwareTest<UnitImpl> {
 
     @Test
     void getAbilities() {
-        when(type.getAbilities()).thenReturn(List.of(ability));
-        assertThat(fixture.getAbilities()).containsExactly(ability);
+        testGetter(Unit::getAbilities, new UnitAbilityQuery(fixture), List.of(ability));
     }
 
     @Test

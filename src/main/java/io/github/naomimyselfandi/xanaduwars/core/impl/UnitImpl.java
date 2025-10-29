@@ -201,7 +201,7 @@ final class UnitImpl extends AbstractNode implements Unit {
     @Override
     @JsonIgnore
     public List<Ability> getAbilities() {
-        return type.getAbilities();
+        return evaluate(new UnitAbilityQuery(this));
     }
 
     @Override
