@@ -20,21 +20,6 @@ final class UnitImpl extends AbstractNode implements Unit {
 
     private static final double HP_SCALE = 10_000;
 
-    @JsonIgnore
-    @Getter(AccessLevel.NONE)
-    @FieldNameConstants.Exclude
-    private final GenericEvent genericEvent = new GenericEvent(this);
-
-    @JsonIgnore
-    @Getter(AccessLevel.NONE)
-    @FieldNameConstants.Exclude
-    private final GetPerceptionQuery perceptionQuery = new GetPerceptionQuery(this);
-
-    @JsonIgnore
-    @Getter(AccessLevel.NONE)
-    @FieldNameConstants.Exclude
-    private final GetMaxHpQuery hpQuery = new GetMaxHpQuery(this);
-
     @JsonSerialize(using = NameSerializer.class)
     private @NotNull UnitType type;
 
@@ -62,7 +47,7 @@ final class UnitImpl extends AbstractNode implements Unit {
     public UnitImpl setType(UnitType type) {
         if (!type.equals(this.type)) {
             this.type = type;
-            dispatch(genericEvent);
+            dispatch(new GenericEvent(this));
         }
         return this;
     }
@@ -83,7 +68,7 @@ final class UnitImpl extends AbstractNode implements Unit {
     public UnitImpl setOwner(Player owner) {
         if (!owner.equals(this.owner)) {
             this.owner = owner;
-            dispatch(genericEvent);
+            dispatch(new GenericEvent(this));
         }
         return this;
     }
@@ -93,12 +78,12 @@ final class UnitImpl extends AbstractNode implements Unit {
     public UnitImpl setLocation(Node location) {
         if (!Objects.equals(location, this.location)) {
             if (this.location != null) {
-                dispatch(genericEvent);
+                dispatch(new GenericEvent(this));
                 this.location.setUnit(null);
             }
             this.location = location;
             location.setUnit(this);
-            dispatch(genericEvent);
+            dispatch(new GenericEvent(this));
         }
         return this;
     }
@@ -112,7 +97,7 @@ final class UnitImpl extends AbstractNode implements Unit {
     @Override
     @JsonIgnore
     public int getPerception() {
-        return evaluate(perceptionQuery);
+        return evaluate(new GetPerceptionQuery(this));
     }
 
     @Override
@@ -123,7 +108,7 @@ final class UnitImpl extends AbstractNode implements Unit {
     @Override
     @JsonIgnore
     public int getMaxHp() {
-        return evaluate(hpQuery);
+        return evaluate(new GetMaxHpQuery(this));
     }
 
     @Override
@@ -164,7 +149,7 @@ final class UnitImpl extends AbstractNode implements Unit {
                     dispatch(new UnitDestroyedEvent(this));
                     if (location != null) location.setUnit(null);
                 } else {
-                    dispatch(genericEvent);
+                    dispatch(new GenericEvent(this));
                 }
             }
             return this;
@@ -175,7 +160,7 @@ final class UnitImpl extends AbstractNode implements Unit {
     public UnitImpl setUnderConstruction(boolean underConstruction) {
         if (underConstruction != this.underConstruction) {
             this.underConstruction = underConstruction;
-            dispatch(genericEvent);
+            dispatch(new GenericEvent(this));
         }
         return this;
     }
@@ -214,7 +199,7 @@ final class UnitImpl extends AbstractNode implements Unit {
     public Actor setActiveAbilities(List<Ability> abilities) {
         if (!abilities.equals(this.activeAbilities)) {
             this.activeAbilities = List.copyOf(abilities);
-            dispatch(genericEvent);
+            dispatch(new GenericEvent(this));
         }
         return this;
     }
