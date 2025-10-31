@@ -4,6 +4,7 @@ import io.github.naomimyselfandi.xanaduwars.core.model.*;
 import io.github.naomimyselfandi.xanaduwars.core.service.CopyMachine;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.function.BiConsumer;
 import java.util.function.Predicate;
 
@@ -38,7 +39,7 @@ class CopyMachineImpl implements CopyMachine {
             boolean redacted
     ) {
         var players = source.getPlayers().stream().map(it -> createCopy(it, playerRedactor)).toList();
-        var tiles = source.getTiles().stream().map(it -> createCopy(it, unitFilter)).toList();
+        var tiles = source.getTiles().stream().map(it -> createCopy(it, unitFilter, players)).toList();
         return new GameStateImpl(
                 source.getVersion(),
                 redacted,
@@ -70,7 +71,7 @@ class CopyMachineImpl implements CopyMachine {
         return copy;
     }
 
-    private Tile createCopy(Tile source, Predicate<Unit> filter) {
+    private Tile createCopy(Tile source, Predicate<Unit> filter, List<Player> players) {
         var copy = new TileImpl();
         for (var field : TileImpl.Fields.values()) {
             var _ = switch (field) {
@@ -80,25 +81,25 @@ class CopyMachineImpl implements CopyMachine {
             };
         }
         if (source.getUnit() instanceof Unit unit && filter.test(unit)) {
-            copy.setUnit(createCopy(unit, filter));
+            copy.setUnit(createCopy(unit, filter, players));
         }
         return copy;
     }
 
-    private Unit createCopy(Unit source, Predicate<Unit> filter) {
+    private Unit createCopy(Unit source, Predicate<Unit> filter, List<Player> players) {
         var copy = new UnitImpl();
         for (var field : UnitImpl.Fields.values()) {
             var _ = switch (field) {
                 case type -> copy.setType(source.getType());
                 case location -> null;
-                case owner -> copy.setOwner(source.getOwner());
+                case owner -> copy.setOwner(players.get(source.getOwner().getPosition()));
                 case scaledHpPercent -> copy.setHpPercent(source.getHpPercent());
                 case underConstruction -> copy.setUnderConstruction(source.isUnderConstruction());
                 case activeAbilities -> copy.setActiveAbilities(source.getActiveAbilities());
             };
         }
         if (source.getUnit() instanceof Unit cargo && filter.test(cargo)) {
-            copy.setUnit(createCopy(cargo, filter));
+            copy.setUnit(createCopy(cargo, filter, players));
         }
         return copy;
     }

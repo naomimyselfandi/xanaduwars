@@ -192,6 +192,7 @@ class CopyMachineImplTest {
         assertThat(gameState.getUnits()).allSatisfy(it -> {
             assertThat(it.getGameState()).isSameAs(gameState);
             assertThat(it.getLocation().getUnit()).isSameAs(it);
+            assertThat(it.getOwner().getGameState()).isSameAs(gameState);
         });
         for (var y = 0; y < gameState.getHeight(); y++) {
             for (var x = 0; x < gameState.getWidth(); x++) {
