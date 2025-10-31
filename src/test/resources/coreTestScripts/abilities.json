@@ -20,13 +20,14 @@
     },
     {
       "evaluate": [
-        "Assert.assertThat($.getTile(2, 1).unit).isNotNull()",
-        "Assert.assertThat($.getTile(2, 1).unit.type).isEqualTo(Boss)",
-        "Assert.assertThat($.getTile(2, 1).unit.ready).isFalse()",
-        "Assert.assertThat($.getTile(1, 1).unit).isNotNull()",
-        "Assert.assertThat($.getTile(1, 1).unit.type).isEqualTo(Blob)",
-        "Assert.assertThat($.getTile(1, 1).unit.ready).isTrue()",
-        "Assert.assertThat($.players.first.supplies).isEqualTo(50)"
+        "assertThat($.getTile(0, 0).unit).isNull()",
+        "assertThat($.getTile(2, 1).unit).isNotNull()",
+        "assertThat($.getTile(2, 1).unit.type).isEqualTo(Boss)",
+        "assertThat($.getTile(2, 1).unit.ready).isFalse()",
+        "assertThat($.getTile(1, 1).unit).isNotNull()",
+        "assertThat($.getTile(1, 1).unit.type).isEqualTo(Blob)",
+        "assertThat($.getTile(1, 1).unit.ready).isTrue()",
+        "assertThat($.players.first.supplies).isEqualTo(50)"
       ]
     },
     {
@@ -48,13 +49,14 @@
     },
     {
       "evaluate": [
-        "Assert.assertThat($.getTile(2, 1).unit).isNotNull()",
-        "Assert.assertThat($.getTile(2, 1).unit.type).isEqualTo(Boss)",
-        "Assert.assertThat($.getTile(2, 1).unit.ready).isFalse()",
-        "Assert.assertThat($.getTile(2, 0).unit).isNotNull()",
-        "Assert.assertThat($.getTile(2, 0).unit.type).isEqualTo(Blob)",
-        "Assert.assertThat($.getTile(2, 0).unit.ready).isFalse()",
-        "Assert.assertThat($.players.first.supplies).isEqualTo(50)"
+        "assertThat($.getTile(2, 1).unit).isNotNull()",
+        "assertThat($.getTile(2, 1).unit.type).isEqualTo(Boss)",
+        "assertThat($.getTile(2, 1).unit.ready).isFalse()",
+        "assertThat($.getTile(1, 1).unit).isNull()",
+        "assertThat($.getTile(2, 0).unit).isNotNull()",
+        "assertThat($.getTile(2, 0).unit.type).isEqualTo(Blob)",
+        "assertThat($.getTile(2, 0).unit.ready).isFalse()",
+        "assertThat($.players.first.supplies).isEqualTo(50)"
       ]
     }
   ]
