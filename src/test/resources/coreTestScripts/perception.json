@@ -18,10 +18,17 @@
         "x": 0,
         "y": 0,
         "use": [
+          {"abilityName": "Move", "target": ["SOUTH"]},
           {"abilityName": "Fire", "target": {"x": 2, "y": 1}}
         ]
       },
       "message": "Malformed target ... for 'Fire'."
+    },
+    {
+      "evaluate": [
+        "assertThat($.getTile(0, 0).getUnit).isNotNull()",
+        "assertNull($.getTile(0, 1).getUnit)"
+      ]
     },
     {
       "evaluate": "$.getTile(1, 0).createUnit(Blob, $.players.first)"

@@ -3,12 +3,10 @@ package io.github.naomimyselfandi.xanaduwars.core;
 import com.fasterxml.jackson.core.StreamReadFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.github.classgraph.ClassGraph;
-import io.github.naomimyselfandi.xanaduwars.core.model.CommandException;
-import io.github.naomimyselfandi.xanaduwars.core.model.GameState;
-import io.github.naomimyselfandi.xanaduwars.core.model.Version;
-import io.github.naomimyselfandi.xanaduwars.core.model.VersionNumber;
+import io.github.naomimyselfandi.xanaduwars.core.model.*;
 import io.github.naomimyselfandi.xanaduwars.core.script.Function;
 import io.github.naomimyselfandi.xanaduwars.core.script.Script;
+import io.github.naomimyselfandi.xanaduwars.core.service.CommandService;
 import io.github.naomimyselfandi.xanaduwars.core.service.GameStateFactory;
 import io.github.naomimyselfandi.xanaduwars.core.service.VersionService;
 import org.assertj.core.api.Assertions;
@@ -38,6 +36,9 @@ class CoreIntegrationTest {
     @Autowired
     private GameStateFactory gameStateFactory;
 
+    @Autowired
+    private CommandService commandService;
+
     private Version version;
 
     @BeforeEach
@@ -49,26 +50,26 @@ class CoreIntegrationTest {
     @MethodSource("getTestScripts")
     void runTestScript(TestScript script) throws CommandException {
         var gameState = gameStateFactory.create(script.width(), script.height(), script.players(), version);
-        var assertion = Script.of("return(@assertThat)").<Function>executeNotNull(gameState, Map.of());
+        var assertThat = Script
+                .of("return(@assertThat)")
+                .<Function>executeNotNull(gameState, Map.of())
+                .bind(Assertions.class);
+        var assertNull = (Function) arguments -> {
+            // SpEl has trouble calling assertThat(null) due to ambiguous conversions
+            Assertions.assertThat(arguments[0]).isNull();
+            return null;
+        };
         for (var step : script.steps()) {
-            execute(step, gameState, arguments -> {
-                var actual = switch (arguments[0]) {
-                    case Optional<?> opt -> opt.orElse(null);
-                    case OptionalDouble opt -> opt.stream().boxed().findFirst().orElse(null);
-                    case OptionalLong opt -> opt.stream().boxed().findFirst().orElse(null);
-                    case OptionalInt opt -> opt.stream().boxed().findFirst().orElse(null);
-                    case null, default -> arguments[0];
-                };
-                return assertion.call(Assertions.class, actual);
-            });
+            execute(step, gameState, Map.of("assertThat", assertThat, "assertNull", assertNull));
         }
     }
 
-    private static void execute(TestScript.Step step, GameState gameState, Function assertThat) throws CommandException  {
-        var _ = switch (step) {
+    private void execute(TestScript.Step step, GameState gameState, Map<String, Object> utils)
+            throws CommandException  {
+        Void _ = switch (step) {
             case TestScript.Evaluate it -> {
                 try {
-                    yield it.evaluate().execute(gameState, Map.of("assertThat", assertThat));
+                    it.evaluate().execute(gameState, utils);
                 } catch (EvaluationException e) {
                     Throwable cause = e.getCause();
                     while (cause.getCause() != null) {
@@ -80,9 +81,10 @@ class CoreIntegrationTest {
                         throw e;
                     }
                 }
+                yield null;
             }
             case TestScript.Invalid it -> {
-                var assertThatException = assertThatThrownBy(() -> execute(it.invalid(), gameState, assertThat))
+                var assertThatException = assertThatThrownBy(() -> execute(it.invalid(), gameState, utils))
                         .isInstanceOf(Objects.requireNonNullElse(it.exception(), CommandException.class));
                 if (it.message() instanceof String message) {
                     for (var part : message.split("\\.\\.\\.")) {
@@ -91,8 +93,14 @@ class CoreIntegrationTest {
                 }
                 yield null;
             }
-            case TestScript.PlayerCommand it -> gameState.submitPlayerCommand(it.cast());
-            case TestScript.UnitCommand it -> gameState.submitUnitCommand(it.x(), it.y(), it.use());
+            case TestScript.PlayerCommand it -> {
+                commandService.submit(gameState, new CommandSequenceForSelf(it.cast()));
+                yield null;
+            }
+            case TestScript.UnitCommand it -> {
+                commandService.submit(gameState, new CommandSequenceForUnit(it.x(), it.y(), it.use()));
+                yield null;
+            }
         };
     }
 

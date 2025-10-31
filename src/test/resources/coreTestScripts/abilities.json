@@ -20,7 +20,7 @@
     },
     {
       "evaluate": [
-        "assertThat($.getTile(0, 0).unit).isNull()",
+        "assertNull($.getTile(0, 0).unit)",
         "assertThat($.getTile(2, 1).unit).isNotNull()",
         "assertThat($.getTile(2, 1).unit.type).isEqualTo(Boss)",
         "assertThat($.getTile(2, 1).unit.ready).isFalse()",
@@ -52,7 +52,7 @@
         "assertThat($.getTile(2, 1).unit).isNotNull()",
         "assertThat($.getTile(2, 1).unit.type).isEqualTo(Boss)",
         "assertThat($.getTile(2, 1).unit.ready).isFalse()",
-        "assertThat($.getTile(1, 1).unit).isNull()",
+        "assertNull($.getTile(1, 1).unit)",
         "assertThat($.getTile(2, 0).unit).isNotNull()",
         "assertThat($.getTile(2, 0).unit.type).isEqualTo(Blob)",
         "assertThat($.getTile(2, 0).unit.ready).isFalse()",
