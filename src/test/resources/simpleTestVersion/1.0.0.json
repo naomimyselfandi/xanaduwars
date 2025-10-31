@@ -1,0 +1,156 @@
+{
+  "eventTypes": [],
+  "queryTypes": [],
+  "globalRules": [],
+  "libraries": {
+    "Bridge": [
+      "def _isMovement(ability):",
+      "  return(ability == Move)",
+      "end",
+      "",
+      "def isReady(actor):",
+      "  return((actor.asPlayer == $.activePlayer) && actor.activeAbilities.empty)",
+      "end",
+      "",
+      "def preflight(actor, ability):",
+      "  (actor.abilities.contains(ability)) || return(false)",
+      "  #active = actor.activeAbilities.stream",
+      "  return(_isMovement(ability) ? active.noneMatch(_isMovement) : active.allMatch(_isMovement))",
+      "end",
+      "",
+      "def redact(element):",
+      "end"
+    ],
+    "Combat": [
+      "def _getDamageValue(target, weapon):",
+      "  #tags = target.tags.iterator",
+      "  #result = 0",
+      "  label loop:",
+      "    (tags.hasNext()) || return(result)",
+      "    result = T(Math).max(result, (weapon.damage[tags.next()] ?: 0))",
+      "    goto(loop)",
+      "end",
+      "",
+      "def canFire(attacker, target, weapon):",
+      "  (_getDamageValue(target, weapon) > 0) || return(false)",
+      "  #distance = attacker.getDistance(target)",
+      "  return((distance >= weapon.minRange) && (distance <= weapon.maxRange))",
+      "end",
+      "",
+      "def fire(attacker, target):",
+      "  #damage = attacker.weapons.stream.mapToInt(_getDamageValue.bind(target)).max.orElseThrow()",
+      "  target.hp = target.hp - damage",
+      "end"
+    ]
+  },
+  "abilityTags": [],
+  "abilities": [
+    {
+      "name": "AttackUp",
+      "focusCost": 300,
+      "effect": ["//todo"]
+    },
+    {
+      "name": "DefenseUp",
+      "focusCost": 300,
+      "effect": ["//todo"]
+    }
+  ],
+  "buildTarget": "tile[1,1].visible",
+  "buildFilter": [
+    "def matches(tag):",
+    "  return(target.movementTable.containsKey(tag))",
+    "end",
+    "",
+    "return((target.unit == null) && unitType.tags.stream.anyMatch(matches))"
+  ],
+  "buildEffect": "target.createUnit(unitType, actor.owner)",
+  "moveAbility": {
+    "name": "Move"
+  },
+  "fireAbility": {
+    "name": "Fire",
+    "target": "unit.enemy",
+    "filter": "return(actor.weapons.stream.anyMatch(Combat.canFire.bind(actor, target)))",
+    "effect": "Combat.fire(actor, target)"
+  },
+  "dropAbility": {
+    "name": "Drop",
+    "target": "tile[1,1].visible",
+    "filter": "return((target.unit == null) && $.evaluate(new GetMovementCostQuery(actor.unit, target)).finite)",
+    "effect": "actor.unit.setLocation(target)"
+  },
+  "commanders": [
+    {
+      "name": "Alice",
+      "signatureSpells": ["AttackUp"],
+      "chosenSpells": 0
+    },
+    {
+      "name": "Bob",
+      "signatureSpells": ["DefenseUp"],
+      "chosenSpells": 0
+    }
+  ],
+  "tileTags": [],
+  "tileTypes": [
+    {
+      "name": "Land",
+      "movementTable": {"LandUnit": 1}
+    },
+    {
+      "name": "Water",
+      "movementTable": {"WaterUnit": 1}
+    }
+  ],
+  "unitTags": ["LandUnit", "WaterUnit"],
+  "unitTypes": [
+    {
+      "name": "Blob",
+      "tags": ["LandUnit"],
+      "speed": 3,
+      "perception": 2,
+      "maxHp": 60,
+      "supplyCost": 100,
+      "weapons": [
+        {
+          "name": "Gun",
+          "damage": {"LandUnit": 20}
+        }
+      ]
+    },
+    {
+      "name": "Boat",
+      "tags": ["WaterUnit"],
+      "speed": 6,
+      "perception": 2,
+      "maxHp": 80,
+      "supplyCost": 100,
+      "aetherCost": 50,
+      "hangar": ["LandUnit"]
+    },
+    {
+      "name": "Boss",
+      "tags": ["LandUnit"],
+      "speed": 3,
+      "perception": 1,
+      "maxHp": 100,
+      "weapons": [
+        {
+          "name": "BigGun",
+          "damage": {"LandUnit": 50, "WaterUnit": 100},
+          "minRange": 2,
+          "maxRange": 3
+        }
+      ],
+      "abilities": ["BuildBlob", "BuildBoat"],
+      "omitBuildAbility": true,
+      "rules": [
+        {
+          "on": "UnitDestroyed",
+          "then": "unit.owner.defeated = true"
+        }
+      ]
+    }
+  ]
+}

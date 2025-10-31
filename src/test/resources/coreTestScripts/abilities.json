@@ -1,0 +1,61 @@
+{
+  "width": 3,
+  "height": 2,
+  "players": 2,
+  "steps": [
+    {
+      "evaluate": [
+        "#player = $.players.first",
+        "player.supplies = 150",
+        "$.getTile(0, 0).createUnit(Boss, player)"
+      ]
+    },
+    {
+      "x": 0,
+      "y": 0,
+      "use": [
+        {"abilityName": "Move", "target": ["EAST", "EAST", "SOUTH"]},
+        {"abilityName": "BuildBlob", "target": {"x": 1, "y": 1}}
+      ]
+    },
+    {
+      "evaluate": [
+        "Assert.assertThat($.getTile(2, 1).unit).isNotNull()",
+        "Assert.assertThat($.getTile(2, 1).unit.type).isEqualTo(Boss)",
+        "Assert.assertThat($.getTile(2, 1).unit.ready).isFalse()",
+        "Assert.assertThat($.getTile(1, 1).unit).isNotNull()",
+        "Assert.assertThat($.getTile(1, 1).unit.type).isEqualTo(Blob)",
+        "Assert.assertThat($.getTile(1, 1).unit.ready).isTrue()",
+        "Assert.assertThat($.players.first.supplies).isEqualTo(50)"
+      ]
+    },
+    {
+      "invalid": {
+        "x": 2,
+        "y": 1,
+        "use": [
+          {"abilityName": "Move", "target": ["NORTH"]}
+        ]
+      },
+      "message": "Invalid recipient for command."
+    },
+    {
+      "x": 1,
+      "y": 1,
+      "use": [
+        {"abilityName": "Move", "target": ["NORTH", "EAST"]}
+      ]
+    },
+    {
+      "evaluate": [
+        "Assert.assertThat($.getTile(2, 1).unit).isNotNull()",
+        "Assert.assertThat($.getTile(2, 1).unit.type).isEqualTo(Boss)",
+        "Assert.assertThat($.getTile(2, 1).unit.ready).isFalse()",
+        "Assert.assertThat($.getTile(2, 0).unit).isNotNull()",
+        "Assert.assertThat($.getTile(2, 0).unit.type).isEqualTo(Blob)",
+        "Assert.assertThat($.getTile(2, 0).unit.ready).isFalse()",
+        "Assert.assertThat($.players.first.supplies).isEqualTo(50)"
+      ]
+    }
+  ]
+}

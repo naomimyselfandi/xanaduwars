@@ -1,0 +1,42 @@
+{
+  "width": 3,
+  "height": 2,
+  "players": 2,
+  "steps": [
+    {
+      "evaluate": [
+        "#p0 = $.players.first",
+        "#p1 = $.players.last",
+        "$.getTile(0, 0).createUnit(Boss, p0)",
+        "$.getTile(2, 1).createUnit(Blob, p1)",
+        "Assert.assertThat(p0.perceives($.getTile(2, 0))).isFalse()",
+        "Assert.assertThat(p1.perceives($.getTile(2, 0))).isTrue()"
+      ]
+    },
+    {
+      "invalid": {
+        "x": 0,
+        "y": 0,
+        "use": [
+          {"abilityName": "Fire", "target": {"x": 2, "y": 1}}
+        ]
+      },
+      "message": "Malformed target ... for 'Fire'."
+    },
+    {
+      "evaluate": "$.getTile(1, 0).createUnit(Blob, $.players.first)"
+    },
+    {
+      "x": 0,
+      "y": 0,
+      "use": [
+        {"abilityName": "Fire", "target": {"x": 2, "y": 1}}
+      ]
+    },
+    {
+      "evaluate": [
+        "Assert.assertThat($.getTile(2, 1).unit.hp).isEqualTo(10)"
+      ]
+    }
+  ]
+}
