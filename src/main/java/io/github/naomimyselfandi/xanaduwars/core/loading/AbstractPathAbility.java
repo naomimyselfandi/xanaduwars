@@ -68,6 +68,14 @@ abstract class AbstractPathAbility extends AbstractSpecification implements Abil
     }
 
     @Override
+    public boolean execute(Actor actor, Object target) {
+        var unit = (Unit) actor;
+        var path = (Tile[]) target;
+        unit.setActiveAbilities(Stream.concat(unit.getActiveAbilities().stream(), Stream.of(this)).toList());
+        return execute(unit, List.of(path));
+    }
+
+    @Override
     public Stream<Object> propose(Actor actor) {
         return new Accumulator(actor).start().map(TargetOfTile.TILE::pack);
     }
@@ -77,6 +85,8 @@ abstract class AbstractPathAbility extends AbstractSpecification implements Abil
     abstract double getCapacityUsed(Unit unit, List<Tile> path);
 
     abstract boolean validate(Unit unit, List<Tile> path);
+
+    abstract boolean execute(Unit unit, List<Tile> path);
 
     private class Accumulator {
 

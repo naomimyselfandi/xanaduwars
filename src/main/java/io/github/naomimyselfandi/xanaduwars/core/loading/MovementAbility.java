@@ -58,9 +58,7 @@ final class MovementAbility extends AbstractPathAbility {
     }
 
     @Override
-    public boolean execute(Actor actor, Object target) {
-        var unit = (Unit) actor;
-        var path = (Tile[]) target;
+    public boolean execute(Unit unit, List<Tile> path) {
         var obstacle = (Unit) null;
         var gameState = unit.getGameState();
         for (var tile : path) {

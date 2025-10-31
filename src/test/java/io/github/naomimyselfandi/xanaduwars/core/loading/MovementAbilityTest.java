@@ -151,7 +151,7 @@ class MovementAbilityTest {
 
     @Test
     void execute() {
-        assertThat(fixture.execute(unit, new Tile[]{tile1, tile2, tile3})).isTrue();
+        assertThat(fixture.execute(unit, List.of(tile1, tile2, tile3))).isTrue();
         var inOrder = inOrder(unit);
         inOrder.verify(unit).setLocation(tile1);
         inOrder.verify(unit).setLocation(tile2);
@@ -162,7 +162,7 @@ class MovementAbilityTest {
     void execute_WhenAnObstacleIsOnThePath_ThenSkipsItsTile() {
         when(tile2.getUnit()).thenReturn(anotherUnit);
         when(gameState.evaluate(new CanPassOverQuery(unit, anotherUnit))).thenReturn(true);
-        assertThat(fixture.execute(unit, new Tile[]{tile1, tile2, tile3})).isTrue();
+        assertThat(fixture.execute(unit, List.of(tile1, tile2, tile3))).isTrue();
         var inOrder = inOrder(unit);
         inOrder.verify(unit).setLocation(tile1);
         inOrder.verify(unit).setLocation(tile3);
@@ -174,7 +174,7 @@ class MovementAbilityTest {
     void execute_WhenAnObstacleIsOnThePathAndItCannotBePassedOver_ThenTheUnitGetsStuck() {
         when(tile2.getUnit()).thenReturn(anotherUnit);
         when(gameState.evaluate(new CanPassOverQuery(unit, anotherUnit))).thenReturn(false);
-        assertThat(fixture.execute(unit, new Tile[]{tile1, tile2, tile3})).isFalse();
+        assertThat(fixture.execute(unit, List.of(tile1, tile2, tile3))).isFalse();
         verify(unit).setLocation(tile1);
         verify(unit, never()).setLocation(tile2);
         verify(unit, never()).setLocation(anotherUnit);
@@ -186,7 +186,7 @@ class MovementAbilityTest {
         when(tile3.getUnit()).thenReturn(anotherUnit);
         when(gameState.evaluate(new CanPassOverQuery(unit, anotherUnit))).thenReturn(true);
         when(gameState.evaluate(new CanBoardQuery(unit, anotherUnit))).thenReturn(true);
-        assertThat(fixture.execute(unit, new Tile[]{tile1, tile2, tile3})).isTrue();
+        assertThat(fixture.execute(unit, List.of(tile1, tile2, tile3))).isTrue();
         var inOrder = inOrder(unit);
         inOrder.verify(unit).setLocation(tile1);
         inOrder.verify(unit).setLocation(tile2);
@@ -199,7 +199,7 @@ class MovementAbilityTest {
         when(tile3.getUnit()).thenReturn(anotherUnit);
         when(gameState.evaluate(new CanPassOverQuery(unit, anotherUnit))).thenReturn(true);
         when(gameState.evaluate(new CanBoardQuery(unit, anotherUnit))).thenReturn(false);
-        assertThat(fixture.execute(unit, new Tile[]{tile1, tile2, tile3})).isFalse();
+        assertThat(fixture.execute(unit, List.of(tile1, tile2, tile3))).isFalse();
         var inOrder = inOrder(unit);
         inOrder.verify(unit).setLocation(tile1);
         inOrder.verify(unit).setLocation(tile2);

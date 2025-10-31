@@ -41,10 +41,17 @@ class AbstractPathAbilityTest {
     );
 
     @Mock
+    private Ability ability;
+
+    @Mock
     private Player player;
 
     @Mock
     private Unit actor, anotherUnit;
+
+    private List<Tile> expectedPath;
+
+    private boolean executeResult;
 
     private AbstractPathAbility fixture;
 
@@ -77,8 +84,11 @@ class AbstractPathAbilityTest {
             }
 
             @Override
-            public boolean execute(@NotNull Actor actor, @NotNull Object target) {
-                throw new UnsupportedOperationException();
+            public boolean execute(@NotNull Unit unit, @NotNull List<Tile> path) {
+                assertThat(unit).isEqualTo(actor);
+                assertThat(path).isEqualTo(expectedPath);
+                verify(unit).setActiveAbilities(List.of(ability, fixture));
+                return executeResult;
             }
 
         };
@@ -195,6 +205,16 @@ class AbstractPathAbilityTest {
                 arguments(List.of(tile(1, 0), tile(2, 0), tile(3, 0), tile(4, 0)), false),
                 arguments(List.of(tile(1, 0), tile(2, 0)), false)
         );
+    }
+
+    @ParameterizedTest
+    @ValueSource(booleans = {true, false})
+    void execute(boolean result) {
+        when(actor.getActiveAbilities()).thenReturn(List.of(ability));
+        var path = new Tile[]{tile(1, 0), tile(2, 0), tile(2, 1)};
+        expectedPath = List.of(path);
+        executeResult = result;
+        assertThat(fixture.execute(actor, path)).isEqualTo(result);
     }
 
     @Test
