@@ -97,6 +97,7 @@ abstract class ScriptEvaluationContext<T> implements EvaluationContext {
 
     private static List<PropertyAccessor> createPropertyAccessors() {
         return List.of(
+                new LibraryAccessor(),
                 new VariableAccessor(),
                 new ConstantAwarePropertyAccessor(),
                 new MapAccessor()

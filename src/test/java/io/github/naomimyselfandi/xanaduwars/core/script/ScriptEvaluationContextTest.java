@@ -58,10 +58,12 @@ class ScriptEvaluationContextTest {
 
     @Test
     void getPropertyAccessors() {
-        assertThat(fixture.getPropertyAccessors())
-                .isUnmodifiable()
-                .<Object>map(Object::getClass)
-                .containsExactly(VariableAccessor.class, ConstantAwarePropertyAccessor.class, MapAccessor.class);
+        assertThat(fixture.getPropertyAccessors()).isUnmodifiable().<Object>map(Object::getClass).containsExactly(
+                LibraryAccessor.class,
+                VariableAccessor.class,
+                ConstantAwarePropertyAccessor.class,
+                MapAccessor.class
+        );
     }
 
     @Test
