@@ -19,7 +19,9 @@
 /// can contain their own labels, which are scoped to the function body. They
 /// can return values using the `return` function, which is also available in
 /// a script's root scope. A script function can be converted to a functional
-/// interface type, allowing scripts to make full use of Java streams.
+/// interface type, allowing scripts to make full use of Java streams. SpEl's
+/// bean reference syntax is overloaded to provide method references instead;
+/// these method references benefit from the same implicit conversion.
 ///
 /// Scripts use the `&&` and `||` operators as inline conditionals. Any value
 /// can be converted to a boolean in support of this.
@@ -46,13 +48,15 @@
 ///
 /// #fib = fibFactory() // `cache` is *not* in scope outside `fibFactory`
 ///
+/// #echo = @println.bind(T(System).err) // contrived method reference example
+///
 /// def print(count):
 ///   #i = 0
 ///   #result = 0
 ///   label loop:
 ///     (i >= count) && return(result)
 ///     result = fib(i)
-///     T(System).err.println(result)
+///     echo(result) // equivalent to T(System).err.println(result)
 ///     i++
 ///   goto(loop)
 /// end

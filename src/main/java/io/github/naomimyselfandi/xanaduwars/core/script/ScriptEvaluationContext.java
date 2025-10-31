@@ -22,6 +22,8 @@ abstract class ScriptEvaluationContext<T> implements EvaluationContext {
 
     private static final List<MethodResolver> METHOD_RESOLVERS = createMethodResolvers(PROPERTY_ACCESSORS);
 
+    private static final BeanResolver BEAN_RESOLVER = createBeanResolver();
+
     private static final TypeLocator TYPE_LOCATOR = createTypeLocator();
 
     private static final TypeConverter TYPE_CONVERTER = createTypeConverter();
@@ -72,7 +74,7 @@ abstract class ScriptEvaluationContext<T> implements EvaluationContext {
 
     @Override
     public @Nullable BeanResolver getBeanResolver() {
-        return null;
+        return BEAN_RESOLVER;
     }
 
     @Override
@@ -114,6 +116,10 @@ abstract class ScriptEvaluationContext<T> implements EvaluationContext {
                 Stream.of(new ConstantAwareMethodResolver(), new FlowMethodResolver()),
                 propertyAccessors.stream().map(FunctionMethodResolver::new)
         ).toList();
+    }
+
+    private static BeanResolver createBeanResolver() {
+        return new MethodReferenceBeanResolver();
     }
 
     private static TypeLocator createTypeLocator() {

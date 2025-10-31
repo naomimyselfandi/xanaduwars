@@ -4,9 +4,7 @@
   "globalRules": [],
   "libraries": {
     "Bridge": [
-      "def _isMovement(ability):",
-      "  return(ability == Move)",
-      "end",
+      "#_isMovement = @equals.bind(Move) // method reference",
       "",
       "def isReady(actor):",
       "  return((actor.asPlayer == $.activePlayer) && actor.activeAbilities.empty)",

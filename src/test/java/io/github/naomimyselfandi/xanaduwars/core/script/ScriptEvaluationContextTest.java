@@ -135,7 +135,7 @@ class ScriptEvaluationContextTest {
 
     @Test
     void getBeanResolver() {
-        assertThat(fixture.getBeanResolver()).isNull();
+        assertThat(fixture.getBeanResolver()).isInstanceOf(MethodReferenceBeanResolver.class);
     }
 
     @Test
