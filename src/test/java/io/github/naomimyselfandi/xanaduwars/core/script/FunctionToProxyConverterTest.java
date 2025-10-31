@@ -62,7 +62,8 @@ class FunctionToProxyConverterTest {
                 arguments(Function.class, IntConsumer.class, true),
                 arguments(FunctionImpl.class, Runnable.class, true),
                 arguments(Function.class, Iterator.class, false),
-                arguments(Function.class, RunnableImpl.class, false)
+                arguments(Function.class, RunnableImpl.class, false),
+                arguments(Function.class, Function.class, false)
         );
     }
 

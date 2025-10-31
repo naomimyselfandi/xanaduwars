@@ -35,7 +35,7 @@ final class FunctionToProxyConverter implements ConditionalGenericConverter {
     }
 
     private static boolean isFunctionalInterface(Class<?> type) {
-        return type.isInterface() && Arrays
+        return type.isInterface() && type != Function.class && Arrays
                 .stream(type.getMethods())
                 .filter(method -> !ReflectionUtils.isObjectMethod(method))
                 .filter(method -> !Modifier.isStatic(method.getModifiers()))
