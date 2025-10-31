@@ -4,6 +4,7 @@ import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.Unmodifiable;
 import org.springframework.core.convert.TypeDescriptor;
 
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 
@@ -42,9 +43,10 @@ record ScriptImpl(Statement body) implements Script {
     public @Unmodifiable Library executeAsLibrary(ScriptRuntime runtime) {
         var context = new ScriptRootContext(runtime);
         var _ = body.execute(runtime, context);
-        context.variables.keySet().removeIf(it -> it.startsWith("_"));
-        context.variables.values().removeIf(Objects::isNull);
-        return new LibraryImpl(context.variables);
+        var variables = new HashMap<>(context.variables);
+        variables.keySet().removeIf(it -> it.startsWith("_"));
+        variables.values().removeIf(Objects::isNull);
+        return new LibraryImpl(variables);
     }
 
 }
