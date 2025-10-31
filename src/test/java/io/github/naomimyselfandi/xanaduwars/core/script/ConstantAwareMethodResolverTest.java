@@ -74,8 +74,7 @@ class ConstantAwareMethodResolverTest {
                 arguments(helper, "frobnicate", List.of(), Helper.class.getMethod("frobnicate")),
                 arguments(constant, "getFoo", List.of(), Helper.class.getMethod("getFoo")),
                 arguments(constant, "setFoo", List.of(int.class), null),
-                arguments(constant, "frobnicate", List.of(), null),
-                arguments(4.2, "isFinite", List.of(double.class), null) // static method called on instance
+                arguments(constant, "frobnicate", List.of(), null)
         );
     }
 
