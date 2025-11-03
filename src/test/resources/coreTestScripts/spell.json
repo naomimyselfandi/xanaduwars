@@ -1,0 +1,44 @@
+{
+  "width": 2,
+  "height": 2,
+  "players": 2,
+  "steps": [
+    {
+      "evaluate": [
+        "$.getTile(0, 0).createUnit(Blob, $.players.first)",
+        "$.getTile(0, 1).createUnit(Blob, $.players.first)",
+        "$.getTile(1, 0).createUnit(Blob, $.players.last)",
+        "$.getTile(1, 1).createUnit(Blob, $.players.last)"
+      ]
+    },
+    {
+      "x": 0,
+      "y": 0,
+      "use": [
+        {"abilityName": "Fire", "target": {"x": 1, "y": 0}}
+      ]
+    },
+    {
+      "evaluate": "assertThat($.getTile(1, 0).unit.hp).isEqualTo(40)"
+    },
+    {
+      "evaluate": "$.players.first.focus = 500"
+    },
+    {
+      "cast": [{"abilityName": "AttackUp"}]
+    },
+    {
+      "evaluate": "assertThat($.players.first.focus).isEqualTo(200)"
+    },
+    {
+      "x": 0,
+      "y": 1,
+      "use": [
+        {"abilityName": "Fire", "target": {"x": 1, "y": 1}}
+      ]
+    },
+    {
+      "evaluate": "assertThat($.getTile(1, 1).unit.hp).isEqualTo(38)"
+    }
+  ]
+}

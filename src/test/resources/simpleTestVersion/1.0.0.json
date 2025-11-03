@@ -1,6 +1,17 @@
 {
   "eventTypes": [],
-  "queryTypes": [],
+  "queryTypes": [
+    {
+      "name": "GetFirepowerModifier",
+      "properties": ["attacker", "target", "weapon"],
+      "defaultValue": 1.0
+    },
+    {
+      "name": "GetDefenseModifier",
+      "properties": ["target", "attacker", "weapon"],
+      "defaultValue": 0.0
+    }
+  ],
   "globalRules": [],
   "libraries": {
     "Bridge": [
@@ -20,23 +31,28 @@
       "end"
     ],
     "Combat": [
-      "def _getDamageValue(target, weapon):",
+      "def _getDamageValue(attacker, target, weapon):",
       "  #tags = target.tags.iterator",
       "  #result = 0",
       "  label loop:",
-      "    (tags.hasNext()) || return(result)",
+      "    (tags.hasNext()) || goto(done)",
       "    result = T(Math).max(result, (weapon.damage[tags.next()] ?: 0))",
       "    goto(loop)",
+      "  label done:",
+      "    #firepower = $.evaluate(GetFirepowerModifier(attacker, target, weapon))",
+      "    #defense = $.evaluate(GetDefenseModifier(target, attacker, weapon))",
+      "    #multiplier = firepower - defense",
+      "    return(T(Math).round(result * multiplier).intValue)",
       "end",
       "",
       "def canFire(attacker, target, weapon):",
-      "  (_getDamageValue(target, weapon) > 0) || return(false)",
+      "  (_getDamageValue(attacker, target, weapon) > 0) || return(false)",
       "  #distance = attacker.getDistance(target)",
       "  return((distance >= weapon.minRange) && (distance <= weapon.maxRange))",
       "end",
       "",
       "def fire(attacker, target):",
-      "  #damage = attacker.weapons.stream.mapToInt(_getDamageValue.bind(target)).max.orElseThrow()",
+      "  #damage = attacker.weapons.stream.mapToInt(_getDamageValue.bind(attacker, target)).max.orElseThrow()",
       "  target.hp = target.hp - damage",
       "end"
     ]
@@ -46,12 +62,24 @@
     {
       "name": "AttackUp",
       "focusCost": 300,
-      "effect": ["//todo"]
+      "effect": ["// no direct effect"],
+      "rules": [
+        {
+          "on": "GetFirepowerModifier",
+          "then": "value + 0.1"
+        }
+      ]
     },
     {
       "name": "DefenseUp",
       "focusCost": 300,
-      "effect": ["//todo"]
+      "effect": ["// no direct effect"],
+      "rules": [
+        {
+          "on": "GetDefenseModifier",
+          "then": "value + 0.1"
+        }
+      ]
     }
   ],
   "buildTarget": "tile[1,1].visible",
