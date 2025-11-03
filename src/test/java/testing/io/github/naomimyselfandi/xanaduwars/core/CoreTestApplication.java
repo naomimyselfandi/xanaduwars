@@ -1,4 +1,4 @@
-package io.github.naomimyselfandi.xanaduwars.core;
+package testing.io.github.naomimyselfandi.xanaduwars.core;
 
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.flyway.FlywayAutoConfiguration;
@@ -16,4 +16,4 @@ import org.springframework.boot.autoconfigure.orm.jpa.HibernateJpaAutoConfigurat
                 FlywayAutoConfiguration.class,
         }
 )
-class CoreTestApplication {}
+public class CoreTestApplication {}

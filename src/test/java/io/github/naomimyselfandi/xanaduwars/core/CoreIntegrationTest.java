@@ -17,6 +17,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.expression.EvaluationException;
 import org.springframework.test.context.TestPropertySource;
+import testing.io.github.naomimyselfandi.xanaduwars.core.CoreTestApplication;
 
 import java.io.IOException;
 import java.util.*;
