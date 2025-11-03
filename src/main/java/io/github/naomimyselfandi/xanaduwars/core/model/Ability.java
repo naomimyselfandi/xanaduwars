@@ -1,6 +1,7 @@
 package io.github.naomimyselfandi.xanaduwars.core.model;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import io.github.naomimyselfandi.xanaduwars.util.NotCovered;
 import org.jetbrains.annotations.Unmodifiable;
 
 import java.util.List;
@@ -11,6 +12,7 @@ import java.util.stream.Stream;
 public interface Ability extends Specification {
 
     /// The costs to use an ability.
+    @NotCovered // trivial
     record Cost(int supplyCost, int aetherCost, int focusCost) {}
 
     /// Get this ability's unique name.
