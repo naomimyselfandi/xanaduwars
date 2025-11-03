@@ -75,7 +75,13 @@ class VersionLoaderImplTest {
                       "end"
                     ]
                   },
-                  "abilities": [
+                  "actions": [
+                    {
+                      "name": "StimPack",
+                      "effect": "Testing.doStimPack(actor) // fake implementation for simplicity"
+                    }
+                  ],
+                  "spells": [
                     {
                       "name": "MagicMissile",
                       "tags": ["Damage"],
@@ -103,10 +109,6 @@ class VersionLoaderImplTest {
                         "  unit.hp = unit.hp + 20",
                         "  goto(loop)"
                       ]
-                    },
-                    {
-                      "name": "StimPack",
-                      "effect": "Testing.doStimPack(actor) // fake implementation for simplicity"
                     }
                   ],
                   "abilityTags": ["Damage", "Healing", "Movement"],
@@ -249,6 +251,7 @@ class VersionLoaderImplTest {
         assertThat(version.lookup("MagicMissile"))
                 .isInstanceOfSatisfying(AbilityDeclaration.class, it -> {
                     assertThat(it.getName()).isEqualTo("MagicMissile");
+                    assertThat(it.isSpellChoice()).isFalse();
                     assertThat(it.getTags()).isUnmodifiable().containsExactly($("Damage"));
                     assertThat(it.getFocusCost()).isEqualTo(Script.of(1800));
                     assertThat(it.getTarget()).isEqualTo(new TargetOfEnemyUnit(new TargetOfUnit(TargetOfTile.TILE)));
@@ -258,6 +261,7 @@ class VersionLoaderImplTest {
         assertThat(version.lookup("HealingWave"))
                 .isInstanceOfSatisfying(AbilityDeclaration.class, it -> {
                     assertThat(it.getName()).isEqualTo("HealingWave");
+                    assertThat(it.isSpellChoice()).isTrue();
                     assertThat(it.getTags()).isUnmodifiable().containsExactly($("Healing"));
                     assertThat(it.getFocusCost()).isEqualTo(Script.of(900));
                     assertThat(it.getTarget()).isEqualTo(TargetOfNothing.NOTHING);
@@ -281,6 +285,7 @@ class VersionLoaderImplTest {
         assertThat(version.lookup("StimPack"))
                 .isInstanceOfSatisfying(AbilityDeclaration.class, it -> {
                     assertThat(it.getName()).isEqualTo("StimPack");
+                    assertThat(it.isSpellChoice()).isFalse();
                     assertThat(it.getTags()).isUnmodifiable().isEmpty();
                     assertThat(it.getSupplyCost()).isEqualTo(Script.ZERO);
                     assertThat(it.getAetherCost()).isEqualTo(Script.ZERO);
@@ -471,7 +476,8 @@ class VersionLoaderImplTest {
                         {
                           "globalRules": [],
                           "libraries": {},
-                          "abilities": [],
+                          "actions": [],
+                          "spells": [],
                           "abilityTags": [],
                           "commanders": [],
                           "tileTags": ["Water"],
@@ -500,7 +506,8 @@ class VersionLoaderImplTest {
                         {
                           "globalRules": [],
                           "libraries": {},
-                          "abilities": [],
+                          "actions": [],
+                          "spells": [],
                           "abilityTags": [],
                           "commanders": [],
                           "tileTags": [],
@@ -534,7 +541,8 @@ class VersionLoaderImplTest {
                         {
                           "globalRules": [],
                           "libraries": {},
-                          "abilities": [],
+                          "actions": [],
+                          "spells": [],
                           "abilityTags": [],
                           "commanders": [],
                           "tileTags": ["SomeTag"],

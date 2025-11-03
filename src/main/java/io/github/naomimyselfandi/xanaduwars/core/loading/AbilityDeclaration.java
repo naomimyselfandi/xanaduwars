@@ -1,5 +1,6 @@
 package io.github.naomimyselfandi.xanaduwars.core.loading;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.databind.JsonNode;
 import io.github.naomimyselfandi.xanaduwars.core.messages.PreflightQuery;
 import io.github.naomimyselfandi.xanaduwars.core.model.*;
@@ -24,6 +25,10 @@ class AbilityDeclaration extends AbstractSpecification implements Ability {
     @JsonImmutableList
     @Getter(onMethod_ = @Override)
     private @NotNull List<AbilityTag> tags = List.of();
+
+    @JsonIgnore
+    @Getter(onMethod_ = @Override)
+    private boolean spellChoice;
 
     private @NotNull @Valid Target<?> target = TargetOfNothing.NOTHING;
     private @NotNull @Valid Script supplyCost = Script.ZERO;

@@ -53,6 +53,11 @@ class MovementAbilityTest {
     }
 
     @Test
+    void isSpellChoice() {
+        assertThat(fixture.isSpellChoice()).isFalse();
+    }
+
+    @Test
     void getCapacity(SeededRng random) {
         var value = random.nextInt();
         when(unit.getSpeed()).thenReturn(value);

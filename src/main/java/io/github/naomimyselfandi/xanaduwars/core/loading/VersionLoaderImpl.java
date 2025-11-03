@@ -61,7 +61,8 @@ class VersionLoaderImpl implements VersionLoader {
         private List<TileTag> tileTags = List.of();
         private List<UnitTag> unitTags = List.of();
         private ArrayNode globalRules;
-        private ArrayNode abilities;
+        private ArrayNode actions;
+        private ArrayNode spells;
         private ArrayNode commanders;
         private ArrayNode tileTypes;
         private ArrayNode unitTypes;
@@ -99,7 +100,8 @@ class VersionLoaderImpl implements VersionLoader {
             version.setMoveAbility(initializeAbility(moveAbility, objectMapper.readerFor(MovementAbility.class)));
             version.setFireAbility(initializeAbility(fireAbility, objectMapper.readerFor(AbilityDeclaration.class)));
             version.setDropAbility(initializeAbility(dropAbility, objectMapper.readerFor(AbilityDeclaration.class)));
-            initialize(abilities, AbilityDeclaration::new);
+            initialize(actions, AbilityDeclaration::new);
+            initialize(spells, () -> new AbilityDeclaration().setSpellChoice(true));
             initialize(commanders, CommanderDeclaration::new);
             initialize(tileTypes, TileTypeDeclaration::new);
             initializeUnitTypes();
@@ -109,6 +111,11 @@ class VersionLoaderImpl implements VersionLoader {
                     var name = node.get("name").asText();
                     var global = version.lookup(name);
                     objectMapper.readerForUpdating(global).readValue(node);
+                    if (global instanceof Commander commander) {
+                        for (var spell : commander.getSignatureSpells()) {
+                            ((AbilityDeclaration) spell).setSpellChoice(false);
+                        }
+                    }
                 }
             }
             for (var entry : buildAbilities.entrySet()) {

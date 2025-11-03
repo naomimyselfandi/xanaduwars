@@ -18,6 +18,11 @@ final class MovementAbility extends AbstractPathAbility {
     }
 
     @Override
+    public boolean isSpellChoice() {
+        return false;
+    }
+
+    @Override
     double getCapacity(Unit unit) {
         return unit.getSpeed();
     }

@@ -60,6 +60,16 @@ class AbstractPathAbilityTest {
         fixture = new AbstractPathAbility() {
 
             @Override
+            public @NotNull Cost getCost(@NotNull Actor actor, @NotNull Object target) {
+                throw new UnsupportedOperationException();
+            }
+
+            @Override
+            public boolean isSpellChoice() {
+                throw new UnsupportedOperationException();
+            }
+
+            @Override
             double getCapacityUsed(@NotNull Unit unit, @NotNull List<Tile> path) {
                 return path
                         .stream()
@@ -76,11 +86,6 @@ class AbstractPathAbilityTest {
             @Override
             boolean validate(@NotNull Unit unit, @NotNull List<Tile> path) {
                 return path.size() != 2 && path.size() == Set.copyOf(path).size();
-            }
-
-            @Override
-            public @NotNull Cost getCost(@NotNull Actor actor, @NotNull Object target) {
-                throw new UnsupportedOperationException();
             }
 
             @Override

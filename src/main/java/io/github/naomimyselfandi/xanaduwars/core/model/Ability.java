@@ -54,4 +54,7 @@ public interface Ability extends Specification {
     /// result, in which case this may simply return valid destination tiles.
     Stream<Object> propose(Actor actor);
 
+    /// Check if the player can pick this ability as one of their spells.
+    boolean isSpellChoice();
+
 }

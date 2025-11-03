@@ -67,7 +67,8 @@
     ]
   },
   "abilityTags": [],
-  "abilities": [
+  "actions": [],
+  "spells": [
     {
       "name": "AttackUp",
       "focusCost": 300,
