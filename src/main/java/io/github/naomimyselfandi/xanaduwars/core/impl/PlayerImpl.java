@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import io.github.naomimyselfandi.xanaduwars.core.message.ContextualRuleSource;
 import io.github.naomimyselfandi.xanaduwars.core.messages.DefeatedEvent;
+import io.github.naomimyselfandi.xanaduwars.core.messages.ReadyStateQuery;
 import io.github.naomimyselfandi.xanaduwars.core.model.*;
 import io.github.naomimyselfandi.xanaduwars.util.JsonImmutableList;
 import jakarta.validation.constraints.NotNull;
@@ -68,7 +69,7 @@ final class PlayerImpl extends AbstractElement implements Player {
     @Override
     @JsonIgnore
     public boolean isReady() {
-        return Boolean.TRUE.equals(getGameState().call("isReady", this));
+        return getGameState().evaluate(new ReadyStateQuery(this));
     }
 
     @Override

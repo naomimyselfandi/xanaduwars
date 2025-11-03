@@ -1,6 +1,7 @@
 package io.github.naomimyselfandi.xanaduwars.core.model;
 
 import io.github.naomimyselfandi.xanaduwars.core.message.Rule;
+import io.github.naomimyselfandi.xanaduwars.core.script.Script;
 import io.github.naomimyselfandi.xanaduwars.core.script.ScriptRuntime;
 import org.jetbrains.annotations.Unmodifiable;
 
@@ -30,5 +31,9 @@ public interface Version extends ScriptRuntime {
     /// Get the ability used to drop off a unit. This ability is automatically
     /// available to all units carrying other units.
     Ability getDropAbility();
+
+    /// Get the script used to redact hidden information. This script is not
+    /// responsible for removing hidden units, which is handled automatically.
+    Script getRedactionPolicy();
 
 }

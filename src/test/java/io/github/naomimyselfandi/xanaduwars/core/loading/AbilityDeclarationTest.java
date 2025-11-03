@@ -2,6 +2,7 @@ package io.github.naomimyselfandi.xanaduwars.core.loading;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import io.github.naomimyselfandi.seededrandom.SeededRandomExtension;
+import io.github.naomimyselfandi.xanaduwars.core.messages.PreflightQuery;
 import io.github.naomimyselfandi.xanaduwars.core.model.*;
 import io.github.naomimyselfandi.xanaduwars.core.script.Script;
 import io.github.naomimyselfandi.xanaduwars.testing.SeededRng;
@@ -115,7 +116,7 @@ class AbilityDeclarationTest {
             0,0,0
             """)
     void validate(int supplySurplus, int aetherSurplus, int focusSurplus) {
-        when(gameState.call("preflight", unit, fixture)).thenReturn(true);
+        when(gameState.evaluate(new PreflightQuery(unit, fixture))).thenReturn(true);
         when(targetSpec.validate(unit, target)).thenReturn(true);
         when(filter.<Boolean>executeNotNull(gameState, arguments)).thenReturn(true);
         when(player.getSupplies()).thenReturn(supplyCostValue + supplySurplus);
@@ -139,7 +140,7 @@ class AbilityDeclarationTest {
             int focusDeficit,
             String message
     ) {
-        when(gameState.call("preflight", unit, fixture)).thenReturn(true);
+        when(gameState.evaluate(new PreflightQuery(unit, fixture))).thenReturn(true);
         when(targetSpec.validate(unit, target)).thenReturn(true);
         when(filter.<Boolean>executeNotNull(gameState, arguments)).thenReturn(true);
         when(player.getSupplies()).thenReturn(supplyCostValue - supplyDeficit);
@@ -152,7 +153,7 @@ class AbilityDeclarationTest {
 
     @Test
     void validate_WhenScriptedValidationFails_ThenThrows() {
-        when(gameState.call("preflight", unit, fixture)).thenReturn(true);
+        when(gameState.evaluate(new PreflightQuery(unit, fixture))).thenReturn(true);
         when(targetSpec.validate(unit, target)).thenReturn(true);
         when(filter.<Boolean>executeNotNull(gameState, arguments)).thenReturn(false);
         assertThatThrownBy(() -> fixture.validate(unit, target))
@@ -162,7 +163,7 @@ class AbilityDeclarationTest {
 
     @Test
     void validate_WhenTargetValidationFails_ThenThrows() {
-        when(gameState.call("preflight", unit, fixture)).thenReturn(true);
+        when(gameState.evaluate(new PreflightQuery(unit, fixture))).thenReturn(true);
         when(targetSpec.validate(unit, target)).thenReturn(false);
         assertThatThrownBy(() -> fixture.validate(unit, target))
                 .isExactlyInstanceOf(CommandException.class)
@@ -172,7 +173,7 @@ class AbilityDeclarationTest {
     @Test
     void validate_WhenPreflightCheckFails_ThenThrows() {
         var jsonNode = random.<JsonNode>get();
-        when(gameState.call("preflight", unit, fixture)).thenReturn(false);
+        when(gameState.evaluate(new PreflightQuery(unit, fixture))).thenReturn(false);
         assertThatThrownBy(() -> fixture.validate(unit, jsonNode))
                 .isExactlyInstanceOf(CommandException.class)
                 .hasMessage("Can't use '%s' right now.", name);

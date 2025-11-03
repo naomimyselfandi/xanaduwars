@@ -1,6 +1,7 @@
 package io.github.naomimyselfandi.xanaduwars.core.loading;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import io.github.naomimyselfandi.xanaduwars.core.messages.PreflightQuery;
 import io.github.naomimyselfandi.xanaduwars.core.model.*;
 import io.github.naomimyselfandi.xanaduwars.core.script.Script;
 import io.github.naomimyselfandi.xanaduwars.util.JsonImmutableList;
@@ -42,7 +43,7 @@ class AbilityDeclaration extends AbstractSpecification implements Ability {
 
     @Override
     public void validate(Actor actor, Object target) throws CommandException {
-        if (!Boolean.TRUE.equals(actor.getGameState().call("preflight", actor, this))) {
+        if (!actor.getGameState().evaluate(new PreflightQuery(actor, this))) {
             throw new CommandException("Can't use '%s' right now.".formatted(getName()));
         } else if (!this.target.validate(actor, target)) {
             throw new CommandException("Invalid target for '%s' (in target specification).".formatted(getName()));

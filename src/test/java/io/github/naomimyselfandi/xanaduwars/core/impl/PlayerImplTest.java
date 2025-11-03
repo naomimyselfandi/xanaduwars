@@ -1,6 +1,7 @@
 package io.github.naomimyselfandi.xanaduwars.core.impl;
 
 import io.github.naomimyselfandi.xanaduwars.core.messages.DefeatedEvent;
+import io.github.naomimyselfandi.xanaduwars.core.messages.ReadyStateQuery;
 import io.github.naomimyselfandi.xanaduwars.core.model.*;
 import io.github.naomimyselfandi.xanaduwars.testing.LogicalSource;
 import org.junit.jupiter.api.Test;
@@ -56,7 +57,7 @@ class PlayerImplTest extends GameStateAwareTest<PlayerImpl> {
     @ParameterizedTest
     @ValueSource(booleans = {true, false})
     void isReady(boolean value) {
-        when(gameState.call("isReady", fixture)).thenReturn(value);
+        when(gameState.evaluate(new ReadyStateQuery(fixture))).thenReturn(value);
         initializeFixture();
         assertThat(fixture.isReady()).isEqualTo(value);
     }

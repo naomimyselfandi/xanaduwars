@@ -12,24 +12,33 @@
       "defaultValue": 0.0
     }
   ],
-  "globalRules": [],
+  "globalRules": [
+    {
+      "on": "ReadyState",
+      "when": "value // don't override previous rejections",
+      "then": "actor.asPlayer == $.activePlayer"
+    },
+    {
+      "on": "ReadyState",
+      "when": "value // don't override previous rejections",
+      "then": "actor.activeAbilities.empty"
+    },
+    {
+      "on": "Preflight",
+      "when": "value // don't override previous rejections",
+      "then": "actor.abilities.contains(ability)"
+    },
+    {
+      "on": "Preflight",
+      "when": "value // don't override previous rejections",
+      "then": [
+        "#isMovement = @equals.bind(Move) // method reference",
+        "#active = actor.activeAbilities.stream",
+        "return(isMovement(ability) ? active.noneMatch(@equals.bind(Move)) : active.allMatch(@equals.bind(Move)))"
+      ]
+    }
+  ],
   "libraries": {
-    "Bridge": [
-      "#_isMovement = @equals.bind(Move) // method reference",
-      "",
-      "def isReady(actor):",
-      "  return((actor.asPlayer == $.activePlayer) && actor.activeAbilities.empty)",
-      "end",
-      "",
-      "def preflight(actor, ability):",
-      "  (actor.abilities.contains(ability)) || return(false)",
-      "  #active = actor.activeAbilities.stream",
-      "  return(_isMovement(ability) ? active.noneMatch(_isMovement) : active.allMatch(_isMovement))",
-      "end",
-      "",
-      "def redact(element):",
-      "end"
-    ],
     "Combat": [
       "def _getDamageValue(attacker, target, weapon):",
       "  #tags = target.tags.iterator",
@@ -178,5 +187,8 @@
         }
       ]
     }
+  ],
+  "redactionPolicy": [
+    "// omitted for now"
   ]
 }

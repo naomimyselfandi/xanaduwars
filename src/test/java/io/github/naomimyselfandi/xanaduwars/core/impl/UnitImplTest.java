@@ -59,7 +59,7 @@ class UnitImplTest extends GameStateAwareTest<UnitImpl> {
     @ParameterizedTest
     @ValueSource(booleans = {true, false})
     void isReady(boolean value) {
-        when(gameState.call("isReady", fixture)).thenReturn(value);
+        when(gameState.evaluate(new ReadyStateQuery(fixture))).thenReturn(value);
         initializeFixture();
         assertThat(fixture.isReady()).isEqualTo(value);
     }

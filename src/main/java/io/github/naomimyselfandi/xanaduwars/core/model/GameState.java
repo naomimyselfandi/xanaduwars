@@ -15,11 +15,6 @@ public interface GameState extends ScriptRuntime, MessageBus {
     /// Get the version of the game used by this game state.
     Version getVersion();
 
-    /// Call a scripting function.
-    /// @param function The function's name.
-    /// @param arguments Any arguments to give to the function.
-    @Nullable Object call(String function, @Nullable Object... arguments);
-
     /// Check if this game state has been redacted.
     /// @see CopyMachine#createRedactedCopy(GameState, Player)
     boolean isRedacted();

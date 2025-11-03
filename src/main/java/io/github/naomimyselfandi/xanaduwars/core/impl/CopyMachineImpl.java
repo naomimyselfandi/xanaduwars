@@ -5,6 +5,7 @@ import io.github.naomimyselfandi.xanaduwars.core.service.CopyMachine;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Map;
 import java.util.function.BiConsumer;
 import java.util.function.Predicate;
 
@@ -16,29 +17,23 @@ class CopyMachineImpl implements CopyMachine {
 
     @Override
     public GameState createCopy(GameState source) {
-        return createCopy(source, NO_OP, TRUE, source.isRedacted());
+        return createCopy(source, TRUE, source.isRedacted()).initialize();
     }
 
     @Override
     public GameState createRedactedCopy(GameState source, Player viewpoint) {
-        return createCopy(
-                source,
-                (sourcePlayer, copy) -> {
-                    if (viewpoint.isEnemy(sourcePlayer)) {
-                        source.call("redact", copy);
-                    }
-                },
-                viewpoint::perceives,
-                true);
+        var copy = createCopy(source, viewpoint::perceives, true);
+        var copyViewpoint = copy.getPlayer(viewpoint.getPosition());
+        copy.getVersion().getRedactionPolicy().execute(copy, Map.of("viewpoint", copyViewpoint));
+        return copy.initialize();
     }
 
-    private GameState createCopy(
+    private GameStateImpl createCopy(
             GameState source,
-            BiConsumer<Player, Player> playerRedactor,
             Predicate<Unit> unitFilter,
             boolean redacted
     ) {
-        var players = source.getPlayers().stream().map(it -> createCopy(it, playerRedactor)).toList();
+        var players = source.getPlayers().stream().map(this::createCopy).toList();
         var tiles = source.getTiles().stream().map(it -> createCopy(it, unitFilter, players)).toList();
         return new GameStateImpl(
                 source.getVersion(),
@@ -48,10 +43,10 @@ class CopyMachineImpl implements CopyMachine {
                 players,
                 tiles,
                 source.getTurn()
-        ).initialize();
+        );
     }
 
-    private Player createCopy(Player source, BiConsumer<Player, Player> playerRedactor) {
+    private Player createCopy(Player source) {
         var copy = new PlayerImpl();
         for (var field : PlayerImpl.Fields.values()) {
             var _ = switch (field) {
@@ -67,7 +62,6 @@ class CopyMachineImpl implements CopyMachine {
                 case defeated -> copy.setDefeated(source.isDefeated());
             };
         }
-        playerRedactor.accept(source, copy);
         return copy;
     }
 

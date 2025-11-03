@@ -216,7 +216,8 @@ class VersionLoaderImplTest {
                       ],
                       "omitBuildAbility": true
                     }
-                  ]
+                  ],
+                  "redactionPolicy": "Testing.doRedaction() // fake implementation for simplicity"
                 }
                 """;
         var versionNumber = random.<VersionNumber>get();
@@ -434,6 +435,7 @@ class VersionLoaderImplTest {
                 new Rule($("BarQuery"), Script.of("return(c > 0)"), Script.of("return(value + 42)")),
                 new Rule(new SimpleMessageType(UnitCreatedEvent.class), Script.TRUE, Script.of("unit.sayHello()"))
         );
+        assertThat(version.getRedactionPolicy()).isEqualTo(Script.of("Testing.doRedaction()"));
     }
 
     @MethodSource

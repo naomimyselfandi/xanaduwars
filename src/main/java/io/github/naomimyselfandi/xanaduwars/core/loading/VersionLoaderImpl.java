@@ -68,6 +68,7 @@ class VersionLoaderImpl implements VersionLoader {
         private Target<?> buildTarget;
         private Script buildFilter, buildEffect;
         private JsonNode moveAbility, fireAbility, dropAbility;
+        private Script redactionPolicy;
 
         void load(ObjectMapper objectMapper) throws IOException {
             var messages = "io.github.naomimyselfandi.xanaduwars.core.messages";
@@ -116,6 +117,7 @@ class VersionLoaderImpl implements VersionLoader {
                 buildAbility.setSupplyCost(Script.of(unitType.getSupplyCost()));
                 buildAbility.setAetherCost(Script.of(unitType.getAetherCost()));
             }
+            version.setRedactionPolicy(redactionPolicy);
         }
 
         private <T extends AbstractSpecification> void initialize(Iterable<JsonNode> source, Supplier<T> factory) {

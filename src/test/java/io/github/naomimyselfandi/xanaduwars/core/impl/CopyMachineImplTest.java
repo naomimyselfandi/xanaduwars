@@ -2,6 +2,7 @@ package io.github.naomimyselfandi.xanaduwars.core.impl;
 
 import io.github.naomimyselfandi.seededrandom.SeededRandomExtension;
 import io.github.naomimyselfandi.xanaduwars.core.model.*;
+import io.github.naomimyselfandi.xanaduwars.core.script.Script;
 import io.github.naomimyselfandi.xanaduwars.testing.SeededRng;
 import org.jetbrains.annotations.Nullable;
 import org.junit.jupiter.api.BeforeEach;
@@ -14,6 +15,7 @@ import org.mockito.quality.Strictness;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.IntStream;
 
 import static org.assertj.core.api.Assertions.*;
@@ -25,6 +27,9 @@ class CopyMachineImplTest {
 
     @Mock
     private Version version;
+
+    @Mock
+    private Script redactionPolicy;
 
     @Mock
     private Player player0, player1, player2, player3;
@@ -60,6 +65,7 @@ class CopyMachineImplTest {
         initUnit(player2, tile11, unit4);
         when(source.getTurn()).thenReturn(random.nextInt());
         when(source.isRedacted()).thenReturn(random.nextBoolean());
+        lenient().when(version.getRedactionPolicy()).thenReturn(redactionPolicy);
     }
 
     @RepeatedTest(4)
@@ -83,24 +89,22 @@ class CopyMachineImplTest {
         assertCopy(copy.getTile(0, 1), tile01);
         assertCopy(copy.getTile(1, 1), tile11);
         assertCopy(copy.getTile(2, 1), tile21);
-        verify(source, never()).call("redact", copy.getPlayer(0));
-        verify(source, never()).call("redact", copy.getPlayer(1));
-        verify(source, never()).call("redact", copy.getPlayer(2));
-        verify(source, never()).call("redact", copy.getPlayer(3));
+        verifyNoInteractions(redactionPolicy);
     }
 
     @RepeatedTest(4)
-    void createRedactedCopy() {
-        when(player0.isEnemy(player0)).thenReturn(false);
-        when(player0.isEnemy(player1)).thenReturn(true);
-        when(player0.isEnemy(player2)).thenReturn(false);
-        when(player0.isEnemy(player3)).thenReturn(true);
-        when(player0.perceives(unit0)).thenReturn(true);
-        when(player0.perceives(unit1)).thenReturn(true);
-        when(player0.perceives(unit2)).thenReturn(true);
-        when(player0.perceives(unit3)).thenReturn(false);
-        when(player0.perceives(unit4)).thenReturn(false);
-        var copy = fixture.createRedactedCopy(source, player0);
+    void createRedactedCopy(SeededRng random) {
+        var player = random.pick(player0, player1, player2, player3);
+        when(player.isEnemy(player0)).thenReturn(false);
+        when(player.isEnemy(player1)).thenReturn(true);
+        when(player.isEnemy(player2)).thenReturn(false);
+        when(player.isEnemy(player3)).thenReturn(true);
+        when(player.perceives(unit0)).thenReturn(true);
+        when(player.perceives(unit1)).thenReturn(true);
+        when(player.perceives(unit2)).thenReturn(true);
+        when(player.perceives(unit3)).thenReturn(false);
+        when(player.perceives(unit4)).thenReturn(false);
+        var copy = fixture.createRedactedCopy(source, player);
         assertConsistent(copy);
         assertThat(copy.getVersion()).isEqualTo(version);
         assertThat(copy.getTurn()).isEqualTo(source.getTurn());
@@ -119,10 +123,8 @@ class CopyMachineImplTest {
         assertCopy(copy.getTile(0, 1), tile01);
         assertCopy(copy.getTile(1, 1), tile11, 0);
         assertCopy(copy.getTile(2, 1), tile21);
-        verify(source, never()).call("redact", copy.getPlayer(0));
-        verify(source).call("redact", copy.getPlayer(1));
-        verify(source, never()).call("redact", copy.getPlayer(2));
-        verify(source).call("redact", copy.getPlayer(3));
+        verify(redactionPolicy).execute(copy, Map.of("viewpoint", copy.getPlayer(player.getPosition())));
+        verifyNoMoreInteractions(redactionPolicy);
     }
 
     private void initPlayers(List<Player> players) {

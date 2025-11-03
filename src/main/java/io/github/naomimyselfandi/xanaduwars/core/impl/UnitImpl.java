@@ -61,7 +61,7 @@ final class UnitImpl extends AbstractNode implements Unit {
     @Override
     @JsonIgnore
     public boolean isReady() {
-        return Boolean.TRUE.equals(getGameState().call("isReady", this));
+        return getGameState().evaluate(new ReadyStateQuery(this));
     }
 
     @Override

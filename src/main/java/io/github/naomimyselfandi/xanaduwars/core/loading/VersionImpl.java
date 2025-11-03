@@ -2,6 +2,7 @@ package io.github.naomimyselfandi.xanaduwars.core.loading;
 
 import io.github.naomimyselfandi.xanaduwars.core.model.*;
 import io.github.naomimyselfandi.xanaduwars.core.message.Rule;
+import io.github.naomimyselfandi.xanaduwars.core.script.Script;
 import io.github.naomimyselfandi.xanaduwars.core.script.ScriptConstant;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
@@ -27,7 +28,11 @@ class VersionImpl implements Version, BiConsumer<String, Object>, ScriptConstant
 
     @Setter(AccessLevel.PACKAGE)
     @Getter(onMethod_ = @Override)
-    private Ability moveAbility, fireAbility, dropAbility;
+    private @NotNull @Valid Ability moveAbility, fireAbility, dropAbility;
+
+    @Setter(AccessLevel.PACKAGE)
+    @Getter(onMethod_ = @Override)
+    private @NotNull @Valid Script redactionPolicy;
 
     @Override
     public @Unmodifiable List<Rule> getGlobalRules() {

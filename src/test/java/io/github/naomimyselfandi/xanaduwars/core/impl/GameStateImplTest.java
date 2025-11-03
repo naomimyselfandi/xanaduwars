@@ -81,40 +81,6 @@ class GameStateImplTest {
     }
 
     @Test
-    void call(SeededRng random) {
-        var foo = new Object();
-        var bar = new Object();
-        var baz = new Object();
-        var functionName = random.nextString();
-        when(version.lookup("Bridge")).thenReturn(script);
-        when(script.executeAsLibrary(fixture)).thenReturn(library);
-        when(library.lookup(functionName)).thenReturn(function);
-        when(function.call(foo, bar)).thenReturn(baz);
-        assertThat(fixture.call(functionName, foo, bar)).isEqualTo(baz);
-    }
-
-    @Test
-    void call_WhenTheLibraryDoesNotExist_ThenThrows(SeededRng random) {
-        var functionName = random.nextString();
-        assertThatThrownBy(() -> fixture.call(functionName))
-                .isInstanceOf(IllegalArgumentException.class)
-                .hasMessage("Tried to call unknown function 'Bridge.%s'.", functionName);
-    }
-
-    @NullSource
-    @ParameterizedTest
-    @ValueSource(strings = "foobar")
-    void call_WhenTheFunctionDoesNotExist_ThenThrows(@Nullable Object notAFunction, SeededRng random) {
-        var functionName = random.nextString();
-        when(version.lookup("Bridge")).thenReturn(script);
-        when(script.executeAsLibrary(fixture)).thenReturn(library);
-        when(library.lookup(functionName)).thenReturn(notAFunction);
-        assertThatThrownBy(() -> fixture.call(functionName))
-                .isInstanceOf(IllegalArgumentException.class)
-                .hasMessage("Tried to call unknown function 'Bridge.%s'.", functionName);
-    }
-
-    @Test
     void getTurn() {
         assertThat(fixture.getTurn()).isEqualTo(42);
     }

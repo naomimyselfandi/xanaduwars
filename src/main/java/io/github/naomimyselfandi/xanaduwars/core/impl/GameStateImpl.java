@@ -6,8 +6,6 @@ import io.github.naomimyselfandi.xanaduwars.core.message.AbstractMessageBus;
 import io.github.naomimyselfandi.xanaduwars.core.message.Rule;
 import io.github.naomimyselfandi.xanaduwars.core.messages.TurnStartedEvent;
 import io.github.naomimyselfandi.xanaduwars.core.model.*;
-import io.github.naomimyselfandi.xanaduwars.core.script.Function;
-import io.github.naomimyselfandi.xanaduwars.core.script.Library;
 import io.github.naomimyselfandi.xanaduwars.core.script.Script;
 import jakarta.validation.constraints.Positive;
 import jakarta.validation.constraints.PositiveOrZero;
@@ -66,16 +64,6 @@ class GameStateImpl extends AbstractMessageBus implements GameState {
         }
         constants.put(name, value);
         return value;
-    }
-
-    @Override
-    public @Nullable Object call(String function, @Nullable Object... arguments) {
-        if (lookup("Bridge") instanceof Library lib && lib.lookup(function) instanceof Function fun) {
-            return fun.call(arguments);
-        } else {
-            var message = "Tried to call unknown function 'Bridge.%s'.".formatted(function);
-            throw new IllegalArgumentException(message);
-        }
     }
 
     @Override
