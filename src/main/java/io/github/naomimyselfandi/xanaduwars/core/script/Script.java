@@ -42,22 +42,38 @@ public interface Script {
         return ScriptParser.parse(code);
     }
 
-    /// Parse a script.
+    /// Parse an inline script. The argument is assumed to be an expression
+    /// to be returned; i.e. for any string `x`, `Script.of(x)` is strictly
+    /// equivalent to `Script.of("return(", x, ")")`.
     @JsonCreator
     static Script of(String code) {
-        return of(code.lines().toList());
+        // of("return(" + code + ")") would do the wrong thing if the input
+        // contains a comment. Using a single StatementOfExpression for the
+        // script body, as ofConstant does, would do the wrong thing if the
+        // input assigns to local variables (admittedly, this is unlikely).
+        return of(List.of("return(", code, ")"));
     }
 
     /// Create a script with a constant integer value.
     @JsonCreator
     static Script of(int constant) {
-        return of("return(%d)".formatted(constant));
+        return ofConstant(constant);
+    }
+
+    /// Create a script with a constant double value.
+    @JsonCreator
+    static Script of(double constant) {
+        return ofConstant(constant);
     }
 
     /// Create a script with a constant boolean value.
     @JsonCreator
     static Script of(boolean constant) {
-        return of("return(%s)".formatted(constant));
+        return ofConstant(constant);
+    }
+
+    private static Script ofConstant(Object constant) {
+        return new ScriptImpl(new StatementOfExpression(constant.toString()));
     }
 
 }

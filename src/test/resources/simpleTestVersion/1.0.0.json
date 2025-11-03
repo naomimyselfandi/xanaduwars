@@ -69,13 +69,13 @@
   "fireAbility": {
     "name": "Fire",
     "target": "unit.enemy",
-    "filter": "return(actor.weapons.stream.anyMatch(Combat.canFire.bind(actor, target)))",
+    "filter": "actor.weapons.stream.anyMatch(Combat.canFire.bind(actor, target))",
     "effect": "Combat.fire(actor, target)"
   },
   "dropAbility": {
     "name": "Drop",
     "target": "tile[1,1].visible",
-    "filter": "return((target.unit == null) && $.evaluate(new GetMovementCostQuery(actor.unit, target)).finite)",
+    "filter": "(target.unit == null) && $.evaluate(new GetMovementCostQuery(actor.unit, target)).finite",
     "effect": "actor.unit.setLocation(target)"
   },
   "commanders": [

@@ -51,7 +51,7 @@ class CoreIntegrationTest {
     void runTestScript(TestScript script) throws CommandException {
         var gameState = gameStateFactory.create(script.width(), script.height(), script.players(), version);
         var assertThat = Script
-                .of("return(@assertThat)")
+                .of("@assertThat")
                 .<Function>executeNotNull(gameState, Map.of())
                 .bind(Assertions.class);
         var assertNull = (Function) arguments -> {

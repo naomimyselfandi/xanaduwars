@@ -229,7 +229,7 @@ class VersionLoaderImplTest {
                         def mul(lhs, rhs):
                           return(lhs * rhs)
                         end
-                        """));
+                        """.lines().toList()));
         assertThat(version.lookup("Damage")).isEqualTo(new AbilityTag("Damage"));
         assertThat(version.lookup("Healing")).isEqualTo(new AbilityTag("Healing"));
         assertThat(version.lookup("Movement")).isEqualTo(new AbilityTag("Movement"));
@@ -267,7 +267,7 @@ class VersionLoaderImplTest {
                               #unit = units.next()
                               (unit.hp < unit.maxHp) && return(true)
                               goto(loop)
-                            """));
+                            """.lines().toList()));
                     assertThat(it.getEffect()).isEqualTo(Script.of("""
                     #units = actor.units.iterator
                         label loop:
@@ -275,7 +275,7 @@ class VersionLoaderImplTest {
                           #unit = units.next
                           unit.hp = unit.hp + 20
                           goto(loop)
-                    """));
+                    """.lines().toList()));
                 });
         assertThat(version.lookup("StimPack"))
                 .isInstanceOfSatisfying(AbilityDeclaration.class, it -> {

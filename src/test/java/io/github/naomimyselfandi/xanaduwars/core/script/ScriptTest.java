@@ -2,6 +2,8 @@ package io.github.naomimyselfandi.xanaduwars.core.script;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
@@ -59,7 +61,7 @@ class ScriptTest {
                 end
  
                 return(emit(x, fibFactory(1)))
-                """);
+                """.lines().toList());
         assertThat(script.execute(runtime, Map.of("x", 6))).isEqualTo(8);
         assertThat(script.execute(runtime, Map.of("x", 7))).isEqualTo(13);
         assertThat(list).containsExactly(1, 1, 2, 3, 5, 8, 1, 1, 2, 3, 5, 8, 13);
@@ -67,7 +69,22 @@ class ScriptTest {
 
     @Test
     void execute_CanRetrieveTheRuntime() {
-        assertThat(Script.of("return($)").execute(runtime, Map.of())).isEqualTo(runtime);
+        assertThat(Script.of("$").execute(runtime, Map.of())).isEqualTo(runtime);
+    }
+
+    @ParameterizedTest
+    @ValueSource(ints = {0, 1})
+    @ValueSource(doubles = {0.1, 0.2})
+    @ValueSource(booleans = {true, false})
+    void of(Object constant) {
+        var script = switch (constant) {
+            case Boolean b -> Script.of(b);
+            case Double d -> Script.of(d);
+            case Integer i -> Script.of(i);
+            default -> throw new IllegalArgumentException();
+        };
+        assertThat(script.execute(runtime, Map.of())).isEqualTo(constant);
+        verifyNoInteractions(runtime);
     }
 
 }
