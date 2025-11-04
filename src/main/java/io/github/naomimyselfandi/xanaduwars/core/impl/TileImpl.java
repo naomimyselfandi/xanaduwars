@@ -56,7 +56,7 @@ final class TileImpl extends AbstractNode implements Tile {
 
     @Override
     @JsonIgnore
-    public @Unmodifiable Map<UnitTag, Double> getMovementTable() {
+    public UnitSelectorMap<Double> getMovementTable() {
         return type.getMovementTable();
     }
 

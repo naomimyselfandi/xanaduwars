@@ -5,7 +5,7 @@ import org.jetbrains.annotations.Unmodifiable;
 import java.util.List;
 
 /// A type of unit.
-public interface UnitType extends Specification {
+public interface UnitType extends Specification, UnitSelector {
 
     /// Get this unit type's unique name.
     @Override
@@ -29,8 +29,8 @@ public interface UnitType extends Specification {
     /// Get the aether cost to deploy a unit of this type.
     int getAetherCost();
 
-    /// Get the unit tags a unit of this type can usually carry.
-    @Unmodifiable List<UnitTag> getHangar();
+    /// Describe the units a unit of this type can usually carry.
+    @Unmodifiable UnitSelector getHangar();
 
     /// Get the abilities a unit of this type can normally use.
     @Unmodifiable List<Ability> getAbilities();

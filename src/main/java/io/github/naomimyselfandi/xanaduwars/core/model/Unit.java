@@ -68,7 +68,7 @@ public non-sealed interface Unit extends Node, Actor {
     int getAetherCost();
 
     /// Get the unit tags this unit can carry.
-    List<UnitTag> getHangar();
+    UnitSelector getHangar();
 
     /// Get any weapons this unit carries.
     List<Weapon> getWeapons();

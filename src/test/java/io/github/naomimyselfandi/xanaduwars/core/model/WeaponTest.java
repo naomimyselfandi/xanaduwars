@@ -22,9 +22,10 @@ class WeaponTest {
             """)
     void normalization(int givenMinRange, int givenMaxRange, int minRange, int maxRange, SeededRng random) {
         var name = random.nextString();
-        var damage = new HashMap<UnitTag, Integer>();
-        damage.put(random.get(), random.get());
-        damage.put(random.get(), random.get());
+        var damageMap = new HashMap<UnitSelector, Integer>();
+        damageMap.put(random.get(), random.get());
+        damageMap.put(random.get(), random.get());
+        var damage = UnitSelectorMap.copyOf(damageMap);
         var weapon = new Weapon(name, damage, givenMinRange, givenMaxRange);
         var normalized = new Weapon(name, damage, minRange, maxRange);
         assertThat(weapon).isEqualTo(normalized);

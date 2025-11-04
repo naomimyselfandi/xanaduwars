@@ -11,12 +11,7 @@ public record GetMovementCostQuery(Unit unit, Tile tile) implements SimpleQuery<
 
     @Override
     public Double defaultValue(ScriptRuntime runtime) {
-        return unit
-                .getTags()
-                .stream()
-                .map(tile.getMovementTable()::get)
-                .filter(Objects::nonNull)
-                .reduce(Double.POSITIVE_INFINITY, Double::min);
+        return Objects.requireNonNullElse(tile.getMovementTable().min(unit), Double.POSITIVE_INFINITY);
     }
 
 }

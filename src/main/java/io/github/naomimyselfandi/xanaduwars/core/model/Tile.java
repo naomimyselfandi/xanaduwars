@@ -35,6 +35,6 @@ public non-sealed interface Tile extends Node {
     double getCover();
 
     /// Get the movement costs various units pay to enter this tile.
-    @Unmodifiable Map<UnitTag, Double> getMovementTable();
+    UnitSelectorMap<Double> getMovementTable();
 
 }

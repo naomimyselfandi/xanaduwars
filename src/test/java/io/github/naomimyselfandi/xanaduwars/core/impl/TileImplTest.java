@@ -58,7 +58,7 @@ class TileImplTest extends GameStateAwareTest<TileImpl> {
     void getMovementTable() {
         var foo = random.<UnitTag>get();
         var bar = random.not(foo);
-        var movementTable = Map.of(foo, random.nextDouble(), bar, random.nextDouble());
+        var movementTable = UnitSelectorMap.copyOf(Map.of(foo, random.nextDouble(), bar, random.nextDouble()));
         when(type.getMovementTable()).thenReturn(movementTable);
         assertThat(fixture.getMovementTable()).isEqualTo(movementTable);
     }

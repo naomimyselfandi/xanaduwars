@@ -22,6 +22,9 @@ class UnitImplTest extends GameStateAwareTest<UnitImpl> {
     private Ability ability;
 
     @Mock
+    private UnitSelector hangar;
+
+    @Mock
     private UnitType type, anotherType;
 
     @Mock
@@ -241,10 +244,8 @@ class UnitImplTest extends GameStateAwareTest<UnitImpl> {
 
     @Test
     void getHangar() {
-        var foo = random.<UnitTag>get();
-        var bar = random.<UnitTag>get();
-        when(type.getHangar()).thenReturn(List.of(foo, bar));
-        assertThat(fixture.getHangar()).containsExactly(foo, bar);
+        when(type.getHangar()).thenReturn(hangar);
+        assertThat(fixture.getHangar()).isEqualTo(hangar);
     }
 
     @Test

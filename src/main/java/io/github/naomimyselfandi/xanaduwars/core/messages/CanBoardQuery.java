@@ -10,7 +10,7 @@ public record CanBoardQuery(Unit passenger, Unit transport) implements SimpleQue
     public Boolean defaultValue(ScriptRuntime runtime) {
         return passenger.getOwner().equals(transport.getOwner())
                 && (transport.getUnit() == null)
-                && transport.getHangar().stream().anyMatch(passenger.getTags()::contains);
+                && transport.getHangar().test(passenger);
     }
 
 }

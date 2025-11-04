@@ -41,17 +41,12 @@
   "libraries": {
     "Combat": [
       "def _getDamageValue(attacker, target, weapon):",
-      "  #tags = target.tags.iterator",
-      "  #result = 0",
-      "  label loop:",
-      "    (tags.hasNext()) || goto(done)",
-      "    result = T(Math).max(result, (weapon.damage[tags.next()] ?: 0))",
-      "    goto(loop)",
-      "  label done:",
-      "    #firepower = $.evaluate(GetFirepowerModifier(attacker, target, weapon))",
-      "    #defense = $.evaluate(GetDefenseModifier(target, attacker, weapon))",
-      "    #multiplier = firepower - defense",
-      "    return(T(Math).round(result * multiplier).intValue)",
+      "  #base = weapon.damage.max(target)",
+      "  (base == null) && return(0)",
+      "  #firepower = $.evaluate(GetFirepowerModifier(attacker, target, weapon))",
+      "  #defense = $.evaluate(GetDefenseModifier(target, attacker, weapon))",
+      "  #multiplier = firepower - defense",
+      "  return(T(Math).round(base * multiplier).intValue)",
       "end",
       "",
       "def canFire(attacker, target, weapon):",
@@ -163,7 +158,7 @@
       "maxHp": 80,
       "supplyCost": 100,
       "aetherCost": 50,
-      "hangar": ["LandUnit"]
+      "hangar": "LandUnit"
     },
     {
       "name": "Boss",

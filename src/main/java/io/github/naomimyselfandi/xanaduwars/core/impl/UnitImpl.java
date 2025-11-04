@@ -179,7 +179,7 @@ final class UnitImpl extends AbstractNode implements Unit {
 
     @Override
     @JsonIgnore
-    public List<UnitTag> getHangar() {
+    public UnitSelector getHangar() {
         return type.getHangar();
     }
 

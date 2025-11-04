@@ -3,7 +3,6 @@ package io.github.naomimyselfandi.xanaduwars.core.model;
 import org.jetbrains.annotations.Unmodifiable;
 
 import java.util.List;
-import java.util.Map;
 
 /// A type of tile.
 public interface TileType extends Specification {
@@ -20,6 +19,6 @@ public interface TileType extends Specification {
     double getCover();
 
     /// Get the movement costs various units pay to enter this tile.
-    @Unmodifiable Map<UnitTag, Double> getMovementTable();
+    UnitSelectorMap<Double> getMovementTable();
 
 }

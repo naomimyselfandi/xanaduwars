@@ -202,7 +202,7 @@ class VersionLoaderImplTest {
                       "maxHp": 150,
                       "supplyCost": 300,
                       "aetherCost": 50,
-                      "hangar": ["Soldier"]
+                      "hangar": "Soldier"
                     },
                     {
                       "name": "Base",
@@ -353,11 +353,11 @@ class VersionLoaderImplTest {
             assertThat(it.getSupplyCost()).isEqualTo(100);
             assertThat(it.getAetherCost()).isZero();
             assertThat(it.getAbilities()).isUnmodifiable().containsExactly($("StimPack"));
-            assertThat(it.getWeapons()).isUnmodifiable().containsExactly(new Weapon("Rifle", Map.of(
+            assertThat(it.getWeapons()).containsExactly(new Weapon("Rifle", UnitSelectorMap.copyOf(Map.of(
                     $("Soldier"), 50,
                     $("Vehicle"), 20
-            ), 1, 1));
-            assertThat(it.getHangar()).isUnmodifiable().isEmpty();
+            )), 1, 1));
+            assertThat(it.getHangar()).isEqualTo(UnitSelectorPlaceholder.NONE);
         });
         assertThat(version.lookup("BuildGrunt"))
                 .isInstanceOfSatisfying(BuildAbilityDeclaration.class, it -> {
@@ -379,7 +379,7 @@ class VersionLoaderImplTest {
             assertThat(it.getSupplyCost()).isEqualTo(300);
             assertThat(it.getAetherCost()).isEqualTo(50);
             assertThat(it.getAbilities()).isUnmodifiable().isEmpty();
-            assertThat(it.getHangar()).isUnmodifiable().containsExactly($("Soldier"));
+            assertThat(it.getHangar()).isEqualTo($("Soldier"));
         });
         assertThat(version.lookup("BuildAPC"))
                 .isInstanceOfSatisfying(BuildAbilityDeclaration.class, it -> {
@@ -401,12 +401,12 @@ class VersionLoaderImplTest {
             assertThat(it.getSupplyCost()).isEqualTo(300);
             assertThat(it.getAetherCost()).isEqualTo(100);
             assertThat(it.getAbilities()).isUnmodifiable().isEmpty();
-            assertThat(it.getWeapons()).isUnmodifiable().containsExactly(new Weapon("Cannon", Map.of(
+            assertThat(it.getWeapons()).containsExactly(new Weapon("Cannon", UnitSelectorMap.copyOf(Map.of(
                     $("Soldier"), 40,
                     $("Vehicle"), 50,
                     $("Structure"), 50
-            ), 2, 3));
-            assertThat(it.getHangar()).isUnmodifiable().isEmpty();
+            )), 2, 3));
+            assertThat(it.getHangar()).isEqualTo(UnitSelectorPlaceholder.NONE);
         });
         assertThat(version.lookup("BuildTank"))
                 .isInstanceOfSatisfying(BuildAbilityDeclaration.class, it -> {
@@ -432,7 +432,7 @@ class VersionLoaderImplTest {
                     $("BuildTank"),
                     $("BuildAPC")
             );
-            assertThat(it.getHangar()).isUnmodifiable().isEmpty();
+            assertThat(it.getHangar()).isEqualTo(UnitSelectorPlaceholder.NONE);
         });
         assertThat(version.lookup("BuildBase")).isNull();
         assertThat(version.getGlobalRules()).isUnmodifiable().containsExactly(

@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.databind.DeserializationContext;
+import com.fasterxml.jackson.databind.KeyDeserializer;
 import com.fasterxml.jackson.databind.deser.std.StdDeserializer;
 import com.fasterxml.jackson.databind.exc.ValueInstantiationException;
 import com.fasterxml.jackson.databind.module.SimpleModule;
@@ -24,6 +25,7 @@ public final class DeclarationModule extends SimpleModule {
             AbilityTag.class,
             TileTag.class,
             TileType.class,
+            UnitSelector.class,
             UnitTag.class,
             UnitType.class,
             MessageType.class
@@ -38,20 +40,27 @@ public final class DeclarationModule extends SimpleModule {
     }
 
     private <T> void addDeclarationDeserializer(Version version, Class<T> type) {
-        addDeserializer(type, new StdDeserializer<>(type) {
+        var keyDeserializer = new KeyDeserializer() {
             @Override
-            public T deserialize(JsonParser parser, DeserializationContext context) throws IOException {
-                var name = parser.getValueAsString();
+            public Object deserializeKey(String name, DeserializationContext context) throws IOException {
                 var candidate = version.lookup(name);
                 if (type.isInstance(candidate)) {
                     return type.cast(candidate);
                 } else {
                     var problem = (candidate == null) ? "Unknown" : "Inappropriate";
                     var message = "%s declaration '%s'.".formatted(problem, name);
-                    throw ValueInstantiationException.from(parser, message, context.constructType(type));
+                    throw ValueInstantiationException.from(context.getParser(), message, context.constructType(type));
                 }
             }
-        });
+        };
+        var deserializer = new StdDeserializer<T>(type) {
+            @Override
+            public T deserialize(JsonParser parser, DeserializationContext context) throws IOException {
+                return type.cast(keyDeserializer.deserializeKey(parser.getValueAsString(), context));
+            }
+        };
+        addKeyDeserializer(type, keyDeserializer);
+        addDeserializer(type, deserializer);
     }
 
 }
