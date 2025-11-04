@@ -30,7 +30,7 @@ class AbilityDeclaration extends AbstractSpecification implements Ability {
     @Getter(onMethod_ = @Override)
     private boolean spellChoice;
 
-    private @NotNull @Valid Target<?> target = TargetOfNothing.NOTHING;
+    private @NotNull @Valid Target<?, ?> target = TargetOfNothing.NOTHING;
     private @NotNull @Valid Script supplyCost = Script.ZERO;
     private @NotNull @Valid Script aetherCost = Script.ZERO;
     private @NotNull @Valid Script focusCost = Script.ZERO;
@@ -91,6 +91,10 @@ class AbilityDeclaration extends AbstractSpecification implements Ability {
 
     @Override
     public Stream<Object> propose(Actor actor) {
+        return propose(actor, target);
+    }
+
+    private <P> Stream<Object> propose(Actor actor, Target<?, P> target) {
         return target
                 .propose(actor)
                 .filter(it -> executeFilter(actor, it))

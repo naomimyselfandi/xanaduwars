@@ -50,7 +50,7 @@ class AbilityDeclarationTest {
     private String name;
 
     @Mock
-    private Target<Object> targetSpec;
+    private Target<Object, Object> targetSpec;
 
     @Mock
     private Script supplyCost, aetherCost, focusCost, filter, effect;

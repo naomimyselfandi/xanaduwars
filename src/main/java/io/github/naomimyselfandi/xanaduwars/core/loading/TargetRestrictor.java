@@ -6,9 +6,9 @@ import io.github.naomimyselfandi.xanaduwars.core.model.CommandException;
 
 import java.util.stream.Stream;
 
-interface TargetRestrictor<T> extends Target<T> {
+interface TargetRestrictor<T> extends Target<T, T> {
 
-    Target<T> base();
+    Target<T, T> base();
 
     boolean validateFurther(Actor actor, T target);
 
@@ -30,7 +30,7 @@ interface TargetRestrictor<T> extends Target<T> {
     }
 
     @Override
-    default JsonNode pack(Object proposal) {
+    default JsonNode pack(T proposal) {
         return base().pack(proposal);
     }
 

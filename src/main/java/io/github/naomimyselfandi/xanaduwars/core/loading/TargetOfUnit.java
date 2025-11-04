@@ -8,13 +8,14 @@ import io.github.naomimyselfandi.xanaduwars.core.model.Unit;
 
 import java.util.stream.Stream;
 
-record TargetOfUnit(Target<Tile> base) implements Target<Unit> {
+record TargetOfUnit(Target<Tile, Tile> base) implements Target<Unit, Unit> {
 
     @Override
     public Unit unpack(Actor actor, JsonNode target) throws CommandException {
         if (base.unpack(actor, target).getUnit() instanceof Unit unit && actor.asPlayer().perceives(unit)) {
             return unit;
         } else {
+            // intentionally ambiguous message to avoid leaking hidden information
             throw new CommandException("Target unit does not exist or is hidden.");
         }
     }
@@ -34,8 +35,9 @@ record TargetOfUnit(Target<Tile> base) implements Target<Unit> {
     }
 
     @Override
-    public JsonNode pack(Object proposal) {
-        return base.pack(((Unit) proposal).getLocation());
+    public JsonNode pack(Unit proposal) {
+        // cast OK because we only propose units on tiles
+        return base.pack((Tile) proposal.getLocation());
     }
 
 }

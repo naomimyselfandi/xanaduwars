@@ -9,14 +9,14 @@ import java.util.stream.Stream;
 
 /// A specification of an ability's target.
 @JsonDeserialize(using = TargetDeserializer.class)
-interface Target<T> {
+interface Target<T, P> {
 
     T unpack(Actor actor, JsonNode target) throws CommandException;
 
     boolean validate(Actor actor, Object target);
 
-    Stream<T> propose(Actor actor);
+    Stream<P> propose(Actor actor);
 
-    JsonNode pack(Object proposal);
+    JsonNode pack(P proposal);
 
 }

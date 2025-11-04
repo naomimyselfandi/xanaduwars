@@ -24,7 +24,7 @@ class TargetDeserializerTest {
 
     @MethodSource
     @ParameterizedTest
-    void deserialize(String text, Target<?> expected) throws JsonProcessingException {
+    void deserialize(String text, Target<?, ?> expected) throws JsonProcessingException {
         var objectMapper = new ObjectMapper();
         var json = objectMapper.writeValueAsString(text);
         assertThat(objectMapper.readValue(json, Target.class)).isEqualTo(expected);

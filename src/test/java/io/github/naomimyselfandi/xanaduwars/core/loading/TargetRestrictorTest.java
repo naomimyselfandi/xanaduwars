@@ -27,7 +27,7 @@ class TargetRestrictorTest {
     private Unit actor;
 
     @Mock
-    private Target<Object> base;
+    private Target<Object, Object> base;
 
     @Mock
     private BiPredicate<Actor, Object> furtherValidation;
@@ -35,7 +35,7 @@ class TargetRestrictorTest {
     private final  TargetRestrictor<Object> fixture = new TargetRestrictor<>() {
 
         @Override
-        public @NotNull Target<Object> base() {
+        public @NotNull Target<Object, Object> base() {
             return base;
         }
 

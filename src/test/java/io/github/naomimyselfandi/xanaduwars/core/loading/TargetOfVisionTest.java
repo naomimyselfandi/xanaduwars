@@ -22,7 +22,7 @@ class TargetOfVisionTest {
     private Unit actor, target;
 
     @Mock
-    private Target<Unit> base;
+    private Target<Unit, Unit> base;
 
     @InjectMocks
     private TargetOfVision<Unit> fixture;

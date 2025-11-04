@@ -11,14 +11,14 @@ import java.util.Arrays;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-final class TargetDeserializer extends StdDeserializer<Target<?>> {
+final class TargetDeserializer extends StdDeserializer<Target<?, ?>> {
 
     TargetDeserializer() {
         super(Target.class);
     }
 
     @Override
-    public Target<?> deserialize(JsonParser parser, DeserializationContext context) throws IOException {
+    public Target<?, ?> deserialize(JsonParser parser, DeserializationContext context) throws IOException {
         var string = parser.getValueAsString();
         var attempt = new Attempt(string);
         var result = attempt.build();
@@ -51,7 +51,7 @@ final class TargetDeserializer extends StdDeserializer<Target<?>> {
             this.remaining = remaining.replaceAll("\\s+", "");
         }
 
-        Target<?> build() {
+        Target<?, ?> build() {
             if (take(TILE)) {
                 return buildTileTarget();
             } else if (take(UNIT)) {
@@ -61,7 +61,7 @@ final class TargetDeserializer extends StdDeserializer<Target<?>> {
             }
         }
 
-        private Target<Tile> buildTileTarget() {
+        private Target<Tile, Tile> buildTileTarget() {
             if (take(RANGE)) {
                 var min = Integer.parseInt(matcher.group(1), 10);
                 var max = Integer.parseInt(matcher.group(2), 10);
@@ -76,7 +76,7 @@ final class TargetDeserializer extends StdDeserializer<Target<?>> {
             }
         }
 
-        private Target<Unit> buildUnitTarget() {
+        private Target<Unit, Unit> buildUnitTarget() {
             if (take(DOT_TILE)) {
                 return new TargetOfUnit(buildTileTarget());
             } else if (take(ALLY)) {

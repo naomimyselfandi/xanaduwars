@@ -7,7 +7,7 @@ import org.jetbrains.annotations.Unmodifiable;
 
 import java.util.List;
 
-record TargetOfTileTag(Target<Tile> base, @Unmodifiable List<TileTag> tags) implements TargetRestrictor<Tile> {
+record TargetOfTileTag(Target<Tile, Tile> base, @Unmodifiable List<TileTag> tags) implements TargetRestrictor<Tile> {
 
     @Override
     public boolean validateFurther(Actor actor, Tile target) {

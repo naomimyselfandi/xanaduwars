@@ -22,7 +22,7 @@
           {"abilityName": "Fire", "target": {"x": 2, "y": 1}}
         ]
       },
-      "message": "Malformed target ... for 'Fire'."
+      "message": "Target unit does not exist or is hidden."
     },
     {
       "evaluate": [

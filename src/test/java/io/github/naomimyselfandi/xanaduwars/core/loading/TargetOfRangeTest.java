@@ -18,7 +18,7 @@ class TargetOfRangeTest {
     private Unit actor, target;
 
     @Mock
-    private Target<Unit> base;
+    private Target<Unit, Unit> base;
 
     @ParameterizedTest
     @CsvSource(textBlock = """

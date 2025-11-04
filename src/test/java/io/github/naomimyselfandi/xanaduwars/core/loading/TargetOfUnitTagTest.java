@@ -23,7 +23,7 @@ class TargetOfUnitTagTest {
     private Unit actor, target;
 
     @Mock
-    private Target<Unit> base;
+    private Target<Unit, Unit> base;
 
     private SeededRng random;
 

@@ -34,7 +34,7 @@ class TargetOfUnitTest {
     private Unit actor, unit, anotherUnit;
 
     @Mock
-    private Target<Tile> base;
+    private Target<Tile, Tile> base;
 
     @InjectMocks
     private TargetOfUnit fixture;

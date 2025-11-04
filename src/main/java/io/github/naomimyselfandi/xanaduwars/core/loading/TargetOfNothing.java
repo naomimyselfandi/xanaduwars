@@ -6,7 +6,7 @@ import io.github.naomimyselfandi.xanaduwars.core.model.Actor;
 
 import java.util.stream.Stream;
 
-enum TargetOfNothing implements Target<Object> {
+enum TargetOfNothing implements Target<Object, Object> {
 
     NOTHING;
 

@@ -11,7 +11,7 @@ import io.github.naomimyselfandi.xanaduwars.core.model.Tile;
 import java.util.Map;
 import java.util.stream.Stream;
 
-enum TargetOfTile implements Target<Tile> {
+enum TargetOfTile implements Target<Tile, Tile> {
 
     TILE;
 
@@ -37,7 +37,7 @@ enum TargetOfTile implements Target<Tile> {
     }
 
     @Override
-    public JsonNode pack(Object proposal) {
+    public JsonNode pack(Tile proposal) {
         var tile = (Tile) proposal;
         return new ObjectNode(JsonNodeFactory.instance, Map.of(
                 "x", new IntNode(tile.getX()),

@@ -66,7 +66,7 @@ class VersionLoaderImpl implements VersionLoader {
         private ArrayNode commanders;
         private ArrayNode tileTypes;
         private ArrayNode unitTypes;
-        private Target<?> buildTarget;
+        private Target<?, ?> buildTarget;
         private Script buildFilter, buildEffect;
         private JsonNode moveAbility, fireAbility, dropAbility;
         private Script redactionPolicy;

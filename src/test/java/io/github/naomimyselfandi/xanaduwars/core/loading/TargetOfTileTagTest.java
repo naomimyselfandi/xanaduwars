@@ -28,7 +28,7 @@ class TargetOfTileTagTest {
     private Tile target;
 
     @Mock
-    private Target<Tile> base;
+    private Target<Tile, Tile> base;
 
     private SeededRng random;
 

@@ -7,7 +7,7 @@ import org.jetbrains.annotations.Unmodifiable;
 
 import java.util.List;
 
-record TargetOfUnitTag(Target<Unit> base, @Unmodifiable List<UnitTag> tags) implements TargetRestrictor<Unit> {
+record TargetOfUnitTag(Target<Unit, Unit> base, @Unmodifiable List<UnitTag> tags) implements TargetRestrictor<Unit> {
 
     @Override
     public boolean validateFurther(Actor actor, Unit target) {
