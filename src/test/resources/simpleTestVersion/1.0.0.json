@@ -36,6 +36,11 @@
         "#active = actor.activeAbilities.stream",
         "return(isMovement(ability) ? active.noneMatch(@equals.bind(Move)) : active.allMatch(@equals.bind(Move)))"
       ]
+    },
+    {
+      "on": "CanPassOver",
+      "when": "value // don't override previous rejections",
+      "then": "traveller.isAlly(obstacle)"
     }
   ],
   "libraries": {
@@ -62,7 +67,43 @@
     ]
   },
   "abilityTags": [],
-  "actions": [],
+  "actions": [
+    {
+      "name": "Move",
+      "target": "path",
+      "effect": [
+        "#obstacle = null",
+        "#path = target.iterator",
+        "label loop:",
+        "  path.hasNext() ? (#tile = path.next()) : goto(done)",
+        "  obstacle = tile.unit",
+        "  goto((obstacle == null) ? empty_tile : obstacle_exists)",
+        "  label empty_tile:",
+        "    actor.location = tile",
+        "    goto(loop)",
+        "  label obstacle_exists:",
+        "    $.evaluate(CanPassOver(actor, obstacle)) || return(false) // the unit got stuck",
+        "    goto(loop)",
+        "label done:",
+        "  // if there's a unit on the final tile, the actor boards it, or gets stuck if unable",
+        "  (obstacle == null) && return(true)",
+        "  $.evaluate(CanBoard(actor, obstacle)) || return(false)",
+        "  unit.location = obstacle"
+      ]
+    },
+    {
+      "name": "Fire",
+      "target": "unit.enemy",
+      "filter": "actor.weapons.stream.anyMatch(Combat.canFire.bind(actor, target))",
+      "effect": "Combat.fire(actor, target)"
+    },
+    {
+      "name": "Drop",
+      "target": "tile[1,1].visible",
+      "filter": "(target.unit == null) && $.evaluate(new GetMovementCostQuery(actor.unit, target)).finite",
+      "effect": "actor.unit.setLocation(target)"
+    }
+  ],
   "spells": [
     {
       "name": "AttackUp",
@@ -96,21 +137,9 @@
     "return((target.unit == null) && unitType.tags.stream.anyMatch(matches))"
   ],
   "buildEffect": "target.createUnit(unitType, actor.owner)",
-  "moveAbility": {
-    "name": "Move"
-  },
-  "fireAbility": {
-    "name": "Fire",
-    "target": "unit.enemy",
-    "filter": "actor.weapons.stream.anyMatch(Combat.canFire.bind(actor, target))",
-    "effect": "Combat.fire(actor, target)"
-  },
-  "dropAbility": {
-    "name": "Drop",
-    "target": "tile[1,1].visible",
-    "filter": "(target.unit == null) && $.evaluate(new GetMovementCostQuery(actor.unit, target)).finite",
-    "effect": "actor.unit.setLocation(target)"
-  },
+  "moveAbility": "Move",
+  "fireAbility": "Fire",
+  "dropAbility": "Drop",
   "commanders": [
     {
       "name": "Alice",

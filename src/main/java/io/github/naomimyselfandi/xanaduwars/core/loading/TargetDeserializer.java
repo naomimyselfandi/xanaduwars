@@ -32,6 +32,7 @@ final class TargetDeserializer extends StdDeserializer<Target<?, ?>> {
 
     private static class Attempt {
 
+        private static final Pattern PATH = Pattern.compile("^path");
         private static final Pattern TILE = Pattern.compile("^tile");
         private static final Pattern UNIT = Pattern.compile("^unit");
 
@@ -52,7 +53,9 @@ final class TargetDeserializer extends StdDeserializer<Target<?, ?>> {
         }
 
         Target<?, ?> build() {
-            if (take(TILE)) {
+            if (take(PATH)) {
+                return TargetOfMovementPath.MOVEMENT_PATH;
+            } else if (take(TILE)) {
                 return buildTileTarget();
             } else if (take(UNIT)) {
                 return buildUnitTarget();

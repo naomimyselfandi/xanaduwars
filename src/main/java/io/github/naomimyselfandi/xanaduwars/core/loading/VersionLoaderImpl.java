@@ -4,7 +4,6 @@ import com.fasterxml.jackson.annotation.JacksonInject;
 import com.fasterxml.jackson.databind.InjectableValues;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.ObjectReader;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.BooleanNode;
 import io.github.classgraph.ClassGraph;
@@ -20,10 +19,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.validation.annotation.Validated;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.function.Supplier;
 
 @Service
@@ -68,7 +64,7 @@ class VersionLoaderImpl implements VersionLoader {
         private ArrayNode unitTypes;
         private Target<?, ?> buildTarget;
         private Script buildFilter, buildEffect;
-        private JsonNode moveAbility, fireAbility, dropAbility;
+        private String moveAbility, fireAbility, dropAbility;
         private Script redactionPolicy;
 
         void load(ObjectMapper objectMapper) throws IOException {
@@ -97,10 +93,7 @@ class VersionLoaderImpl implements VersionLoader {
             for (var unitTag : unitTags) {
                 version.accept(unitTag.name(), unitTag);
             }
-            version.setMoveAbility(initializeAbility(moveAbility, objectMapper.readerFor(MovementAbility.class)));
-            version.setFireAbility(initializeAbility(fireAbility, objectMapper.readerFor(AbilityDeclaration.class)));
-            version.setDropAbility(initializeAbility(dropAbility, objectMapper.readerFor(AbilityDeclaration.class)));
-            initialize(actions, AbilityDeclaration::new);
+            initialize(actions, () -> new AbilityDeclaration().setSpellChoice(false));
             initialize(spells, () -> new AbilityDeclaration().setSpellChoice(true));
             initialize(commanders, CommanderDeclaration::new);
             initialize(tileTypes, TileTypeDeclaration::new);
@@ -125,6 +118,21 @@ class VersionLoaderImpl implements VersionLoader {
                 buildAbility.setAetherCost(Script.of(unitType.getAetherCost()));
             }
             version.setRedactionPolicy(redactionPolicy);
+            if (version.lookup(moveAbility) instanceof Ability move) {
+                version.setMoveAbility(move);
+            } else {
+                throw new IllegalStateException("Specified move ability does not exist.");
+            }
+            if (version.lookup(fireAbility) instanceof Ability fire) {
+                version.setFireAbility(fire);
+            } else {
+                throw new IllegalStateException("Specified fire ability does not exist.");
+            }
+            if (version.lookup(dropAbility) instanceof Ability drop) {
+                version.setDropAbility(drop);
+            } else {
+                throw new IllegalStateException("Specified drop ability does not exist.");
+            }
         }
 
         private <T extends AbstractSpecification> void initialize(Iterable<JsonNode> source, Supplier<T> factory) {
@@ -134,12 +142,6 @@ class VersionLoaderImpl implements VersionLoader {
                 version.accept(name, value);
             }
             sources.add(source);
-        }
-
-        private Ability initializeAbility(JsonNode source, ObjectReader reader) throws IOException {
-            var ability = (Ability) reader.readValue(source);
-            version.accept(ability.getName(), ability);
-            return ability;
         }
 
         private void initializeUnitTypes() {

@@ -77,6 +77,23 @@ class VersionLoaderImplTest {
                   },
                   "actions": [
                     {
+                      "name": "Move",
+                      "target": "path",
+                      "effect": "Testing.doMoveEffect()"
+                    },
+                    {
+                      "name": "Fire",
+                      "target": "unit.enemy",
+                      "filter": "Testing.doFireFilter()",
+                      "effect": "Testing.doFireEffect()"
+                    },
+                    {
+                      "name": "Drop",
+                      "target": "tile[1,1]",
+                      "filter": "Testing.doDropFilter()",
+                      "effect": "Testing.doDropEffect()"
+                    },
+                    {
                       "name": "StimPack",
                       "effect": "Testing.doStimPack(actor) // fake implementation for simplicity"
                     }
@@ -115,21 +132,9 @@ class VersionLoaderImplTest {
                   "buildTarget": "tile[1,1]",
                   "buildFilter": "Testing.doBuildFilter() // fake implementation for simplicity",
                   "buildEffect": "Testing.doBuildEffect() // fake implementation for simplicity",
-                  "moveAbility": {
-                    "name": "Move"
-                  },
-                  "fireAbility": {
-                    "name": "Fire",
-                    "target": "unit.enemy",
-                    "filter": "Testing.doFireFilter()",
-                    "effect": "Testing.doFireEffect()"
-                  },
-                  "dropAbility": {
-                    "name": "Drop",
-                    "target": "tile[1,1]",
-                    "filter": "Testing.doDropFilter()",
-                    "effect": "Testing.doDropEffect()"
-                  },
+                  "moveAbility": "Move",
+                  "fireAbility": "Fire",
+                  "dropAbility": "Drop",
                   "commanders": [
                     {
                       "name": "Alice",
@@ -295,9 +300,15 @@ class VersionLoaderImplTest {
                     assertThat(it.getEffect()).isEqualTo(Script.of("Testing.doStimPack(actor)"));
                 });
         assertThat(version.lookup("Move"))
-                .isInstanceOfSatisfying(MovementAbility.class, it -> {
+                .isInstanceOfSatisfying(AbilityDeclaration.class, it -> {
                     assertThat(it.getName()).isEqualTo("Move");
                     assertThat(it.getTags()).isUnmodifiable().isEmpty();
+                    assertThat(it.getSupplyCost()).isEqualTo(Script.ZERO);
+                    assertThat(it.getAetherCost()).isEqualTo(Script.ZERO);
+                    assertThat(it.getFocusCost()).isEqualTo(Script.ZERO);
+                    assertThat(it.getTarget()).isEqualTo(TargetOfMovementPath.MOVEMENT_PATH);
+                    assertThat(it.getFilter()).isEqualTo(Script.TRUE);
+                    assertThat(it.getEffect()).isEqualTo(Script.of("Testing.doMoveEffect()"));
                 });
         assertThat(version.getMoveAbility()).isEqualTo($("Move"));
         assertThat(version.lookup("Fire"))
@@ -476,7 +487,25 @@ class VersionLoaderImplTest {
                         {
                           "globalRules": [],
                           "libraries": {},
-                          "actions": [],
+                          "actions": [
+                            {
+                              "name": "Move",
+                              "target": "path",
+                              "effect": "Testing.doMoveEffect()"
+                            },
+                            {
+                              "name": "Fire",
+                              "target": "unit.enemy",
+                              "filter": "Testing.doFireFilter()",
+                              "effect": "Testing.doFireEffect()"
+                            },
+                            {
+                              "name": "Drop",
+                              "target": "tile[1,1]",
+                              "filter": "Testing.doDropFilter()",
+                              "effect": "Testing.doDropEffect()"
+                            }
+                          ],
                           "spells": [],
                           "abilityTags": [],
                           "commanders": [],
@@ -484,21 +513,9 @@ class VersionLoaderImplTest {
                           "tileTypes": [],
                           "unitTags": ["Water"],
                           "unitTypes": [],
-                          "moveAbility": {
-                            "name": "Move"
-                          },
-                          "fireAbility": {
-                            "name": "Fire",
-                            "target": "unit.enemy",
-                            "filter": "Testing.doFireFilter()",
-                            "effect": "Testing.doFireEffect()"
-                          },
-                          "dropAbility": {
-                            "name": "Drop",
-                            "target": "tile[1,1]",
-                            "filter": "Testing.doDropFilter()",
-                            "effect": "Testing.doDropEffect()"
-                          }
+                          "moveAbility": "Move",
+                          "fireAbility": "Fire",
+                          "dropAbility": "Drop"
                         }
                         """, "Got multiple declarations with the same name"
                 ),
@@ -506,7 +523,25 @@ class VersionLoaderImplTest {
                         {
                           "globalRules": [],
                           "libraries": {},
-                          "actions": [],
+                          "actions": [
+                            {
+                              "name": "Move",
+                              "target": "path",
+                              "effect": "Testing.doMoveEffect()"
+                            },
+                            {
+                              "name": "Fire",
+                              "target": "unit.enemy",
+                              "filter": "Testing.doFireFilter()",
+                              "effect": "Testing.doFireEffect()"
+                            },
+                            {
+                              "name": "Drop",
+                              "target": "tile[1,1]",
+                              "filter": "Testing.doDropFilter()",
+                              "effect": "Testing.doDropEffect()"
+                            }
+                          ],
                           "spells": [],
                           "abilityTags": [],
                           "commanders": [],
@@ -519,21 +554,9 @@ class VersionLoaderImplTest {
                               "tags": ["SomeTag"]
                             }
                           ],
-                          "moveAbility": {
-                            "name": "Move"
-                          },
-                          "fireAbility": {
-                            "name": "Fire",
-                            "target": "unit.enemy",
-                            "filter": "Testing.doFireFilter()",
-                            "effect": "Testing.doFireEffect()"
-                          },
-                          "dropAbility": {
-                            "name": "Drop",
-                            "target": "tile[1,1]",
-                            "filter": "Testing.doDropFilter()",
-                            "effect": "Testing.doDropEffect()"
-                          }
+                          "moveAbility": "Move",
+                          "fireAbility": "Fire",
+                          "dropAbility": "Drop"
                         }
                         """, "Unknown declaration 'SomeTag'"
                 ),
@@ -541,7 +564,116 @@ class VersionLoaderImplTest {
                         {
                           "globalRules": [],
                           "libraries": {},
-                          "actions": [],
+                          "actions": [
+                            {
+                              "name": "Fire",
+                              "target": "unit.enemy",
+                              "filter": "Testing.doFireFilter()",
+                              "effect": "Testing.doFireEffect()"
+                            },
+                            {
+                              "name": "Drop",
+                              "target": "tile[1,1]",
+                              "filter": "Testing.doDropFilter()",
+                              "effect": "Testing.doDropEffect()"
+                            }
+                          ],
+                          "spells": [],
+                          "abilityTags": [],
+                          "commanders": [],
+                          "tileTags": [],
+                          "tileTypes": [],
+                          "unitTags": [],
+                          "unitTypes": [],
+                          "moveAbility": "Move",
+                          "fireAbility": "Fire",
+                          "dropAbility": "Drop"
+                        }
+                        """, "Specified move ability does not exist."
+                ),
+                invalid("""
+                        {
+                          "globalRules": [],
+                          "libraries": {},
+                          "actions": [
+                            {
+                              "name": "Move",
+                              "target": "path",
+                              "effect": "Testing.doMoveEffect()"
+                            },
+                            {
+                              "name": "Drop",
+                              "target": "tile[1,1]",
+                              "filter": "Testing.doDropFilter()",
+                              "effect": "Testing.doDropEffect()"
+                            }
+                          ],
+                          "spells": [],
+                          "abilityTags": [],
+                          "commanders": [],
+                          "tileTags": [],
+                          "tileTypes": [],
+                          "unitTags": [],
+                          "unitTypes": [],
+                          "moveAbility": "Move",
+                          "fireAbility": "Fire",
+                          "dropAbility": "Drop"
+                        }
+                        """, "Specified fire ability does not exist."
+                ),
+                invalid("""
+                        {
+                          "globalRules": [],
+                          "libraries": {},
+                          "actions": [
+                            {
+                              "name": "Move",
+                              "target": "path",
+                              "effect": "Testing.doMoveEffect()"
+                            },
+                            {
+                              "name": "Fire",
+                              "target": "unit.enemy",
+                              "filter": "Testing.doFireFilter()",
+                              "effect": "Testing.doFireEffect()"
+                            }
+                          ],
+                          "spells": [],
+                          "abilityTags": [],
+                          "commanders": [],
+                          "tileTags": [],
+                          "tileTypes": [],
+                          "unitTags": [],
+                          "unitTypes": [],
+                          "moveAbility": "Move",
+                          "fireAbility": "Fire",
+                          "dropAbility": "Drop"
+                        }
+                        """, "Specified drop ability does not exist."
+                ),
+                invalid("""
+                        {
+                          "globalRules": [],
+                          "libraries": {},
+                          "actions": [
+                            {
+                              "name": "Move",
+                              "target": "path",
+                              "effect": "Testing.doMoveEffect()"
+                            },
+                            {
+                              "name": "Fire",
+                              "target": "unit.enemy",
+                              "filter": "Testing.doFireFilter()",
+                              "effect": "Testing.doFireEffect()"
+                            },
+                            {
+                              "name": "Drop",
+                              "target": "tile[1,1]",
+                              "filter": "Testing.doDropFilter()",
+                              "effect": "Testing.doDropEffect()"
+                            }
+                          ],
                           "spells": [],
                           "abilityTags": [],
                           "commanders": [],
@@ -554,21 +686,9 @@ class VersionLoaderImplTest {
                               "tags": ["SomeTag"]
                             }
                           ],
-                          "moveAbility": {
-                            "name": "Move"
-                          },
-                          "fireAbility": {
-                            "name": "Fire",
-                            "target": "unit.enemy",
-                            "filter": "Testing.doFireFilter()",
-                            "effect": "Testing.doFireEffect()"
-                          },
-                          "dropAbility": {
-                            "name": "Drop",
-                            "target": "tile[1,1]",
-                            "filter": "Testing.doDropFilter()",
-                            "effect": "Testing.doDropEffect()"
-                          }
+                          "moveAbility": "Move",
+                          "fireAbility": "Fire",
+                          "dropAbility": "Drop"
                         }
                         """, "Inappropriate declaration 'SomeTag'"
                 )

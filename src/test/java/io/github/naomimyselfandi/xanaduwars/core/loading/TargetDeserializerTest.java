@@ -52,6 +52,7 @@ class TargetDeserializerTest {
         var water = new TargetOfTileTag(tile, List.of(new TileTag("Water")));
         return Stream.of(
                 arguments("", TargetOfNothing.NOTHING),
+                arguments("path", TargetOfMovementPath.MOVEMENT_PATH),
                 arguments("unit", unit),
                 arguments("unit.ally", ally),
                 arguments("unit.enemy", enemy),

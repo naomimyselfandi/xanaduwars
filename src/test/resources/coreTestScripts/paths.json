@@ -1,0 +1,49 @@
+{
+  "width": 6,
+  "height": 3,
+  "players": 2,
+  "steps": [
+    {
+      "evaluate": [
+        "$.getTile(0, 0).createUnit(Boss, $.players.first)",
+        "$.getTile(0, 1).createUnit(Boss, $.players.first)",
+        "$.getTile(1, 0).createUnit(Blob, $.players.last)",
+        "$.getTile(2, 1).createUnit(Blob, $.players.last)",
+        "$.getTile(4, 1).createUnit(Blob, $.players.last)",
+        "$.getTile(5, 1).createUnit(Boss, $.players.first)"
+      ]
+    },
+    {
+      "invalid": {
+        "x": 0,
+        "y": 0,
+        "use": [
+          {"abilityName": "Move", "target": ["EAST", "EAST", "SOUTH"]}
+        ]
+      }
+    },
+    {
+      "invalid": {
+        "x": 0,
+        "y": 0,
+        "use": [
+          {"abilityName": "Move", "target": ["SOUTH"]}
+        ]
+      }
+    },
+    {
+      "x": 0,
+      "y": 0,
+      "use": [
+        {"abilityName": "Move", "target": ["SOUTH", "EAST", "EAST"]},
+        {"abilityName": "Fire", "target": {"x": 4, "y": 1}}
+      ]
+    },
+    {
+      "evaluate": [
+        "assertThat($.getTile(1, 1).unit.type).isEqualTo(Boss) // movement was interrupted",
+        "assertThat($.getTile(4, 1).unit.hp).isEqualTo(60) // didn't fire because previous command was interrupted"
+      ]
+    }
+  ]
+}

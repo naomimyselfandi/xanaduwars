@@ -6,15 +6,15 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.*;
 import io.github.naomimyselfandi.seededrandom.SeededRandomExtension;
 import io.github.naomimyselfandi.xanaduwars.core.model.*;
-import org.assertj.core.api.InstanceOfAssertFactories;
+import io.github.naomimyselfandi.xanaduwars.testing.SeededRng;
 import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.CsvSource;
 import org.junit.jupiter.params.provider.MethodSource;
-import org.junit.jupiter.params.provider.ValueSource;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.mockito.junit.jupiter.MockitoSettings;
@@ -32,7 +32,7 @@ import static org.mockito.Mockito.*;
 
 @MockitoSettings(strictness = Strictness.LENIENT)
 @ExtendWith({MockitoExtension.class, SeededRandomExtension.class})
-class AbstractPathAbilityTest {
+class TargetOfPathTest {
 
     private static final List<List<Integer>> CAPACITY_USED_BY_TILE = List.of(
             List.of(1, 1, 2, 2, 2),
@@ -49,28 +49,14 @@ class AbstractPathAbilityTest {
     @Mock
     private Unit actor, anotherUnit;
 
-    private List<Tile> expectedPath;
-
-    private boolean executeResult;
-
-    private AbstractPathAbility fixture;
+    private TargetOfPath fixture;
 
     @BeforeEach
     void setup() {
-        fixture = new AbstractPathAbility() {
+        fixture = new TargetOfPath() {
 
             @Override
-            public @NotNull Cost getCost(@NotNull Actor actor, @NotNull Object target) {
-                throw new UnsupportedOperationException();
-            }
-
-            @Override
-            public boolean isSpellChoice() {
-                throw new UnsupportedOperationException();
-            }
-
-            @Override
-            double getCapacityUsed(@NotNull Unit unit, @NotNull List<Tile> path) {
+            public double getCapacityUsed(@NotNull Unit unit, @NotNull List<Tile> path) {
                 return path
                         .stream()
                         .mapToDouble(tile -> CAPACITY_USED_BY_TILE.get(tile.getY()).get(tile.getX()))
@@ -78,22 +64,14 @@ class AbstractPathAbilityTest {
             }
 
             @Override
-            double getCapacity(@NotNull Unit unit) {
+            public double getCapacity(@NotNull Unit unit) {
                 assertThat(unit).isEqualTo(actor);
                 return 6;
             }
 
             @Override
-            boolean validate(@NotNull Unit unit, @NotNull List<Tile> path) {
+            public boolean doCustomValidation(@NotNull Unit unit, @NotNull List<Tile> path) {
                 return path.size() != 2 && path.size() == Set.copyOf(path).size();
-            }
-
-            @Override
-            public boolean execute(@NotNull Unit unit, @NotNull List<Tile> path) {
-                assertThat(unit).isEqualTo(actor);
-                assertThat(path).isEqualTo(expectedPath);
-                verify(unit).setActiveAbilities(List.of(ability, fixture));
-                return executeResult;
             }
 
         };
@@ -112,17 +90,15 @@ class AbstractPathAbilityTest {
                 new TextNode("EAST"),
                 new TextNode("NORTH")
         ));
-        assertThat(fixture.unpack(actor, jsonNode))
-                .asInstanceOf(InstanceOfAssertFactories.ARRAY)
-                .containsExactly(
-                        tile(1, 0),
-                        tile(1, 1),
-                        tile(0, 1),
-                        tile(0, 2),
-                        tile(1, 2),
-                        tile(2, 2),
-                        tile(2, 1)
-                );
+        assertThat(fixture.unpack(actor, jsonNode)).containsExactly(
+                tile(1, 0),
+                tile(1, 1),
+                tile(0, 1),
+                tile(0, 2),
+                tile(1, 2),
+                tile(2, 2),
+                tile(2, 1)
+        );
     }
 
     @Test
@@ -153,7 +129,7 @@ class AbstractPathAbilityTest {
         ));
         assertThatThrownBy(() -> fixture.unpack(player, jsonNode))
                 .isInstanceOf(CommandException.class)
-                .hasMessage("Only units on tiles can move.");
+                .hasMessage("Not on a tile.");
     }
 
     @Test
@@ -170,38 +146,30 @@ class AbstractPathAbilityTest {
         when(actor.getLocation()).thenReturn(anotherUnit);
         assertThatThrownBy(() -> fixture.unpack(actor, jsonNode))
                 .isInstanceOf(CommandException.class)
-                .hasMessage("Only units on tiles can move.");
+                .hasMessage("Not on a tile.");
     }
 
     @ParameterizedTest
-    @ValueSource(strings = {
-            "42",
-            "\"NORTH\"",
-            "[\"NORTHEAST\"]",
-            "{\"NORTH\": \"EAST\"}"
-    })
-    void unpack_WhenTheInputIsMalformed_ThenThrows(String json) throws JsonProcessingException {
+    @CsvSource(textBlock = """
+            '"42"',Expected an array of directions.
+            '"NORTH"',Expected an array of directions.
+            '["NORTH", "NORTHEAST", "EAST"]',Unknown direction in path.
+            """)
+    void unpack_WhenTheInputIsMalformed_ThenThrows(String json, String message) throws JsonProcessingException {
         var origin = tile(0, 0);
         when(actor.getLocation()).thenReturn(origin);
         var jsonNode = new ObjectMapper().readValue(json, JsonNode.class);
         assertThatThrownBy(() -> fixture.unpack(actor, jsonNode))
                 .isInstanceOf(CommandException.class)
-                .hasMessage("Malformed path '%s'.", jsonNode);
+                .hasMessage(message);
     }
 
     @MethodSource
     @ParameterizedTest
-    void validate(List<Tile> tiles, boolean expected) {
+    void validate(List<Tile> path, boolean expected) {
         var origin = tile(0, 0);
         when(actor.getLocation()).thenReturn(origin);
-        var path = tiles.toArray(Tile[]::new);
-        if (expected) {
-            assertThatCode(() -> fixture.validate(actor, path)).doesNotThrowAnyException();
-        } else {
-            assertThatThrownBy(() -> fixture.validate(actor, path))
-                    .isInstanceOf(CommandException.class)
-                    .hasMessage("Invalid path.");
-        }
+        assertThat(fixture.validate(actor, path)).isEqualTo(expected);
     }
 
     private static Stream<Arguments> validate() {
@@ -212,32 +180,39 @@ class AbstractPathAbilityTest {
         );
     }
 
-    @ParameterizedTest
-    @ValueSource(booleans = {true, false})
-    void execute(boolean result) {
-        when(actor.getActiveAbilities()).thenReturn(List.of(ability));
-        var path = new Tile[]{tile(1, 0), tile(2, 0), tile(2, 1)};
-        expectedPath = List.of(path);
-        executeResult = result;
-        assertThat(fixture.execute(actor, path)).isEqualTo(result);
-    }
-
     @Test
     void propose() {
         var origin = tile(0, 0);
         when(actor.getLocation()).thenReturn(origin);
         assertThat(fixture.propose(actor)).containsExactly(
-                json(0, 0),
-                json(1, 0),
-                json(3, 0),
-                json(0, 1),
-                json(3, 1),
-                json(0, 2),
-                json(1, 2),
-                json(2, 2),
-                json(3, 2),
-                json(4, 2)
+                tile(0, 0),
+                tile(1, 0),
+                tile(3, 0),
+                tile(0, 1),
+                tile(3, 1),
+                tile(0, 2),
+                tile(1, 2),
+                tile(2, 2),
+                tile(3, 2),
+                tile(4, 2)
         );
+    }
+
+    @Test
+    void propose_WhenTheActorIsNotAUnit_ThenEmpty() {
+        assertThat(fixture.propose(player)).isEmpty();
+    }
+
+    @Test
+    void propose_WhenTheActorIsNotOnATile_ThenEmpty() {
+        when(actor.getLocation()).thenReturn(anotherUnit);
+        assertThat(fixture.propose(actor)).isEmpty();
+    }
+
+    @Test
+    void pack(SeededRng random) {
+        var tile = tile(random.nextInt(100), random.nextInt(100));
+        assertThat(fixture.pack(tile)).isEqualTo(TargetOfTile.TILE.pack(tile));
     }
 
     private static Tile tile(int x, int y) {
@@ -259,13 +234,6 @@ class AbstractPathAbilityTest {
             });
             return tile;
         });
-    }
-
-    private static JsonNode json(int x, int y) {
-        return new ObjectNode(JsonNodeFactory.instance, Map.of(
-                "x", new IntNode(x),
-                "y", new IntNode(y)
-        ));
     }
 
 }
