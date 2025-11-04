@@ -3,7 +3,7 @@ package io.github.naomimyselfandi.xanaduwars.core.loading;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import io.github.naomimyselfandi.xanaduwars.core.model.Actor;
-import org.jetbrains.annotations.Nullable;
+import io.github.naomimyselfandi.xanaduwars.core.model.CommandException;
 
 import java.util.stream.Stream;
 
@@ -11,7 +11,7 @@ import java.util.stream.Stream;
 @JsonDeserialize(using = TargetDeserializer.class)
 interface Target<T> {
 
-    @Nullable T unpack(Actor actor, JsonNode target);
+    T unpack(Actor actor, JsonNode target) throws CommandException;
 
     boolean validate(Actor actor, Object target);
 

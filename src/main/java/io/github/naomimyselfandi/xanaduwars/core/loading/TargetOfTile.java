@@ -5,8 +5,8 @@ import com.fasterxml.jackson.databind.node.IntNode;
 import com.fasterxml.jackson.databind.node.JsonNodeFactory;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import io.github.naomimyselfandi.xanaduwars.core.model.Actor;
+import io.github.naomimyselfandi.xanaduwars.core.model.CommandException;
 import io.github.naomimyselfandi.xanaduwars.core.model.Tile;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.Map;
 import java.util.stream.Stream;
@@ -16,10 +16,14 @@ enum TargetOfTile implements Target<Tile> {
     TILE;
 
     @Override
-    public @Nullable Tile unpack(Actor actor, JsonNode target) {
-        return target.get("x") instanceof IntNode x
-                && target.get("y") instanceof IntNode y
-                ? actor.getGameState().getTile(x.asInt(), y.asInt()) : null;
+    public Tile unpack(Actor actor, JsonNode target) throws CommandException {
+        if (target.size() != 2 || !(target.get("x") instanceof IntNode x) || !(target.get("y") instanceof IntNode y)) {
+            throw new CommandException("Expected an object with two int values, x and y.");
+        } else if (!(actor.getGameState().getTile(x.asInt(), y.asInt()) instanceof Tile tile)) {
+            throw new CommandException("Target is out of bounds.");
+        } else {
+            return tile;
+        }
     }
 
     @Override

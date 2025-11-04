@@ -101,15 +101,6 @@ class AbilityDeclarationTest {
         assertThat(fixture.unpack(unit, jsonNode)).isEqualTo(target);
     }
 
-    @Test
-    void unpack_WhenTheInputIsInvalid_ThenThrows(SeededRng random) {
-        var jsonNode = random.<JsonNode>get();
-        when(targetSpec.unpack(unit, jsonNode)).thenReturn(null);
-        assertThatThrownBy(() -> fixture.unpack(unit, jsonNode))
-                .isInstanceOf(CommandException.class)
-                .hasMessage("Malformed target '%s' for '%s'.", jsonNode, name);
-    }
-
     @ParameterizedTest
     @CsvSource(textBlock = """
             100,100,100

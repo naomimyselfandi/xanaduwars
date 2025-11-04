@@ -2,6 +2,7 @@ package io.github.naomimyselfandi.xanaduwars.core.loading;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import io.github.naomimyselfandi.seededrandom.SeededRandomExtension;
+import io.github.naomimyselfandi.xanaduwars.core.model.CommandException;
 import io.github.naomimyselfandi.xanaduwars.core.model.Player;
 import io.github.naomimyselfandi.xanaduwars.core.model.Tile;
 import io.github.naomimyselfandi.xanaduwars.core.model.Unit;
@@ -48,12 +49,18 @@ class TargetOfUnitTest {
 
     @ParameterizedTest
     @LogicalSource(LogicalSource.Op.AND)
-    void unpack(boolean baseYieldsTile, boolean tileHasUnit, boolean unitIsPerceived, boolean expected) {
+    void unpack(boolean tileHasUnit, boolean unitIsPerceived, boolean ok) throws CommandException {
         var jsonNode = random.<JsonNode>get();
-        lenient().when(base.unpack(actor, jsonNode)).thenReturn(baseYieldsTile ? tile : null);
+        lenient().when(base.unpack(actor, jsonNode)).thenReturn(tile);
         lenient().when(tile.getUnit()).thenReturn(tileHasUnit ? unit : null);
         lenient().when(player.perceives(unit)).thenReturn(unitIsPerceived);
-        assertThat(fixture.unpack(actor, jsonNode)).isEqualTo(expected ? unit : null);
+        if (ok) {
+            assertThat(fixture.unpack(actor, jsonNode)).isEqualTo(unit);
+        } else {
+            assertThatThrownBy(() -> fixture.unpack(actor, jsonNode))
+                    .isInstanceOf(CommandException.class)
+                    .hasMessage("Target unit does not exist or is hidden.");
+        }
     }
 
     @ParameterizedTest

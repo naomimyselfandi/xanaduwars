@@ -3,6 +3,7 @@ package io.github.naomimyselfandi.xanaduwars.core.loading;
 import com.fasterxml.jackson.databind.JsonNode;
 import io.github.naomimyselfandi.seededrandom.SeededRandomExtension;
 import io.github.naomimyselfandi.xanaduwars.core.model.Actor;
+import io.github.naomimyselfandi.xanaduwars.core.model.CommandException;
 import io.github.naomimyselfandi.xanaduwars.core.model.Unit;
 import io.github.naomimyselfandi.xanaduwars.testing.LogicalSource;
 import io.github.naomimyselfandi.xanaduwars.testing.SeededRng;
@@ -46,7 +47,7 @@ class TargetRestrictorTest {
     };
 
     @Test
-    void unpack(SeededRng random) {
+    void unpack(SeededRng random) throws CommandException {
         var jsonNode = random.<JsonNode>get();
         var target = new Object();
         when(base.unpack(actor, jsonNode)).thenReturn(target);

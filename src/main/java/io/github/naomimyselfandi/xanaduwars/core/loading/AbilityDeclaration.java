@@ -39,11 +39,7 @@ class AbilityDeclaration extends AbstractSpecification implements Ability {
 
     @Override
     public Object unpack(Actor actor, JsonNode target) throws CommandException {
-        if (this.target.unpack(actor, target) instanceof Object object) {
-            return object;
-        } else {
-            throw new CommandException("Malformed target '%s' for '%s'.".formatted(target, getName()));
-        }
+        return this.target.unpack(actor, target);
     }
 
     @Override

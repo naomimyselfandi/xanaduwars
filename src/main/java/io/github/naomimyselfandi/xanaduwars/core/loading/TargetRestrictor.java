@@ -2,7 +2,7 @@ package io.github.naomimyselfandi.xanaduwars.core.loading;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import io.github.naomimyselfandi.xanaduwars.core.model.Actor;
-import org.jetbrains.annotations.Nullable;
+import io.github.naomimyselfandi.xanaduwars.core.model.CommandException;
 
 import java.util.stream.Stream;
 
@@ -13,7 +13,7 @@ interface TargetRestrictor<T> extends Target<T> {
     boolean validateFurther(Actor actor, T target);
 
     @Override
-    default @Nullable T unpack(Actor actor, JsonNode target) {
+    default T unpack(Actor actor, JsonNode target) throws CommandException {
         return base().unpack(actor, target);
     }
 

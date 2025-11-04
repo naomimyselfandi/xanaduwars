@@ -3,6 +3,7 @@ package io.github.naomimyselfandi.xanaduwars.core.loading;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.*;
 import io.github.naomimyselfandi.seededrandom.SeededRandomExtension;
+import io.github.naomimyselfandi.xanaduwars.core.model.CommandException;
 import io.github.naomimyselfandi.xanaduwars.core.model.GameState;
 import io.github.naomimyselfandi.xanaduwars.core.model.Tile;
 import io.github.naomimyselfandi.xanaduwars.core.model.Unit;
@@ -20,6 +21,7 @@ import java.util.Map;
 import java.util.stream.Stream;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.Mockito.*;
 
 @ExtendWith({MockitoExtension.class, SeededRandomExtension.class})
@@ -38,7 +40,7 @@ class TargetOfTileTest {
 
     @ParameterizedTest
     @ValueSource(booleans = {true, false})
-    void unpack(boolean tileExists, SeededRng random) {
+    void unpack(boolean tileExists, SeededRng random) throws CommandException {
         int x = random.nextInt();
         int y = random.not(x);
         when(actor.getGameState()).thenReturn(gameState);
@@ -50,14 +52,18 @@ class TargetOfTileTest {
             when(gameState.getTile(x, y)).thenReturn(tile);
             assertThat(fixture.unpack(actor, jsonNode)).isEqualTo(tile);
         } else {
-            assertThat(fixture.unpack(actor, jsonNode)).isNull();
+            assertThatThrownBy(() -> fixture.unpack(actor, jsonNode))
+                    .isInstanceOf(CommandException.class)
+                    .hasMessage("Target is out of bounds.");
         }
     }
 
     @MethodSource
     @ParameterizedTest
     void unpack_WhenTheInputIsMalformed_ThenNull(JsonNode jsonNode) {
-        assertThat(fixture.unpack(actor, jsonNode)).isNull();
+        assertThatThrownBy(() -> fixture.unpack(actor, jsonNode))
+                .isInstanceOf(CommandException.class)
+                .hasMessage("Expected an object with two int values, x and y.");
         verifyNoInteractions(actor);
     }
 

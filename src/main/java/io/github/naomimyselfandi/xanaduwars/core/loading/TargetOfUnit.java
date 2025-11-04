@@ -2,19 +2,21 @@ package io.github.naomimyselfandi.xanaduwars.core.loading;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import io.github.naomimyselfandi.xanaduwars.core.model.Actor;
+import io.github.naomimyselfandi.xanaduwars.core.model.CommandException;
 import io.github.naomimyselfandi.xanaduwars.core.model.Tile;
 import io.github.naomimyselfandi.xanaduwars.core.model.Unit;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.stream.Stream;
 
 record TargetOfUnit(Target<Tile> base) implements Target<Unit> {
 
     @Override
-    public @Nullable Unit unpack(Actor actor, JsonNode target) {
-        return base.unpack(actor, target) instanceof Tile tile
-                && tile.getUnit() instanceof Unit unit
-                && actor.asPlayer().perceives(unit) ? unit : null;
+    public Unit unpack(Actor actor, JsonNode target) throws CommandException {
+        if (base.unpack(actor, target).getUnit() instanceof Unit unit && actor.asPlayer().perceives(unit)) {
+            return unit;
+        } else {
+            throw new CommandException("Target unit does not exist or is hidden.");
+        }
     }
 
     @Override
