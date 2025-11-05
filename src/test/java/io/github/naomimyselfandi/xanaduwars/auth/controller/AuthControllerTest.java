@@ -11,6 +11,7 @@ import io.github.naomimyselfandi.xanaduwars.auth.value.JWT;
 import io.github.naomimyselfandi.xanaduwars.auth.value.JWTPurpose;
 import io.github.naomimyselfandi.xanaduwars.auth.value.UnauthorizedException;
 import io.github.naomimyselfandi.xanaduwars.testing.SeededRng;
+import io.github.naomimyselfandi.xanaduwars.util.EntityModelAssembler;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
 import org.assertj.core.api.Assertions;
@@ -23,6 +24,7 @@ import org.mockito.Captor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.hateoas.EntityModel;
 import org.springframework.http.ResponseEntity;
 
 import java.time.Duration;
@@ -35,6 +37,9 @@ import static org.mockito.Mockito.*;
 
 @ExtendWith({MockitoExtension.class, SeededRandomExtension.class})
 class AuthControllerTest {
+
+    @Mock
+    private EntityModel<Optional<UserDetailsDto>> entityModel;
 
     @Captor
     private ArgumentCaptor<Cookie> cookieCaptor;
@@ -49,16 +54,20 @@ class AuthControllerTest {
     private AuthService authService;
 
     @Mock
+    private EntityModelAssembler<Optional<UserDetailsDto>> assembler;
+
+    @Mock
     private RegistrationService registrationService;
 
     @InjectMocks
     private AuthController fixture;
 
-    @Test
-    void me(SeededRng random) {
-        var dto = random.<UserDetailsDto>get();
-        assertThat(fixture.me(Optional.of(dto))).isEqualTo(ResponseEntity.ok(dto));
-        assertThat(fixture.me(Optional.empty())).isEqualTo(ResponseEntity.noContent().build());
+    @ParameterizedTest
+    @ValueSource(booleans = {true, false})
+    void me(boolean authenticated, SeededRng random) {
+        var user = Optional.ofNullable(authenticated ? random.<UserDetailsDto>get() : null);
+        when(assembler.toModel(user)).thenReturn(entityModel);
+        assertThat(fixture.me(user)).isEqualTo(entityModel);
     }
 
     @ParameterizedTest

@@ -249,6 +249,38 @@ class AuditServiceImplTest {
                 .doesNotThrowAnyException();
     }
 
+    @EnumSource
+    @ParameterizedTest
+    void suppress(Audited.MissingAuthPolicy policy, SeededRng random) {
+        logAccount(random);
+        var action = random.nextString();
+        var method = getMethod();
+        try (var _ = fixture.suppress()) {
+            fixture.log(action, method, policy);
+            verify(auditLogRepository, never()).save(any());
+        }
+        fixture.log(action, method, policy);
+        verify(auditLogRepository).save(any());
+    }
+
+    @EnumSource
+    @ParameterizedTest
+    void suppress_WhenAlreadySuppressed_ThenDoesNothing(Audited.MissingAuthPolicy policy, SeededRng random) {
+        logAccount(random);
+        var action = random.nextString();
+        var method = getMethod();
+        try (var _ = fixture.suppress()) {
+            try (var _ = fixture.suppress()) {
+                fixture.log(action, method, policy);
+                verify(auditLogRepository, never()).save(any());
+            }
+            fixture.log(action, method, policy);
+            verify(auditLogRepository, never()).save(any());
+        }
+        fixture.log(action, method, policy);
+        verify(auditLogRepository).save(any());
+    }
+
     private Account logAccount(SeededRng random) {
         var account = random.<Account>get();
         var details = new UserDetailsDto(

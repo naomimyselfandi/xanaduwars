@@ -3,6 +3,8 @@ package io.github.naomimyselfandi.xanaduwars.security.service;
 import io.github.naomimyselfandi.xanaduwars.security.Audited;
 import io.github.naomimyselfandi.xanaduwars.security.dto.AuditLogDto;
 import io.github.naomimyselfandi.xanaduwars.security.entity.AuditLog;
+import io.github.naomimyselfandi.xanaduwars.util.Cleanup;
+import org.jetbrains.annotations.CheckReturnValue;
 import org.jetbrains.annotations.Nullable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -19,5 +21,12 @@ public interface AuditService {
     /// Create an audit log entry. If the audited method is not given, it is
     /// assumed to be the method from which this method is called.
     void log(String action, @Nullable Method method, Audited.MissingAuthPolicy ifUnauthenticated);
+
+    /// Suppress audit logs in the current thread. This is intended for use
+    /// while building HATEOAS links: since checking whether the user could
+    /// access something doesn't imply that they intend to, any audit logs
+    /// written as a result of the check would be misleading.
+    /// @return A callback that reinstates audit logs.
+    @CheckReturnValue Cleanup suppress();
 
 }

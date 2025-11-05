@@ -6,10 +6,12 @@ import io.github.naomimyselfandi.xanaduwars.auth.service.JWTFactory;
 import io.github.naomimyselfandi.xanaduwars.auth.service.RegistrationService;
 import io.github.naomimyselfandi.xanaduwars.auth.value.JWTPurpose;
 import io.github.naomimyselfandi.xanaduwars.auth.value.UnauthorizedException;
+import io.github.naomimyselfandi.xanaduwars.util.EntityModelAssembler;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.hateoas.EntityModel;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -29,10 +31,12 @@ class AuthController {
     private final AuthService authService;
     private final RegistrationService registrationService;
 
+    private final EntityModelAssembler<Optional<UserDetailsDto>> assembler;
+
     @GetMapping("/me")
     @SuppressWarnings("OptionalUsedAsFieldOrParameterType")
-    public ResponseEntity<UserDetailsDto> me(Optional<UserDetailsDto> me) {
-        return me.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.noContent().build());
+    public EntityModel<Optional<UserDetailsDto>> me(Optional<UserDetailsDto> me) {
+        return assembler.toModel(me);
     }
 
     @PostMapping("/register")
@@ -49,7 +53,7 @@ class AuthController {
         var username = request.username();
         var password = request.password();
         var account = authService.loadUserByCredentials(username, password).orElseThrow(UnauthorizedException::new);
-        var accessToken = login(response, account);
+        var accessToken = doLogin(response, account);
         authService.setRememberMe(account.id(), request.rememberMe());
         return ResponseEntity.ok(accessToken);
     }
@@ -60,7 +64,7 @@ class AuthController {
             HttpServletResponse response
     ) {
         var account = authService.loadUserByRefreshToken(token).orElseThrow(UnauthorizedException::new);
-        var accessToken = login(response, account);
+        var accessToken = doLogin(response, account);
         return ResponseEntity.ok(accessToken);
     }
 
@@ -70,7 +74,7 @@ class AuthController {
         return ResponseEntity.noContent().build();
     }
 
-    private AccessTokenResponse login(HttpServletResponse response, UserDetailsDto dto) {
+    private AccessTokenResponse doLogin(HttpServletResponse response, UserDetailsDto dto) {
         var accessToken = jwtFactory.create(dto, JWTPurpose.ACCESS_TOKEN).token();
         createRefreshCookie(response, dto);
         return new AccessTokenResponse(accessToken);

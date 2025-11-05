@@ -22,30 +22,36 @@ class AccountControllerE2ETest extends AbstractE2ETest {
 
     @Test
     void getAccount() throws Exception {
+        var id = rootUser.id();
         as(regularUser)
-                .perform(get("/account/{id}", rootUser.id()))
+                .perform(get("/account/{id}", id))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.id", is(rootUser.id().toString())))
+                .andExpect(jsonPath("$.id", is(id.toString())))
                 .andExpect(jsonPath("$.username", is(rootUser.username().toString())))
                 .andExpect(jsonPath("$.roles", is(contains("ADMIN"))))
                 .andExpect(jsonPath("$.createdAt", is(closeToNow(Duration.ofMinutes(3)))))
                 .andExpect(jsonPath("$.password").doesNotExist())
                 .andExpect(jsonPath("$.emailAddress").doesNotExist())
-                .andExpect(jsonPath("$.rememberMe").doesNotExist());
+                .andExpect(jsonPath("$.rememberMe").doesNotExist())
+                .andExpect(jsonPath("$._links.self.href", endsWith("/account/" + id)))
+                .andExpect(jsonPath("$._links.roles.href").doesNotExist());
     }
 
     @Test
     void getAccount_AsAdmin() throws Exception {
+        var id = rootUser.id();
         as(rootUser)
-                .perform(get("/account/{id}", rootUser.id()))
+                .perform(get("/account/{id}", id))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.id", is(rootUser.id().toString())))
+                .andExpect(jsonPath("$.id", is(id.toString())))
                 .andExpect(jsonPath("$.username", is(rootUser.username().toString())))
                 .andExpect(jsonPath("$.roles", is(contains("ADMIN"))))
                 .andExpect(jsonPath("$.createdAt", is(closeToNow(Duration.ofMinutes(3)))))
                 .andExpect(jsonPath("$.password").doesNotExist())
                 .andExpect(jsonPath("$.emailAddress").doesNotExist())
-                .andExpect(jsonPath("$.rememberMe").doesNotExist());
+                .andExpect(jsonPath("$.rememberMe").doesNotExist())
+                .andExpect(jsonPath("$._links.self.href", endsWith("/account/" + id)))
+                .andExpect(jsonPath("$._links.roles.href", endsWith("/account/" + id + "/roles")));
     }
 
     @Test

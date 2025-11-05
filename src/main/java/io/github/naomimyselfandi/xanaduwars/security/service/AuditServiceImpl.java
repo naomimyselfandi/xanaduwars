@@ -5,6 +5,7 @@ import io.github.naomimyselfandi.xanaduwars.security.Audited;
 import io.github.naomimyselfandi.xanaduwars.security.dto.AuditLogDto;
 import io.github.naomimyselfandi.xanaduwars.security.entity.AuditLog;
 import io.github.naomimyselfandi.xanaduwars.security.entity.AuditLogRepository;
+import io.github.naomimyselfandi.xanaduwars.util.Cleanup;
 import jakarta.servlet.ServletRequest;
 import jakarta.servlet.http.HttpServletRequestWrapper;
 import lombok.RequiredArgsConstructor;
@@ -29,6 +30,12 @@ import java.util.Objects;
 @RequiredArgsConstructor
 class AuditServiceImpl implements AuditService {
 
+    private static final Cleanup NOOP = () -> {};
+
+    private final ThreadLocal<Boolean> suppressed = ThreadLocal.withInitial(() -> false);
+
+    private final Cleanup unsuppress = suppressed::remove;
+
     private final AuthService authService;
     private final AuditLogRepository auditLogRepository;
     private final Converter<AuditLog, AuditLogDto> converter;
@@ -40,8 +47,19 @@ class AuditServiceImpl implements AuditService {
     }
 
     @Override
+    public Cleanup suppress() {
+        if (suppressed.get()) {
+            return NOOP;
+        } else {
+            suppressed.set(true);
+            return unsuppress;
+        }
+    }
+
+    @Override
     @Transactional
     public void log(String action, @Nullable Method method, Audited.MissingAuthPolicy missingAuthPolicy) {
+        if (suppressed.get()) return;
         var auditLog = new AuditLog().setAction(action);
         try {
             var account = authService.loadForAuthenticatedUser().orElse(null);

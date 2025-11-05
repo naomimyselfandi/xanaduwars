@@ -12,6 +12,7 @@ import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.reflect.MethodSignature;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInfo;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
@@ -168,8 +169,8 @@ class BypassableAspectTest {
     }
 
     @Test
-    void apply_CapturesTheMethod(SeededRng random) throws Throwable {
-        var method = BypassableAspectTest.class.getDeclaredMethod("apply_CapturesTheMethod", SeededRng.class);
+    void apply_CapturesTheMethod(TestInfo testInfo, SeededRng random) throws Throwable {
+        var method = testInfo.getTestMethod().orElseThrow();
         var details = random.<UserDetailsDto>get();
         when(proceedingJoinPoint.getSignature()).thenReturn(methodSignature);
         when(methodSignature.getMethod()).thenReturn(method);

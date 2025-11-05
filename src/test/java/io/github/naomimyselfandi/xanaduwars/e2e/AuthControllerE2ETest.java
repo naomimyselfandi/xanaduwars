@@ -26,12 +26,29 @@ class AuthControllerE2ETest extends AbstractE2ETest {
                 .andExpect(jsonPath("$.emailAddress", is(regularUser.emailAddress().toString())))
                 .andExpect(jsonPath("$.roles", is(empty())))
                 .andExpect(jsonPath("$.rememberMe", is(false)))
-                .andExpect(jsonPath("$.password").doesNotExist());
+                .andExpect(jsonPath("$.password").doesNotExist())
+                .andExpect(jsonPath("$._links.self.href", endsWith("/auth/me")))
+                .andExpect(jsonPath("$._links.login").doesNotExist())
+                .andExpect(jsonPath("$._links.register").doesNotExist())
+                .andExpect(jsonPath("$._links.logout.href", endsWith("/auth/logout")))
+                .andExpect(jsonPath("$._links.details.href", endsWith("/account/" + regularUser.id())));
     }
 
     @Test
-    void me_WhenNotLoggedIn_Then401() throws Exception {
-        as(null).perform(get("/auth/me")).andExpect(status().isNoContent());
+    void me_WhenNotLoggedIn_ThenEmptyResponse() throws Exception {
+        as(null).perform(get("/auth/me"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.id").doesNotExist())
+                .andExpect(jsonPath("$.username").doesNotExist())
+                .andExpect(jsonPath("$.emailAddress").doesNotExist())
+                .andExpect(jsonPath("$.roles").doesNotExist())
+                .andExpect(jsonPath("$.rememberMe").doesNotExist())
+                .andExpect(jsonPath("$.password").doesNotExist())
+                .andExpect(jsonPath("$._links.self.href", endsWith("/auth/me")))
+                .andExpect(jsonPath("$._links.login.href", endsWith("/auth/login")))
+                .andExpect(jsonPath("$._links.register.href", endsWith("/auth/register")))
+                .andExpect(jsonPath("$._links.logout").doesNotExist())
+                .andExpect(jsonPath("$._links.details").doesNotExist());
     }
 
     @Test

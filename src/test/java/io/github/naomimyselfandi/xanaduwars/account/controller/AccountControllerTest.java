@@ -13,6 +13,8 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.hateoas.EntityModel;
+import org.springframework.hateoas.server.RepresentationModelAssembler;
 import org.springframework.http.ResponseEntity;
 
 import java.util.Set;
@@ -24,10 +26,16 @@ import static org.mockito.Mockito.*;
 class AccountControllerTest {
 
     @Mock
+    private EntityModel<BaseAccountDto> entityModel;
+
+    @Mock
     private AccountService accountService;
 
     @Mock
     private RoleService roleService;
+
+    @Mock
+    private RepresentationModelAssembler<BaseAccountDto, EntityModel<BaseAccountDto>> assembler;
 
     @InjectMocks
     private AccountController fixture;
@@ -36,8 +44,9 @@ class AccountControllerTest {
     void get(SeededRng random) {
         var id = random.<Id<Account>>get();
         var dto = random.<BaseAccountDto>get();
+        when(assembler.toModel(dto)).thenReturn(entityModel);
         when(accountService.getAccount(id, BaseAccountDto.class)).thenReturn(dto);
-        assertThat(fixture.get(id)).isEqualTo(ResponseEntity.ok(dto));
+        assertThat(fixture.get(id)).isEqualTo(entityModel);
     }
 
     @Test

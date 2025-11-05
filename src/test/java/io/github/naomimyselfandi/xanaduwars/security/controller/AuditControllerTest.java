@@ -12,7 +12,9 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.http.ResponseEntity;
+import org.springframework.data.web.PagedResourcesAssembler;
+import org.springframework.hateoas.EntityModel;
+import org.springframework.hateoas.PagedModel;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.when;
@@ -21,10 +23,16 @@ import static org.mockito.Mockito.when;
 class AuditControllerTest {
 
     @Mock
+    private PagedModel<EntityModel<AuditLogDto>> pagedModel;
+
+    @Mock
     private Page<AuditLogDto> page;
 
     @Mock
     private Pageable pageable;
+
+    @Mock
+    private PagedResourcesAssembler<AuditLogDto> assembler;
 
     @Mock
     private AuditService auditService;
@@ -36,7 +44,8 @@ class AuditControllerTest {
     void get(SeededRng random) {
         var filter = random.<AuditLogFilterDto>get();
         when(auditService.find(filter, pageable)).thenReturn(page);
-        assertThat(fixture.get(filter, pageable)).isEqualTo(ResponseEntity.ok(page));
+        when(assembler.toModel(page)).thenReturn(pagedModel);
+        assertThat(fixture.get(filter, pageable, assembler)).isEqualTo(pagedModel);
     }
 
 }

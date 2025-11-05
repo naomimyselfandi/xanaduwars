@@ -3,6 +3,7 @@ package io.github.naomimyselfandi.xanaduwars.e2e;
 import io.github.naomimyselfandi.xanaduwars.account.value.Role;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.MediaType;
+import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 
 import java.time.Duration;
 
@@ -29,28 +30,28 @@ class AuditControllerE2ETest extends AbstractE2ETest {
     }
 
     private void readLog(TestUser user) throws Exception {
-        as(user)
-                .perform(get("/audit/testHelper/ping")
+        as(user).perform(get("/audit/testHelper/ping")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("\"pong\""))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$", is("pong")));
-        as(user)
-                .perform(get("/audit")
+        var prefix = "$._embedded.auditLogDtoList[0].";
+        as(user).perform(get("/audit")
                         .queryParam("accountId", user.id().toString())
                         .queryParam("action", "PING"))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.content[0].id").isString())
-                .andExpect(jsonPath("$.content[0].timestamp", is(closeToNow(Duration.ofSeconds(3)))))
-                .andExpect(jsonPath("$.content[0].accountId", is(user.id().toString())))
-                .andExpect(jsonPath("$.content[0].username", is(user.username().toString())))
-                .andExpect(jsonPath("$.content[0].httpMethod", is("GET")))
-                .andExpect(jsonPath("$.content[0].httpPath", is("/audit/testHelper/ping")))
-                .andExpect(jsonPath("$.content[0].httpQuery", is("")))
-                .andExpect(jsonPath("$.content[0].httpBody", is("\"pong\"")))
-                .andExpect(jsonPath("$.content[0].action", is("PING")))
-                .andExpect(jsonPath("$.content[0].sourceClass", is("i.g.n.x.e.AuditControllerE2EHelper")))
-                .andExpect(jsonPath("$.content[0].sourceMethod", is("ping")))
+                .andDo(MockMvcResultHandlers.print())
+                .andExpect(jsonPath(prefix + "id").isString())
+                .andExpect(jsonPath(prefix + "timestamp", is(closeToNow(Duration.ofSeconds(3)))))
+                .andExpect(jsonPath(prefix + "accountId", is(user.id().toString())))
+                .andExpect(jsonPath(prefix + "username", is(user.username().toString())))
+                .andExpect(jsonPath(prefix + "httpMethod", is("GET")))
+                .andExpect(jsonPath(prefix + "httpPath", is("/audit/testHelper/ping")))
+                .andExpect(jsonPath(prefix + "httpQuery", is("")))
+                .andExpect(jsonPath(prefix + "httpBody", is("\"pong\"")))
+                .andExpect(jsonPath(prefix + "action", is("PING")))
+                .andExpect(jsonPath(prefix + "sourceClass", is("i.g.n.x.e.AuditControllerE2EHelper")))
+                .andExpect(jsonPath(prefix + "sourceMethod", is("ping")))
                 .andExpect(jsonPath("$.page.size", is(10)))
                 .andExpect(jsonPath("$.page.number", is(0)))
                 .andExpect(jsonPath("$.page.totalElements", is(1)))
