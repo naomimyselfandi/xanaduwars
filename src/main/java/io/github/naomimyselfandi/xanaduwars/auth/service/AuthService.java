@@ -8,9 +8,10 @@ import io.github.naomimyselfandi.xanaduwars.account.value.Username;
 import io.github.naomimyselfandi.xanaduwars.util.Id;
 
 import java.util.Optional;
+import java.util.function.Supplier;
 
 /// A service that loads users for authentication.
-public interface AuthService {
+public interface AuthService extends Supplier<UserDetailsDto> {
 
     /// Fetch the authenticated user's details, if any.
     Optional<UserDetailsDto> loadForAuthenticatedUser();
@@ -32,5 +33,10 @@ public interface AuthService {
 
     /// Set an account's "Remember Me" flag.
     void setRememberMe(Id<Account> accountId, boolean rememberMe);
+
+    /// Get the authenticated user's details. If no user is authenticated, this
+    /// fails with an exception representing an HTTP 401.
+    @Override
+    UserDetailsDto get();
 
 }

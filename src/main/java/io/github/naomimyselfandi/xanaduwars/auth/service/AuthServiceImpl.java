@@ -8,6 +8,7 @@ import io.github.naomimyselfandi.xanaduwars.account.value.EmailAddress;
 import io.github.naomimyselfandi.xanaduwars.account.value.Plaintext;
 import io.github.naomimyselfandi.xanaduwars.account.value.Username;
 import io.github.naomimyselfandi.xanaduwars.auth.value.JWTPurpose;
+import io.github.naomimyselfandi.xanaduwars.auth.value.UnauthorizedException;
 import io.github.naomimyselfandi.xanaduwars.util.Id;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
@@ -70,6 +71,11 @@ class AuthServiceImpl implements AuthService {
     @Override
     public void setRememberMe(Id<Account> accountId, boolean rememberMe) {
         accountRepository.updateRememberMeById(accountId, rememberMe);
+    }
+
+    @Override
+    public UserDetailsDto get() {
+        return loadForAuthenticatedUser().orElseThrow(UnauthorizedException::new);
     }
 
 }

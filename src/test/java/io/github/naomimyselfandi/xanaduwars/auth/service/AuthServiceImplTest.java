@@ -9,6 +9,7 @@ import io.github.naomimyselfandi.xanaduwars.account.value.EmailAddress;
 import io.github.naomimyselfandi.xanaduwars.account.value.Plaintext;
 import io.github.naomimyselfandi.xanaduwars.account.value.Username;
 import io.github.naomimyselfandi.xanaduwars.auth.value.JWTPurpose;
+import io.github.naomimyselfandi.xanaduwars.auth.value.UnauthorizedException;
 import io.github.naomimyselfandi.xanaduwars.testing.SeededRng;
 import io.github.naomimyselfandi.xanaduwars.util.Id;
 import org.junit.jupiter.api.BeforeEach;
@@ -139,6 +140,26 @@ class AuthServiceImplTest {
         var id = random.<Id<Account>>get();
         fixture.setRememberMe(id, rememberMe);
         verify(accountRepository).updateRememberMeById(id, rememberMe);
+    }
+
+    @Test
+    void get() {
+        var authentication = new UsernamePasswordAuthenticationToken(dto, null);
+        when(securityContext.getAuthentication()).thenReturn(authentication);
+        assertThat(fixture.get()).isEqualTo(dto);
+    }
+
+    @Test
+    void get_WhenNoCredentialsAreAvailable_ThenThrows() {
+        when(securityContext.getAuthentication()).thenReturn(null);
+        assertThatThrownBy(fixture::get).isInstanceOf(UnauthorizedException.class);
+    }
+
+    @Test
+    void get_WhenTheCredentialsAreAnotherType_ThenThrows() {
+        var authentication = new UsernamePasswordAuthenticationToken(new Object(), null);
+        when(securityContext.getAuthentication()).thenReturn(authentication);
+        assertThatThrownBy(fixture::get).isInstanceOf(UnauthorizedException.class);
     }
 
 }
